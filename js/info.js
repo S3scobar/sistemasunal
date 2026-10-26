@@ -258,6 +258,7 @@ function filtrarGlosario() {
 /* ---------- 6. Generadores de HTML Moderno y Modular ---------- */
 
 function generarHtmlGuia(guia) {
+  if (guia.calendario) return generarHtmlCalendario(guia);
   let subseccionesHtml = '';
 
   // 1. Enlace CTA externo oficial (ej. citaciones DNINFOA)
@@ -785,3 +786,111 @@ function pintarAsesoria() {
       <li><a href="${esc(a.solicitudes)}" target="_blank" rel="noopener noreferrer">Solicitudes estudiantiles de la Facultad de Minas</a></li>
     </ul>`;
 }
+
+
+/* ---------- Calendario académico (versión web) ---------- */
+
+const DIA_MS = 86400000;
+const MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+const aFecha = (iso) => { const [a, m, d] = iso.split('-').map(Number); return new Date(a, m - 1, d); };
+const fechaCorta = (iso) => { const f = aFecha(iso); return { dia: f.getDate(), mes: MESES[f.getMonth()], anio: f.getFullYear() }; };
+
+// Estado de una fila según la fecha de hoy en el dispositivo
+function estadoCalendario(fila, hoy) {
+  if (!fila.fin) return { clave: 'sinfecha', texto: 'Sin fecha', detalle: 'Verifica el calendario oficial' };
+  const fin = aFecha(fila.fin), ini = fila.inicio ? aFecha(fila.inicio) : null;
+  const dias = Math.round((fin - hoy) / DIA_MS);
+  if (dias < 0) return { clave: 'fin', texto: 'Finalizó', detalle: '' };
+  if (ini && hoy < ini) return { clave: 'prox', texto: 'Próximamente', detalle: `Inicia en ${Math.round((ini - hoy) / DIA_MS)} día(s)`, dias };
+  const detalle = dias === 0 ? 'Hoy es el último día' : dias === 1 ? 'Vence mañana' : `Vence en ${dias} días`;
+  return { clave: dias <= 7 ? 'urge' : 'vigente', texto: dias <= 7 ? 'Por vencer' : 'Vigente', detalle, dias };
+}
+
+function bloqueFecha(iso, etiqueta) {
+  if (!iso) return '';
+  const f = fechaCorta(iso);
+  return `<span class="cal-fecha"><small>${etiqueta}</small><strong>${f.dia} ${f.mes}</strong><em>${f.anio}</em></span>`;
+}
+
+function progresoCalendario(fila, hoy) {
+  if (!fila.inicio || !fila.fin) return '';
+  const a = aFecha(fila.inicio), b = aFecha(fila.fin);
+  const pct = Math.max(0, Math.min(100, Math.round(((hoy - a) / Math.max(b - a, 1)) * 100)));
+  return `<span class="cal-barra" aria-hidden="true"><span style="width:${pct}%"></span></span>`;
+}
+
+function filaCalendario(fila, hoy) {
+  const e = estadoCalendario(fila, hoy);
+  return `
+    <li class="cal-fila cal-fila--${e.clave}" data-estado="${e.clave === 'fin' ? 'fin' : e.clave === 'sinfecha' ? 'sinfecha' : 'activo'}">
+      <div class="cal-fila__titulo">
+        <strong>${esc(fila.actividad)}</strong>
+        ${fila.nota ? `<small>${esc(fila.nota)}</small>` : ''}
+        ${fila.aplica ? `<span class="cal-periodo">Aplica a ${esc(fila.aplica)}</span>` : ''}
+      </div>
+      <div class="cal-fila__estado">
+        <span class="cal-sello cal-sello--${e.clave}">${esc(e.texto)}</span>
+        ${e.detalle ? `<small>${esc(e.detalle)}</small>` : ''}
+      </div>
+      <div class="cal-fila__fechas">
+        ${bloqueFecha(fila.inicio, 'Desde')}${bloqueFecha(fila.fin, fila.inicio ? 'Hasta' : 'Fecha límite')}
+        ${progresoCalendario(fila, hoy)}
+      </div>
+    </li>`;
+}
+
+function generarHtmlCalendario(guia) {
+  const cal = guia.calendario;
+  const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+  const filas = cal.grupos.flatMap((g) => g.filas);
+  const proximos = filas.map((f) => ({ f, e: estadoCalendario(f, hoy) }))
+    .filter((x) => x.e.dias !== undefined && x.e.clave !== 'prox' && x.e.clave !== 'fin')
+    .sort((a, b) => a.e.dias - b.e.dias).slice(0, 3);
+  const cuenta = (clave) => filas.filter((f) => (clave === 'todos') || estadoCalendario(f, hoy).clave === 'fin' === (clave === 'fin')).length;
+
+  return `
+    <article class="info-tarjeta cal" id="${esc(guia.id)}">
+      <div class="info-tarjeta__encabezado"><span class="info-tarjeta__badge">${esc(guia.etiqueta)}</span></div>
+      <h3 class="info-tarjeta__titulo">${esc(guia.titulo)}</h3>
+      <p class="info-tarjeta__subtitulo">${esc(guia.subtitulo)}</p>
+
+      ${proximos.length ? `
+      <h4 class="info-subseccion-titulo">${ICONOS.reloj} Próximos vencimientos</h4>
+      <ul class="cal-proximos">
+        ${proximos.map(({ f, e }) => `
+          <li class="cal-proximo cal-proximo--${e.clave}">
+            <span class="cal-proximo__dias"><strong>${e.dias}</strong><small>${e.dias === 1 ? 'día' : 'días'}</small></span>
+            <span class="cal-proximo__texto"><strong>${esc(f.actividad)}</strong><small>Hasta el ${fechaCorta(f.fin).dia} ${fechaCorta(f.fin).mes} ${fechaCorta(f.fin).anio}</small></span>
+          </li>`).join('')}
+      </ul>` : ''}
+
+      <div class="cal-filtros" role="group" aria-label="Filtrar el calendario">
+        <button type="button" class="cal-filtro" data-cal-filtro="todos" aria-pressed="true">Todas <span>${cuenta('todos')}</span></button>
+        <button type="button" class="cal-filtro" data-cal-filtro="activo" aria-pressed="false">Vigentes <span>${filas.filter((f) => ['vigente', 'urge', 'prox'].includes(estadoCalendario(f, hoy).clave)).length}</span></button>
+        <button type="button" class="cal-filtro" data-cal-filtro="fin" aria-pressed="false">Finalizadas <span>${cuenta('fin')}</span></button>
+      </div>
+
+      ${cal.grupos.map((g) => `
+        <section class="cal-grupo">
+          <h4 class="info-subseccion-titulo">${ICONOS.calendario} ${esc(g.titulo)}</h4>
+          <ul class="cal-lista">${g.filas.map((f) => filaCalendario(f, hoy)).join('')}</ul>
+        </section>`).join('')}
+
+      <p class="cal-nota">${esc(cal.nota)}</p>
+      <div class="info-guia-footer">
+        <a href="${esc(cal.fuente.url)}" target="_blank" rel="noopener noreferrer" class="info-enlace-oficial">
+          ${ICONOS.documento}<span>${esc(cal.fuente.texto)}</span>${ICONOS.externo}
+        </a>
+      </div>
+    </article>`;
+}
+
+// Filtros del calendario (delegación: el contenido se vuelve a pintar)
+document.addEventListener('click', (ev) => {
+  const b = ev.target.closest('[data-cal-filtro]');
+  if (!b) return;
+  const raiz = b.closest('.cal'), f = b.dataset.calFiltro;
+  $$('.cal-filtro', raiz).forEach((x) => x.setAttribute('aria-pressed', x === b));
+  $$('.cal-fila', raiz).forEach((li) => { li.hidden = !(f === 'todos' || li.dataset.estado === f); });
+  $$('.cal-grupo', raiz).forEach((g) => { g.hidden = !$$('.cal-fila:not([hidden])', g).length; });
+});

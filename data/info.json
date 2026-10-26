@@ -360,62 +360,202 @@
     {
       "id": "calendario-academico",
       "categoria": "calendario",
-      "etiqueta": "Sede Medellín",
-      "titulo": "Calendario académico de la Sede Medellín",
-      "subtitulo": "La Facultad de Minas publica un calendario de pregrado y otro de posgrado por cada periodo. Las fechas de inscripción, cancelaciones, plazos de solicitudes y fin de clases salen de ahí, y pueden cambiar.",
-      "enlaceExterno": {
-        "texto": "Ver calendarios académicos de la Sede Medellín",
-        "url": "https://old-minas.medellin.unal.edu.co/tramitesestudiantiles/calendarios/calendario-academico-sede-medellin.html"
-      },
-      "puntosClave": [
-        {
-          "icono": "alerta",
-          "titulo": "Las fechas pueden cambiar",
-          "texto": "La página oficial advierte que «estas fechas pueden estar sujetas a cambios» y recomienda consultar el repositorio legal de la Universidad."
-        },
-        {
-          "icono": "check",
-          "titulo": "Un calendario por nivel y periodo",
-          "texto": "Cada periodo tiene calendario de pregrado y de posgrado. Tú necesitas el de pregrado del periodo en curso."
-        },
-        {
-          "icono": "reloj",
-          "titulo": "Las solicitudes también tienen fechas",
-          "texto": "Cada solicitud de la Facultad remite al «Calendario Académico y de Solicitudes» para saber hasta cuándo se puede radicar."
-        }
-      ],
-      "tabla": {
-        "cabecera": [
-          "Periodo",
-          "Calendarios publicados en la página de la Sede"
+      "etiqueta": "Pregrado · Sede Medellín",
+      "titulo": "Calendario pregrado 2026-2S",
+      "subtitulo": "Fechas límite del periodo académico y de las solicitudes estudiantiles. El estado (finalizó, en curso, faltan N días) se calcula con la fecha de tu dispositivo.",
+      "calendario": {
+        "periodo": "2026-2S",
+        "grupos": [
+          {
+            "id": "academico",
+            "titulo": "Fechas del periodo",
+            "filas": [
+              {
+                "actividad": "Adición y cancelación de asignaturas sin descuento de créditos",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-09-10",
+                "nota": "Portal de Servicios Académicos"
+              },
+              {
+                "actividad": "Cancelación de asignaturas con descuento de créditos",
+                "aplica": "2026-2S",
+                "inicio": "2026-09-15",
+                "fin": "2026-10-22",
+                "nota": "Portal de Servicios Académicos"
+              },
+              {
+                "actividad": "Consolidación de matrícula",
+                "aplica": "2026-2S",
+                "inicio": null,
+                "fin": "2026-09-14"
+              },
+              {
+                "actividad": "Reporte de notas parciales (30 %)",
+                "aplica": "2026-2S",
+                "inicio": null,
+                "fin": "2026-10-01"
+              },
+              {
+                "actividad": "Reporte de notas parciales (60 %)",
+                "aplica": "2026-2S",
+                "inicio": null,
+                "fin": "2026-11-05"
+              },
+              {
+                "actividad": "Semana universitaria",
+                "aplica": "2026-2S",
+                "inicio": null,
+                "fin": null
+              },
+              {
+                "actividad": "Finalización de clases",
+                "aplica": "2026-2S",
+                "inicio": null,
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Reporte de notas (100 %)",
+                "aplica": "2026-2S",
+                "inicio": null,
+                "fin": "2026-12-19"
+              }
+            ]
+          },
+          {
+            "id": "solicitudes",
+            "titulo": "Solicitudes estudiantiles",
+            "filas": [
+              {
+                "actividad": "Cambio de tutor",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Cancelación de asignatura(s) posterior al 50 % de avance del periodo",
+                "aplica": "2026-2S",
+                "inicio": "2026-09-17",
+                "fin": "2026-12-17",
+                "nota": "Ante el Consejo de Facultad"
+              },
+              {
+                "actividad": "Cancelación de periodo académico",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Carga inferior a la mínima",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-09-13"
+              },
+              {
+                "actividad": "Carga inferior a la mínima",
+                "aplica": "2027-1S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Devolución de dinero",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Doble titulación",
+                "aplica": "2027-1S",
+                "inicio": "2026-08-27",
+                "fin": "2026-09-24"
+              },
+              {
+                "actividad": "Doble titulación internacional",
+                "aplica": null,
+                "inicio": null,
+                "fin": null
+              },
+              {
+                "actividad": "Autorización de inscripción/adición no oportuna de asignatura(s)",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-11-05"
+              },
+              {
+                "actividad": "Autorización de inscripción/adición no oportuna de TDG o actividades académicas",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-11-26"
+              },
+              {
+                "actividad": "Modificación de trabajo de grado (TDG)",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Movilidad interna entre sedes",
+                "aplica": "2027-1S",
+                "inicio": "2026-10-08",
+                "fin": "2026-11-05"
+              },
+              {
+                "actividad": "Práctica académica especial (PAE)",
+                "aplica": "2027-1S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-03"
+              },
+              {
+                "actividad": "Reconocimiento de asignatura(s)",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-10-01"
+              },
+              {
+                "actividad": "Recurso de reposición y/o apelación",
+                "aplica": null,
+                "inicio": null,
+                "fin": null,
+                "nota": "10 días hábiles desde la notificación"
+              },
+              {
+                "actividad": "Reingreso",
+                "aplica": "2027-1S",
+                "inicio": "2026-08-27",
+                "fin": "2026-10-15"
+              },
+              {
+                "actividad": "Reserva de cupo adicional",
+                "aplica": "2027-1S",
+                "inicio": "2026-10-22",
+                "fin": "2026-11-19"
+              },
+              {
+                "actividad": "Retiro de la Universidad",
+                "aplica": "2026-2S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-17"
+              },
+              {
+                "actividad": "Trabajo de grado (TDG), en cualquiera de sus modalidades",
+                "aplica": "2027-1S",
+                "inicio": "2026-08-27",
+                "fin": "2026-12-03"
+              },
+              {
+                "actividad": "Traslado",
+                "aplica": "2027-1S",
+                "inicio": "2026-08-27",
+                "fin": "2026-10-08"
+              }
+            ]
+          }
         ],
-        "filas": [
-          [
-            "2026-2S (periodo actual)",
-            "Pregrado y posgrado"
-          ],
-          [
-            "2026-1S",
-            "Pregrado y posgrado"
-          ],
-          [
-            "2025-2S",
-            "Pregrado y posgrado"
-          ],
-          [
-            "2025-1S",
-            "Pregrado y posgrado"
-          ],
-          [
-            "2024-2S",
-            "Pregrado y posgrado"
-          ]
-        ]
-      },
-      "consejo": "La página de la Sede aparece «En actualización» y sus calendarios no muestran las fechas dentro de la propia página. Por eso aquí no copiamos fechas: ábrelas siempre en la fuente oficial (la web de la Sede o legal.unal.edu.co).",
-      "enlaceOficial": {
-        "texto": "Repositorio legal de la Universidad Nacional (acuerdos de calendario)",
-        "url": "http://www.legal.unal.edu.co/"
+        "nota": "Este calendario es orientativo: el conteo depende de la fecha de tu dispositivo. Confirma siempre las fechas en la fuente oficial.",
+        "fuente": {
+          "texto": "Calendarios académicos de la Sede Medellín",
+          "url": "https://old-minas.medellin.unal.edu.co/tramitesestudiantiles/calendarios/calendario-academico-sede-medellin.html"
+        }
       }
     },
     {
