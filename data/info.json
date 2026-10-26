@@ -19,10 +19,16 @@
   ],
   "categorias": [
     {
-      "id": "todos",
-      "nombre": "Todo",
-      "icono": "todo",
-      "descripcion": "Vista general de toda la información esencial para estudiantes de la UNAL."
+      "id": "calendario",
+      "nombre": "Calendario Académico",
+      "icono": "calendario",
+      "descripcion": "Dónde consultar las fechas oficiales de cada periodo y qué calendarios publica la Sede Medellín."
+    },
+    {
+      "id": "solicitudes",
+      "nombre": "Solicitudes Estudiantiles",
+      "icono": "documento",
+      "descripcion": "Cómo radicar solicitudes en la Facultad de Minas: SGS, soportes, plazos y las 25 solicitudes disponibles."
     },
     {
       "id": "citas",
@@ -53,18 +59,6 @@
       "nombre": "Trámites y Cupo",
       "icono": "documento",
       "descripcion": "Causales de pérdida de cupo, reserva de semestre, cancelaciones y doble titulación."
-    },
-    {
-      "id": "calendario",
-      "nombre": "Calendario Académico",
-      "icono": "calendario",
-      "descripcion": "Dónde consultar las fechas oficiales de cada periodo y qué calendarios publica la Sede Medellín."
-    },
-    {
-      "id": "solicitudes",
-      "nombre": "Solicitudes Estudiantiles",
-      "icono": "documento",
-      "descripcion": "Cómo radicar solicitudes en la Facultad de Minas: SGS, soportes, plazos y las 25 solicitudes disponibles."
     },
     {
       "id": "faq",

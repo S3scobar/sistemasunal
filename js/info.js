@@ -9,7 +9,7 @@
    ============================================= */
 
 let datosInfo = null;
-let categoriaActiva = 'todos';
+let categoriaActiva = 'calendario';
 let terminoBusqueda = '';
 
 // Estado para la calculadora de P.A.P.A. (integrada en la sección P.A.P.A.)
@@ -73,6 +73,7 @@ function pintarCifras() {
 /* ---------- 2. Pestañas de categorías ---------- */
 
 function pintarTabs() {
+  if (datosInfo.categorias?.length && !datosInfo.categorias.some((c) => c.id === categoriaActiva)) categoriaActiva = datosInfo.categorias[0].id;
   const contenedor = $('#contenedor-tabs');
   if (!contenedor || !datosInfo.categorias) return;
 
@@ -140,6 +141,8 @@ function renderizarVista() {
   const glosarioFiltrado = filtrarGlosario();
 
   const hayBusqueda = terminoBusqueda.length > 0;
+  // Con una búsqueda activa se busca en todas las secciones y ninguna pestaña queda marcada
+  $$('.info-tab-btn').forEach((b) => b.classList.toggle('activo', !hayBusqueda && b.dataset.cat === categoriaActiva));
   const totalResultados = guiasFiltradas.length + faqsFiltradas.length + glosarioFiltrado.length;
 
   if (conteoEl) {
@@ -172,6 +175,7 @@ function renderizarVista() {
   // Si estamos en la categoría 'faq', mostramos directamente todas las FAQs
   if (categoriaActiva === 'faq' && !hayBusqueda) {
     htmlPartes.push(generarHtmlFaq(datosInfo.faq));
+    if (glosarioFiltrado.length > 0) htmlPartes.push(generarHtmlGlosario(glosarioFiltrado));
     contenedor.innerHTML = htmlPartes.join('');
     activarEventosFaq();
     return;
@@ -182,21 +186,20 @@ function renderizarVista() {
     htmlPartes.push(generarHtmlGuia(guia));
 
     // Si la guía es P.A.P.A., incrustamos la calculadora interactiva justo aquí
-    if (guia.categoria === 'papa' && (categoriaActiva === 'todos' || categoriaActiva === 'papa')) {
+    if (guia.categoria === 'papa' && categoriaActiva === 'papa') {
       htmlPartes.push(generarHtmlCalculadora());
     }
   });
 
   // Mostrar FAQs relevantes según la categoría activa
   if (faqsFiltradas.length > 0) {
-    const mostrarFaqs = categoriaActiva === 'todos' || hayBusqueda || (categoriaActiva !== 'todos' && faqsFiltradas.some(f => f.categoria === categoriaActiva));
-    if (mostrarFaqs) {
+    {
       htmlPartes.push(generarHtmlFaq(faqsFiltradas));
     }
   }
 
   // Glosario en vista global o cuando coincide con la búsqueda
-  if (glosarioFiltrado.length > 0 && (categoriaActiva === 'todos' || hayBusqueda)) {
+  if (glosarioFiltrado.length > 0 && hayBusqueda) {
     htmlPartes.push(generarHtmlGlosario(glosarioFiltrado));
   }
 
@@ -210,7 +213,7 @@ function renderizarVista() {
 
 function filtrarGuias() {
   return datosInfo.guias.filter((guia) => {
-    const coincideCat = categoriaActiva === 'todos' || guia.categoria === categoriaActiva;
+    const coincideCat = guia.categoria === categoriaActiva;
     if (!coincideCat && !terminoBusqueda) return false;
 
     if (!terminoBusqueda) return coincideCat;
@@ -235,7 +238,7 @@ function filtrarGuias() {
 
 function filtrarFAQs() {
   return datosInfo.faq.filter((item) => {
-    const coincideCat = categoriaActiva === 'todos' || categoriaActiva === 'faq' || item.categoria === categoriaActiva;
+    const coincideCat = categoriaActiva === 'faq' || item.categoria === categoriaActiva;
     if (!coincideCat && !terminoBusqueda) return false;
 
     if (!terminoBusqueda) return coincideCat;
@@ -247,7 +250,7 @@ function filtrarFAQs() {
 
 function filtrarGlosario() {
   if (!datosInfo.glosario) return [];
-  if (!terminoBusqueda) return datosInfo.glosario;
+  if (!terminoBusqueda) return categoriaActiva === 'faq' ? datosInfo.glosario : [];
 
   return datosInfo.glosario.filter((item) => {
     const texto = `${item.sigla} ${item.definicion}`.toLowerCase();
