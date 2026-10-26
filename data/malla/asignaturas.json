@@ -1,0 +1,1054 @@
+[
+ {
+  "codigo": "1000008-M",
+  "nombre": "Geometría Vectorial y Analítica",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 1,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "1000004-M",
+  "nombre": "Cálculo Diferencial",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 2,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "1000005-M",
+  "nombre": "Cálculo Integral",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 3,
+  "prerrequisitos": [
+   "1000004-M"
+  ]
+ },
+ {
+  "codigo": "1000003-M",
+  "nombre": "Álgebra Lineal",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 2,
+  "prerrequisitos": [
+   "1000008-M"
+  ]
+ },
+ {
+  "codigo": "3006906",
+  "nombre": "Matemáticas Discretas",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 1,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3010651",
+  "nombre": "Estadística I",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 4,
+  "prerrequisitos": [
+   "1000003-M",
+   "1000005-M"
+  ]
+ },
+ {
+  "codigo": "1000019-M",
+  "nombre": "Física Mecánica",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "ciencias-basicas",
+  "semestre": 3,
+  "prerrequisitos": [
+   "3010651"
+  ],
+  "porConfirmar": "El PDF lista Estadística I como prerrequisito, pero esa materia está en un semestre posterior."
+ },
+ {
+  "codigo": "1000007-M",
+  "nombre": "Ecuaciones Diferenciales",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000005-M",
+   "1000003-M"
+  ],
+  "porConfirmar": "El PDF imprime el código 1000004-M junto al nombre «Cálculo Integral» (cuyo código es 1000005-M)."
+ },
+ {
+  "codigo": "1000006-M",
+  "nombre": "Cálculo en Varias Variables",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000005-M"
+  ]
+ },
+ {
+  "codigo": "3006905",
+  "nombre": "Matemáticas Especiales",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000007-M"
+  ]
+ },
+ {
+  "codigo": "3006907",
+  "nombre": "Métodos Numéricos",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000005-M",
+   "1000003-M"
+  ]
+ },
+ {
+  "codigo": "3010334",
+  "nombre": "Fundamentos de Matemáticas",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3010391",
+  "nombre": "Geometría Aplicada",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000003-M"
+  ]
+ },
+ {
+  "codigo": "3006915",
+  "nombre": "Estadística II",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010651"
+  ]
+ },
+ {
+  "codigo": "3006927",
+  "nombre": "Estadística Descriptiva y Exploratoria",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "3006931"
+  ]
+ },
+ {
+  "codigo": "3009137",
+  "nombre": "Estadística III",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "3006915"
+  ]
+ },
+ {
+  "codigo": "1000017-M",
+  "nombre": "Física de Electricidad y Magnetismo",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000019-M"
+  ]
+ },
+ {
+  "codigo": "1000020-M",
+  "nombre": "Física de Oscilaciones, Ondas y Óptica",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000017-M"
+  ]
+ },
+ {
+  "codigo": "3006829",
+  "nombre": "Química General",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3006825",
+  "nombre": "Laboratorio de Química General",
+  "creditos": 2,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [
+   "3006829"
+  ]
+ },
+ {
+  "codigo": "1000009-M",
+  "nombre": "Biología General",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3006931",
+  "nombre": "Introducción al Manejo de Datos Estadísticos",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3010435",
+  "nombre": "Fundamentos de Programación",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 2,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3007744",
+  "nombre": "Programación Orientada a Objetos",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 3,
+  "prerrequisitos": [
+   "3010435"
+  ]
+ },
+ {
+  "codigo": "3007741",
+  "nombre": "Estructura de Datos",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 4,
+  "prerrequisitos": [
+   "3007744"
+  ]
+ },
+ {
+  "codigo": "3007847",
+  "nombre": "Bases de Datos I",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 5,
+  "prerrequisitos": [
+   "3007741"
+  ]
+ },
+ {
+  "codigo": "3010426",
+  "nombre": "Teoría de Lenguajes de Programación",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 3,
+  "prerrequisitos": [
+   "3010435",
+   "3006906"
+  ]
+ },
+ {
+  "codigo": "3010476",
+  "nombre": "Introducción a la Inteligencia Artificial",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 6,
+  "prerrequisitos": [
+   "3010651",
+   "3007847"
+  ]
+ },
+ {
+  "codigo": "3007867",
+  "nombre": "Sistemas Operativos",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 4,
+  "prerrequisitos": [
+   "3010426"
+  ]
+ },
+ {
+  "codigo": "3007865",
+  "nombre": "Redes y Telecomunicaciones I",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 5,
+  "prerrequisitos": [
+   "3007867"
+  ]
+ },
+ {
+  "codigo": "3011020",
+  "nombre": "Fundamentos de Analítica",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ciencias-computacion",
+  "semestre": 6,
+  "prerrequisitos": [
+   "3010651",
+   "3007847"
+  ]
+ },
+ {
+  "codigo": "3007853",
+  "nombre": "Ingeniería de Software",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ingenieria-software",
+  "semestre": 4,
+  "prerrequisitos": [
+   "3007744"
+  ]
+ },
+ {
+  "codigo": "3007852",
+  "nombre": "Ingeniería de Requisitos",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ingenieria-software",
+  "semestre": 5,
+  "prerrequisitos": [
+   "3007853"
+  ]
+ },
+ {
+  "codigo": "3010440",
+  "nombre": "Calidad de Software",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "ingenieria-software",
+  "semestre": 6,
+  "prerrequisitos": [
+   "3007852"
+  ]
+ },
+ {
+  "codigo": "3010438",
+  "nombre": "Introducción a la Ingeniería de Sistemas e Informática",
+  "creditos": 2,
+  "obligatoria": true,
+  "agrupacion": "sistemas",
+  "semestre": 1,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3007324",
+  "nombre": "Investigación de Operaciones I",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "sistemas",
+  "semestre": 4,
+  "prerrequisitos": [
+   "3010435",
+   "1000003-M"
+  ]
+ },
+ {
+  "codigo": "3010415",
+  "nombre": "Introducción al Análisis de Decisiones",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "sistemas",
+  "semestre": 6,
+  "prerrequisitos": [
+   "3007331"
+  ]
+ },
+ {
+  "codigo": "3007331",
+  "nombre": "Simulación de Sistemas",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "sistemas",
+  "semestre": 5,
+  "prerrequisitos": [
+   "3010651",
+   "3007324"
+  ]
+ },
+ {
+  "codigo": "3010408",
+  "nombre": "Fundamentos de Proyectos en Ingeniería",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "proyectos",
+  "semestre": 8,
+  "prerrequisitos": [
+   "3010438"
+  ],
+  "requisitosAvance": [
+   {
+    "componente": "fundamentacion",
+    "porcentaje": 40
+   }
+  ]
+ },
+ {
+  "codigo": "3010407",
+  "nombre": "Estructuración y Evaluación de Proyectos de Ingeniería",
+  "creditos": 3,
+  "obligatoria": true,
+  "agrupacion": "proyectos",
+  "semestre": 9,
+  "prerrequisitos": [
+   "3010408"
+  ],
+  "requisitosAvance": [
+   {
+    "componente": "disciplinar",
+    "porcentaje": 20
+   }
+  ]
+ },
+ {
+  "codigo": "3010439",
+  "nombre": "Proyecto Integrado de Ingeniería",
+  "creditos": 4,
+  "obligatoria": true,
+  "agrupacion": "proyectos",
+  "semestre": 10,
+  "prerrequisitos": [
+   "3010407"
+  ],
+  "requisitosAvance": [
+   {
+    "componente": "fundamentacion",
+    "porcentaje": 100
+   },
+   {
+    "componente": "disciplinar",
+    "porcentaje": 70
+   }
+  ]
+ },
+ {
+  "codigo": "3007868",
+  "nombre": "Trabajo de Grado",
+  "creditos": 6,
+  "obligatoria": true,
+  "agrupacion": "trabajo-grado",
+  "semestre": 10,
+  "prerrequisitos": [],
+  "requisitosAvance": [
+   {
+    "componente": "disciplinar",
+    "porcentaje": 80
+   },
+   {
+    "componente": "fundamentacion",
+    "porcentaje": 100
+   }
+  ]
+ },
+ {
+  "codigo": "3010684",
+  "nombre": "Práctica de Extensión",
+  "creditos": null,
+  "obligatoria": true,
+  "agrupacion": "trabajo-grado",
+  "semestre": null,
+  "prerrequisitos": [],
+  "requisitosAvance": [
+   {
+    "componente": "disciplinar",
+    "porcentaje": 80
+   },
+   {
+    "componente": "fundamentacion",
+    "porcentaje": 100
+   }
+  ]
+ },
+ {
+  "codigo": "3007869",
+  "nombre": "Cursos de Posgrado",
+  "creditos": null,
+  "obligatoria": true,
+  "agrupacion": "trabajo-grado",
+  "semestre": null,
+  "prerrequisitos": [],
+  "requisitosAvance": [
+   {
+    "componente": "disciplinar",
+    "porcentaje": 80
+   },
+   {
+    "componente": "fundamentacion",
+    "porcentaje": 100
+   }
+  ]
+ },
+ {
+  "codigo": "3011166",
+  "nombre": "Fundamentos de Sistemas de Información e Inteligencia de Negocios",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010435"
+  ]
+ },
+ {
+  "codigo": "3007854",
+  "nombre": "Técnicas de Aprendizaje Estadístico",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3007860",
+  "nombre": "Sistema de Recuperación de Información de Web",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3007862",
+  "nombre": "Visión Artificial",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3009150",
+  "nombre": "Redes Neuronales Artificiales y Algoritmos Bioinspirados",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3009151",
+  "nombre": "Introducción a la Robótica",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3007850",
+  "nombre": "Diseño y Construcción de Productos de Software",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010440"
+  ]
+ },
+ {
+  "codigo": "3007848",
+  "nombre": "Bases de Datos II",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007847"
+  ]
+ },
+ {
+  "codigo": "3009430",
+  "nombre": "Análisis y Diseño de Algoritmos",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007741"
+  ]
+ },
+ {
+  "codigo": "3007871",
+  "nombre": "Programación Matemática",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007324"
+  ]
+ },
+ {
+  "codigo": "3007872",
+  "nombre": "Sistemas Complejos",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007331"
+  ]
+ },
+ {
+  "codigo": "3007325",
+  "nombre": "Investigación de Operaciones II",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007324"
+  ]
+ },
+ {
+  "codigo": "3007311",
+  "nombre": "Dinámica de Sistemas",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007331"
+  ]
+ },
+ {
+  "codigo": "3007873",
+  "nombre": "Teoría de la Organización Industrial",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007324"
+  ]
+ },
+ {
+  "codigo": "3007851",
+  "nombre": "Gestión de Proyectos de Software",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010440"
+  ]
+ },
+ {
+  "codigo": "3010836",
+  "nombre": "Cátedra de Sistemas: una Visión Histórico-Cultural de la Computación",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010438"
+  ]
+ },
+ {
+  "codigo": "3010757",
+  "nombre": "Ciencias de la Computación y Aplicaciones Móviles",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007847",
+   "3007865"
+  ]
+ },
+ {
+  "codigo": "3010585",
+  "nombre": "Creación de Videojuegos",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007744"
+  ]
+ },
+ {
+  "codigo": "3009936",
+  "nombre": "Seguridad Web",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007741"
+  ]
+ },
+ {
+  "codigo": "3007202",
+  "nombre": "Fundamentos de Economía",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3010425",
+  "nombre": "Teoría Administrativa y Organizacional",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": []
+ },
+ {
+  "codigo": "3010500",
+  "nombre": "Gestión del Talento Humano",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010425"
+  ]
+ },
+ {
+  "codigo": "3010524",
+  "nombre": "Fundamentos de Mercadeo",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010425"
+  ]
+ },
+ {
+  "codigo": "3007323",
+  "nombre": "Investigación de Mercados",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010524",
+   "3006915"
+  ]
+ },
+ {
+  "codigo": "3007595",
+  "nombre": "Redes Teleinformáticas I",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007865"
+  ]
+ },
+ {
+  "codigo": "3007596",
+  "nombre": "Redes Teleinformáticas II",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007595"
+  ]
+ },
+ {
+  "codigo": "3009583",
+  "nombre": "Teoría y Métodos de la Ingeniería de Software",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007852"
+  ]
+ },
+ {
+  "codigo": "3010762",
+  "nombre": "Fundamentos de Arquitectura de Software",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007852"
+  ]
+ },
+ {
+  "codigo": "3011417",
+  "nombre": "Estructuras de Datos Avanzadas",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007741"
+  ]
+ },
+ {
+  "codigo": "3011418",
+  "nombre": "Testing de Software",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007852"
+  ]
+ },
+ {
+  "codigo": "3011419",
+  "nombre": "Infraestructura de TI",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010438"
+  ]
+ },
+ {
+  "codigo": "3011420",
+  "nombre": "Inteligencia Artificial Agéntica",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3007597",
+  "nombre": "Redes Teleinformáticas III",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007596"
+  ]
+ },
+ {
+  "codigo": "3011021",
+  "nombre": "Programación para Ingeniería",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "1000003-M",
+   "3010435"
+  ]
+ },
+ {
+  "codigo": "3011034",
+  "nombre": "Servicios en la Nube",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007847",
+   "3007865"
+  ]
+ },
+ {
+  "codigo": "3011019",
+  "nombre": "Desarrollo Web I",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007847",
+   "3007865"
+  ]
+ },
+ {
+  "codigo": "3011018",
+  "nombre": "Creación Multimedia",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007744"
+  ]
+ },
+ {
+  "codigo": "3011171",
+  "nombre": "Desarrollo Móvil",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007847"
+  ]
+ },
+ {
+  "codigo": "3011168",
+  "nombre": "Criptografía",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007741",
+   "3010651"
+  ]
+ },
+ {
+  "codigo": "3011167",
+  "nombre": "Ciberseguridad",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007865"
+  ]
+ },
+ {
+  "codigo": "3011170",
+  "nombre": "Cátedra Lovelace – Turing",
+  "creditos": 2,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010438"
+  ]
+ },
+ {
+  "codigo": "3011169",
+  "nombre": "Cátedra Industria TI",
+  "creditos": 2,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010438"
+  ]
+ },
+ {
+  "codigo": "3011173",
+  "nombre": "Diseño de Experiencia de Usuario",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007852"
+  ]
+ },
+ {
+  "codigo": "3011174",
+  "nombre": "Integración y Despliegue de Software",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3011034"
+  ]
+ },
+ {
+  "codigo": "3011176",
+  "nombre": "Procesamiento de Lenguaje Natural",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3010476"
+  ]
+ },
+ {
+  "codigo": "3011175",
+  "nombre": "Optimización Heurística",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007324"
+  ]
+ },
+ {
+  "codigo": "3011172",
+  "nombre": "Desarrollo Web II",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3011019"
+  ]
+ },
+ {
+  "codigo": "3011093",
+  "nombre": "Computación Paralela",
+  "creditos": 3,
+  "obligatoria": false,
+  "agrupacion": "tecnologias",
+  "semestre": null,
+  "prerrequisitos": [
+   "3007741"
+  ]
+ }
+]

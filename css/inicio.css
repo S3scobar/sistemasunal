@@ -1,0 +1,395 @@
+/* =========================================================
+   MÓDULO INICIO — ESTILOS
+   1. El programa (descripción, ficha y acreditación)
+   2. Perfil del egresado
+   3. Grupos estudiantiles y semilleros
+   ========================================================= */
+
+
+/* ---------- 1. El programa ---------- */
+
+.programa__rejilla {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.programa__texto {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 30px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 14px 30px -20px rgba(10, 44, 82, .5);
+  font-size: 17px;
+  color: var(--tinta-suave);
+}
+.programa__lema {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: var(--azul-marino);
+  font-family: var(--letra-universidad);
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.ficha {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 14px 30px -20px rgba(10, 44, 82, .5);
+  overflow: hidden;
+}
+.ficha li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 22px;
+}
+.ficha li:nth-child(odd) { background: #f4f7fb; }
+.ficha__etiqueta {
+  font-family: var(--letra-universidad);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+.ficha__valor { text-align: right; font-weight: 600; color: var(--azul-marino); }
+
+.acreditacion {
+  margin-top: 36px;
+  padding: 30px 32px;
+  border-radius: 24px;
+  border: 2px solid #bcdbfb;
+  background: linear-gradient(145deg, #ffffff 0%, #f4f8fd 100%);
+  box-shadow: 0 16px 36px -20px rgba(10, 44, 82, .35);
+}
+.acreditacion__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #dce8f5;
+}
+.acreditacion__sello-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: var(--azul);
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px -4px rgba(22, 103, 194, .5);
+}
+.acreditacion__sello-icono svg {
+  width: 28px;
+  height: 28px;
+}
+.acreditacion__antetitulo {
+  display: block;
+  font-family: var(--letra-universidad);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--azul);
+  font-weight: 600;
+}
+.acreditacion__estado {
+  font-family: var(--letra-universidad);
+  font-size: clamp(16px, 2.2vw, 20px);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--azul-marino);
+  margin-top: 3px;
+}
+
+.acreditacion__rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 22px;
+}
+.acreditacion__tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e1ecf8;
+  box-shadow: 0 8px 20px -10px rgba(10, 44, 82, .18);
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.acreditacion__tarjeta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -10px rgba(10, 44, 82, .25);
+}
+.acreditacion__tarjeta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--azul);
+}
+.acreditacion__tarjeta--renovacion::before {
+  background: linear-gradient(90deg, var(--azul), #28a745);
+}
+.acreditacion__tarjeta-encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.acreditacion__anio-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--azul-marino);
+  color: #fff;
+  font-family: var(--letra-titulo);
+  font-size: 14px;
+  letter-spacing: .06em;
+  line-height: 1.2;
+}
+.acreditacion__tarjeta--renovacion .acreditacion__anio-badge {
+  background: #0f4f99;
+}
+.acreditacion__hito-tipo {
+  font-family: var(--letra-universidad);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gris);
+  font-weight: 600;
+}
+.acreditacion__texto {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--tinta);
+  margin: 0;
+}
+
+.acreditacion__pie {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #dce8f5;
+  color: var(--gris);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.acreditacion__info-icono {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--azul);
+}
+.acreditacion__nota {
+  margin: 0;
+  font-style: italic;
+}
+
+.fuentes {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--gris);
+  text-align: center;
+}
+.fuentes a { color: var(--tinta-suave); }
+
+
+/* ---------- 2. Perfil del egresado ---------- */
+
+.perfil { background: #dfe6ee; }
+
+.perfil__tarjetas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rasgo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 26px 24px;
+  border-radius: 20px;
+  background: #fff;
+  border-top: 6px solid var(--azul);
+  box-shadow: 0 14px 30px -20px rgba(10, 44, 82, .55);
+}
+.rasgo:nth-child(4n + 2) { border-top-color: var(--disciplinar); }
+.rasgo:nth-child(4n + 3) { border-top-color: var(--fundamentacion); }
+.rasgo:nth-child(4n) { border-top-color: var(--libre); }
+.rasgo__icono {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--azul-marino);
+  color: #fff;
+}
+.rasgo__icono svg { width: 26px; height: 26px; }
+.rasgo h3 {
+  font-family: var(--letra-universidad);
+  font-weight: 400;
+  font-size: 18px;
+  letter-spacing: .04em;
+  color: var(--azul-marino);
+}
+.rasgo p { color: var(--tinta-suave); }
+.perfil__fuente { margin-top: 24px; text-align: center; font-size: 13px; color: var(--gris); }
+
+
+/* ---------- 3. Grupos estudiantiles y semilleros ---------- */
+
+.grupos__vacio { text-align: center; color: #c9dcf0; }
+
+.grupo__detalle {
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #c9dcf0;
+}
+
+
+@media (max-width: 860px) {
+  .programa__rejilla { grid-template-columns: 1fr; }
+  .acreditacion__hitos li { grid-template-columns: 1fr; gap: 2px; }
+}
+
+.grupos {
+  padding: 80px 0 96px;
+  background: linear-gradient(var(--azul-marino), #061d38);
+}
+.grupos .seccion-titulo__antetitulo { color: #a9d1ff; }
+.grupos .seccion-titulo__intro { color: #c9dcf0; }
+
+.grupos__lista {
+  list-style: none;
+  max-width: 800px;                     /* dos banderines por fila */
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 48px 56px;
+}
+
+.grupo {
+  flex: 0 1 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Banderín: un palo de madera a la izquierda y la tela triangular.
+   La sombra va con filter para que siga la forma del triángulo (box-shadow se recortaría). */
+.banderin {
+  position: relative;
+  display: block;
+  padding-left: 9px;
+  filter: drop-shadow(0 14px 16px rgba(0, 0, 0, .45));
+  transform-origin: 0 50%;
+  transition: rotate .3s;
+}
+.banderin::before {                     /* palo */
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -12%;
+  bottom: -26%;
+  width: 9px;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #d8b47a, #8a6a3a);
+}
+.grupo:nth-child(3n + 1) .banderin { rotate: -5deg; }
+.grupo:nth-child(3n + 2) .banderin { rotate: 3deg; }
+.grupo:nth-child(3n) .banderin { rotate: -2deg; }
+.grupo:hover .banderin { rotate: 0deg; }
+
+/* Banderín con enlace (a): sin subrayado y con el anillo de foco al usar el teclado */
+a.banderin { text-decoration: none; }
+a.banderin:focus-visible { outline: 3px solid #a9d1ff; outline-offset: 6px; border-radius: 12px; }
+
+/* Tela: franja blanca cosida, puntitos de fieltro y el color del grupo */
+.banderin__tela {
+  container-type: inline-size;          /* el nombre se mide en cqw (% del ancho de la tela) */
+  display: flex;
+  align-items: center;
+  aspect-ratio: 290 / 110;
+  padding-left: 14%;
+  background:
+    repeating-linear-gradient(rgba(255, 255, 255, .75) 0 5px, transparent 5px 10px) 10% 0 / 2px 100% no-repeat,
+    linear-gradient(90deg, #f6f6f4 0 7%, transparent 7%),
+    radial-gradient(rgba(255, 255, 255, .14) 1px, transparent 1.4px) 0 0 / 6px 6px,
+    var(--color);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
+}
+
+/* El nombre se achica si tiene muchas letras para no salirse de la punta */
+.banderin__nombre {
+  font-family: var(--letra-titulo);
+  font-size: min(8.5cqw, 68cqw / var(--letras));
+  line-height: 1;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  text-shadow: 0 .08em 0 rgba(0, 0, 0, .28);
+}
+
+/* Logo del grupo: un parche redondo cosido sobre el palo. El nombre se corre a la derecha. */
+.banderin__logo {
+  position: absolute;
+  left: -8%;
+  top: 50%;
+  width: 30%;
+  aspect-ratio: 1;
+  translate: 0 -50%;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  background: #fff;
+  object-fit: cover;
+}
+.banderin--con-logo .banderin__tela { padding-left: 24%; }
+.banderin--con-logo .banderin__nombre { font-size: min(8cqw, 62cqw / var(--letras)); }
+
+.grupo__tipo {
+  padding-left: 22px;
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #a9d1ff;
+}
+
+@media (max-width: 640px) {
+  .grupos { padding: 56px 0 72px; }
+  .grupos__lista { gap: 40px; }
+  .grupo { flex-basis: min(100%, 300px); }
+}
+
+

@@ -1,0 +1,427 @@
+{
+  "cifras": [
+    { "valor": "4 Grupos", "texto": "Prelación de citas DNINFOA" },
+    { "valor": "3.00", "texto": "P.A.P.A. mínimo de permanencia" },
+    { "valor": "160", "texto": "Créditos exigidos del plan" },
+    { "valor": "16 a 40 h", "texto": "Corresponsabilidad semestral" }
+  ],
+  "categorias": [
+    {
+      "id": "todos",
+      "nombre": "Todo",
+      "icono": "todo",
+      "descripcion": "Vista general de toda la información esencial para estudiantes de la UNAL."
+    },
+    {
+      "id": "citas",
+      "nombre": "Citas de Inscripción",
+      "icono": "calendario",
+      "descripcion": "Nuevo modelo oficial DNINFOA: 4 grupos de prelación, Índice IPA, Registro RII y consulta de cita."
+    },
+    {
+      "id": "papa",
+      "nombre": "P.A.P.A. y Notas",
+      "icono": "grafica",
+      "descripcion": "Qué es el PAPA, cómo se calcula, diferencias con el PAPPI, límite de 3.00 y simulador interactivo."
+    },
+    {
+      "id": "creditos",
+      "nombre": "Créditos y Bolsa SIA",
+      "icono": "bolsa",
+      "descripcion": "Qué es un crédito, bolsa de 160+80, semana sin pérdida de créditos y libre elección."
+    },
+    {
+      "id": "corresponsabilidad",
+      "nombre": "Horas de Corresponsabilidad",
+      "icono": "manos",
+      "descripcion": "Compromiso de apoyos y becas desde 16 horas, dónde pagarlas en Minas y normatividad."
+    },
+    {
+      "id": "tramites",
+      "nombre": "Trámites y Cupo",
+      "icono": "documento",
+      "descripcion": "Causales de pérdida de cupo, reserva de semestre, cancelaciones y doble titulación."
+    },
+    {
+      "id": "faq",
+      "nombre": "Preguntas Frecuentes",
+      "icono": "faq",
+      "descripcion": "Respuestas directas y rápidas a las dudas más comunes de la vida universitaria."
+    }
+  ],
+  "guias": [
+    {
+      "id": "citas-dninfoa",
+      "categoria": "citas",
+      "etiqueta": "Nuevo Modelo Oficial DNINFOA",
+      "titulo": "¿Cómo se asignan las Citas de Inscripción en la UNAL?",
+      "subtitulo": "¡El P.A.P.P.I. ya no define tu cita! Anteriormente las citas del SIA se asignaban exclusivamente según el promedio del último semestre (PAPPI). Ahora rigen los 4 Grupos de Prelación y el Índice IPA.",
+      "enlaceExterno": {
+        "texto": "Consultar mi citación oficial en DNINFOA",
+        "url": "https://dninfoa.unal.edu.co/citaciones/"
+      },
+      "enlaceOficial": {
+        "texto": "Leer Circular Oficial de Citaciones · Dirección Nacional de Información Académica (DNINFOA)",
+        "url": "https://dninfoa.unal.edu.co/citaciones/"
+      },
+      "puntosClave": [
+        {
+          "icono": "alerta",
+          "titulo": "El PAPPI fue reemplazado",
+          "texto": "El antiguo sistema basado únicamente en el PAPPI del último semestre fue sustituido para reconocer la equidad académica, situaciones especiales y etapas de grado."
+        },
+        {
+          "icono": "check",
+          "titulo": "Una sola ubicación por estudiante",
+          "texto": "Cada estudiante es asignado a un único grupo de prelación. Si cumples condiciones de varios, el sistema te ubica en el de mayor prioridad (número menor)."
+        },
+        {
+          "icono": "reloj",
+          "titulo": "Cita Nocturna de Rezagados",
+          "texto": "Si no pudiste inscribir en tu turno del día, a partir de las 5:50 p.m. se habilita la cita nocturna para que puedas inscribir materias pendientes."
+        }
+      ],
+      "gruposPrelacion": [
+        {
+          "numero": "1",
+          "nombre": "Acciones Afirmativas y Situaciones Especiales",
+          "descripcion": "Estudiantes con discapacidad registrada, deportistas de representación institucional o nacional, cuidadores y poblaciones con enfoque diferencial o vulnerabilidad reconocida."
+        },
+        {
+          "numero": "2",
+          "nombre": "Etapas Críticas de Permanencia",
+          "descripcion": "Estudiantes en momentos de transición o riesgo académico temprano identificados por la universidad para acompañamiento y prevención de deserción."
+        },
+        {
+          "numero": "3",
+          "nombre": "Próximos a Graduación (Avance > 80%)",
+          "descripcion": "Estudiantes con un avance superior al 80% en su plan de estudios, garantizándoles prioridad de citación para asegurar las últimas asignaturas de su carrera."
+        },
+        {
+          "numero": "4",
+          "nombre": "Estudiantes Regulares (Ordenados por IPA)",
+          "descripcion": "Bloque general de estudiantes. Se ordenan internamente mediante el Índice de Prioridad de Asignación (IPA), el cual premia la participación en el RII, el promedio y encuestas de bienestar."
+        }
+      ],
+      "factoresIpa": [
+        {
+          "titulo": "Registro de Intención de Inscripción (RII)",
+          "detalle": "Participar en el RII en las fechas oficiales te suma puntos directos en el IPA. ¡Es voluntario pero indispensable para conseguir una mejor cita!"
+        },
+        {
+          "titulo": "Rendimiento del Semestre",
+          "detalle": "Tus calificaciones y avance curricular del periodo aportan puntos al puntaje base del IPA."
+        },
+        {
+          "titulo": "Herramientas de Bienestar (EDIFICANDO)",
+          "detalle": "Diligenciar a tiempo los cuestionarios institucionales y estrategias de acompañamiento suma bonificación en tu puntaje."
+        },
+        {
+          "titulo": "Desempate Aleatorio Controlado",
+          "detalle": "Si varios estudiantes empatan en puntos dentro de su subgrupo, el sistema aplica un factor aleatorio (0 a 1) solo para definir los minutos de turno."
+        }
+      ],
+      "reglasDiaCita": [
+        "Inicia sesión estrictamente a la hora programada en tu citación. Si entras antes o después, el SIA no habilitará el formulario de automatrícula.",
+        "Usa una ventana de incógnito en Google Chrome o Mozilla Firefox con la memoria caché limpia para evitar bloqueos de sesión.",
+        "Consulta antes el Buscador de Cursos del SIA y ten listos 2 o 3 horarios alternativos por si se agotan cupos en algún grupo."
+      ],
+      "consejo": "Ingresa siempre a dninfoa.unal.edu.co/citaciones/ digitando tu documento de identidad para verificar tu día y hora exacta apenas se publiquen las fechas."
+    },
+    {
+      "id": "que-es-el-papa",
+      "categoria": "papa",
+      "etiqueta": "Métrica de Rendimiento",
+      "titulo": "¿Qué es el P.A.P.A. y para qué sirve?",
+      "subtitulo": "El Promedio Académico Ponderado Acumulado rige la permanencia en la UNAL, becas de posgrado y Matrícula de Honor.",
+      "enlaceOficial": {
+        "texto": "Consultar Estatuto Estudiantil (Acuerdo 008 de 2008 CSU) · Régimen Académico",
+        "url": "https://legal.unal.edu.co/rlunal/home/doc.jsp?d_i=34983"
+      },
+      "puntosClave": [
+        {
+          "icono": "check",
+          "titulo": "Mínimo 3.00 para no perder cupo",
+          "texto": "Si al cerrar cualquier semestre tu P.A.P.A. acumulado baja de 3.00, incurres en pérdida automática de la calidad de estudiante."
+        },
+        {
+          "icono": "grafica",
+          "titulo": "Ponderado por Créditos",
+          "texto": "Cada materia pesa según sus créditos: una asignatura de 4 créditos influye el doble en tu promedio que una de 2 créditos."
+        },
+        {
+          "icono": "estrella",
+          "titulo": "Premios a la Excelencia",
+          "texto": "Tener un PAPA destacado (> 4.2) otorga Matrícula de Honor (exoneración de pago), créditos de posgrado y prioridad en dobles titulaciones."
+        }
+      ],
+      "formula": "P.A.P.A. = ∑ (Nota Asignatura × Créditos) ÷ ∑ Créditos Totales Cursados",
+      "tabla": {
+        "cabecera": ["Métrica", "¿Qué calcula?", "¿Para qué sirve hoy?"],
+        "filas": [
+          [
+            "<strong>P.A.P.A.</strong>",
+            "Promedio histórico de toda la carrera ponderado por créditos.",
+            "Permanencia (mínimo 3.00), becas, Matrícula de Honor, posgrados y dobles titulaciones."
+          ],
+          [
+            "<strong>P.A.P.P.I.</strong>",
+            "Promedio ponderado del último semestre terminado.",
+            "Indicador de rendimiento inmediato del periodo. Históricamente definía las citas de inscripción; hoy reemplazado por los 4 grupos de prelación y el IPA."
+          ],
+          [
+            "<strong>P.A.</strong>",
+            "Promedio aritmético simple (sin tener en cuenta créditos).",
+            "Dato complementario e informativo en la historia académica."
+          ]
+        ]
+      },
+      "consejo": "Si repruebas una materia, esa calificación nunca se borra ni se reemplaza. Al repetirla y aprobarla, ambas notas siguen ponderando en el acumulado."
+    },
+    {
+      "id": "sistema-de-creditos",
+      "categoria": "creditos",
+      "etiqueta": "Créditos y Bolsa SIA",
+      "titulo": "¿Cómo funciona la Bolsa de Créditos en la UNAL?",
+      "subtitulo": "Al ingresar recibes un cupo de créditos. Si cancelas en la 'semana sin pérdida' se te reintegran; si cancelas después o repruebas, no se recuperan.",
+      "enlaceOficial": {
+        "texto": "Consultar Manual de Créditos y Cancelaciones · Portal SIA UNAL",
+        "url": "https://sia.unal.edu.co/"
+      },
+      "puntosClave": [
+        {
+          "icono": "check",
+          "titulo": "Semana sin pérdida: ¡Reintegro total!",
+          "texto": "Si cancelas una asignatura durante las fechas oficiales de adición y cancelación sin pérdida (primeras semanas de clase), el SIA te reintegra inmediatamente los créditos a tu bolsa disponible."
+        },
+        {
+          "icono": "bolsa",
+          "titulo": "160 Exigidos + 80 Adicionales",
+          "texto": "En Sistemas tu plan exige 160 créditos y el SIA te entrega un cupo total de bolsa de ~240 créditos para cursarlos con margen de repetición."
+        },
+        {
+          "icono": "alerta",
+          "titulo": "Cuidado con vaciar la bolsa",
+          "texto": "Si tu cupo disponible llega a 0 créditos y no has terminado el plan de estudios, pierdes la condición de estudiante por agotamiento de créditos."
+        }
+      ],
+      "pasos": [
+        {
+          "paso": "1",
+          "titulo": "Inscripción",
+          "desc": "Al inscribir asignaturas, el SIA resta inmediatamente esos créditos de tu bolsa disponible."
+        },
+        {
+          "paso": "2",
+          "titulo": "Semana sin pérdida",
+          "desc": "Si cancelas durante este periodo inicial del calendario, el SIA te devuelve los créditos a tu bolsa libre."
+        },
+        {
+          "paso": "3",
+          "titulo": "¿Reprobaste?",
+          "desc": "Los créditos gastados NO se devuelven. Para repetirla deberás consumir créditos adicionales de tu cupo libre."
+        },
+        {
+          "paso": "4",
+          "titulo": "Cancelación posterior",
+          "desc": "Si cancelas después de la semana sin pérdida, la materia no entra al PAPA, pero el cupo semestral consumido no se reintegra."
+        }
+      ],
+      "consejo": "Revisa siempre en el SIA (Historia Académica -> Resumen de Créditos) tus créditos disponibles. Si tienes dudas, consulta con el Área Curricular de Sistemas."
+    },
+    {
+      "id": "horas-de-corresponsabilidad",
+      "categoria": "corresponsabilidad",
+      "etiqueta": "Compromiso de Bienestar",
+      "titulo": "¿Qué son las Horas de Corresponsabilidad y cómo pagarlas?",
+      "subtitulo": "Compromiso formativo y solidario obligatorio para estudiantes beneficiarios de apoyos socioeconómicos de Bienestar Universitario (van desde 16 horas semestrales).",
+      "enlaceOficial": {
+        "texto": "Convocatorias y Reglamentación de Bienestar · Sede Medellín",
+        "url": "https://bienestar.medellin.unal.edu.co/"
+      },
+      "puntosClave": [
+        {
+          "icono": "manos",
+          "titulo": "¿A quiénes les aplica?",
+          "texto": "Beneficiarios de Gestión Alimentaria (comedor/bonos de almuerzo), Residencias Universitarias o Apoyos Económicos Estudiantiles."
+        },
+        {
+          "icono": "reloj",
+          "titulo": "Desde 16 horas semestrales",
+          "texto": "Las horas van desde las 16 horas semestrales para apoyos alimentarios básicos hasta 40 horas para residencias universitarias o apoyos combinados."
+        },
+        {
+          "icono": "alerta",
+          "titulo": "Sanción por incumplimiento",
+          "texto": "Si no completas tus horas antes del cierre del periodo, pierdes el subsidio de inmediato para el semestre siguiente."
+        }
+      ],
+      "pasos": [
+        {
+          "paso": "1",
+          "titulo": "Convocatoria",
+          "desc": "Al iniciar el semestre, revisa las plazas abiertas por correo o en Bienestar Minas (Bloque M4)."
+        },
+        {
+          "paso": "2",
+          "titulo": "Asignación y Horario",
+          "desc": "Eliges una dependencia (bibliotecas, salas de cómputo, eventos) y acuerdas un horario compatible con tus clases."
+        },
+        {
+          "paso": "3",
+          "titulo": "Planilla y Actividades",
+          "desc": "Cumples las actividades asignadas y registras las horas en la planilla oficial con firma del tutor o supervisor."
+        },
+        {
+          "paso": "4",
+          "titulo": "Paz y Salvo",
+          "desc": "El supervisor radica tu cumplimiento ante Bienestar para certificar tu paz y salvo y renovar el apoyo."
+        }
+      ],
+      "lugaresPago": [
+        "Bibliotecas UNAL: Biblioteca Efe Gómez (El Volador) y Biblioteca de Minas (Bloques M1 y M2).",
+        "Salas de Cómputo y Laboratorios de Minas: Soporte tecnológico en Bloques M3, M4 y M8.",
+        "Bienestar Universitario Minas (Bloque M4): Logística deportiva, cultural y jornadas de salud.",
+        "Proyectos Ambientales y Eventos: Huertas de la sede, Semana de Sistemas y ferias de inducción."
+      ],
+      "consejo": "No dejes las horas de corresponsabilidad para las semanas de parciales finales. Comienza a pagarlas desde las primeras semanas de clase."
+    },
+    {
+      "id": "tramites-y-permanencia",
+      "categoria": "tramites",
+      "etiqueta": "Estatuto Estudiantil",
+      "titulo": "Permanencia, Pérdida de Cupo y Trámites Clave",
+      "subtitulo": "Reglas del Estatuto Estudiantil (Acuerdo 008 de 2008) sobre cómo mantener tu condición de estudiante activo.",
+      "enlaceOficial": {
+        "texto": "Portal de Trámites y Reglamentación · Facultad de Minas",
+        "url": "https://minas.medellin.unal.edu.co/"
+      },
+      "puntosClave": [
+        {
+          "icono": "alerta",
+          "titulo": "4 Causales de Pérdida de Cupo",
+          "texto": "1) PAPA < 3.00. 2) Agotar la bolsa de créditos. 3) No inscribir materias sin reserva. 4) Sanción disciplinaria de suspensión."
+        },
+        {
+          "icono": "documento",
+          "titulo": "Reserva de Cupo (Hasta 2 veces)",
+          "texto": "Si no puedes estudiar un semestre, tramita la reserva en el SIA dentro del calendario oficial para proteger tu cupo."
+        },
+        {
+          "icono": "check",
+          "titulo": "En la UNAL no hay habilitaciones",
+          "texto": "Si repruebas una materia debes repetirla completa en un semestre posterior (o solicitar examen de validación por suficiencia)."
+        }
+      ],
+      "tramitesComunes": [
+        {
+          "titulo": "Cancelación de Semestre / Asignaturas",
+          "desc": "Se realiza en el SIA dentro de las fechas fijadas en el calendario de la sede. Si es extemporánea, requiere soportes médicos o de fuerza mayor radicados ante la Vicedecanatura."
+        },
+        {
+          "titulo": "Doble Titulación",
+          "desc": "Exige PAPA sobresaliente (generalmente ≥ 4.0), haber aprobado al menos el 40% de los créditos de Sistemas y contar con aval de los comités asesores de ambos programas."
+        },
+        {
+          "titulo": "Solicitud de Readmisión",
+          "desc": "Si perdiste cupo por PAPA < 3.00, puedes radicar solicitud ante el Consejo de Facultad según los plazos reglamentarios."
+        }
+      ],
+      "consejo": "Ante cualquier dificultad académica o de salud, comunícate de inmediato con la Vicedecanatura Académica o la Dirección de Área Curricular de Sistemas."
+    }
+  ],
+  "faq": [
+    {
+      "id": "faq-citas-1",
+      "categoria": "citas",
+      "pregunta": "¿Por qué mi cita de inscripción ya no depende del PAPPI?",
+      "respuesta": "Históricamente, el SIA ordenaba las citas de automatrícula exclusivamente según el <strong>P.A.P.P.I.</strong> (Promedio Académico Ponderado del Periodo Inmediato). La Vicerrectoría Académica y DNINFOA implementaron un modelo de <strong>4 Grupos de Prelación</strong> para garantizar mayor equidad social y académica, priorizando situaciones especiales, momentos de riesgo de deserción y estudiantes con avance superior al 80%. Para el bloque general de estudiantes (Grupo 4), se implementó el <strong>Índice IPA</strong> en reemplazo del PAPPI."
+    },
+    {
+      "id": "faq-citas-2",
+      "categoria": "citas",
+      "pregunta": "¿Qué es el RII y cómo me ayuda a tener una cita más temprana?",
+      "respuesta": "El <strong>Registro de Intención de Inscripción (RII)</strong> es una consulta previa donde indicas qué materias planeas cursar el próximo semestre. Aunque es voluntario, diligenciarlo en las fechas oficiales otorga puntos adicionales en el <strong>Índice de Prioridad de Asignación (IPA)</strong> dentro del Grupo 4, mejorando significativamente tu cita."
+    },
+    {
+      "id": "faq-citas-3",
+      "categoria": "citas",
+      "pregunta": "¿Dónde y cuándo puedo consultar mi cita de inscripción?",
+      "respuesta": "Puedes consultarla ingresando con tu cédula en el portal oficial de la Dirección Nacional de Información Académica: <a href=\"https://dninfoa.unal.edu.co/citaciones/\" target=\"_blank\" rel=\"noopener\"><strong>dninfoa.unal.edu.co/citaciones/</strong></a>, o revisando las notificaciones en tu correo electrónico institucional."
+    },
+    {
+      "id": "faq-citas-4",
+      "categoria": "citas",
+      "pregunta": "¿Qué pasa si se me pasó la hora de mi cita y no alcancé a inscribir?",
+      "respuesta": "No te preocupes: la universidad habilita la <strong>Cita Nocturna de Rezagados</strong> (generalmente a partir de las 5:50 p.m. del mismo día de tu cita) para que todos los estudiantes que no completaron su proceso diurno puedan acceder y guardar sus asignaturas."
+    },
+    {
+      "id": "faq-papa-1",
+      "categoria": "papa",
+      "pregunta": "¿Qué pasa si mi P.A.P.A. baja a 2.99 o menos?",
+      "respuesta": "Al término del periodo ordinario, si tu P.A.P.A. acumulado es menor a 3.00, entras en 'Pérdida de la calidad de estudiante' (pérdida de cupo). Tienes la opción de radicar solicitud de reingreso o readmisión ante el Consejo de Facultad de Minas en las fechas del calendario académico."
+    },
+    {
+      "id": "faq-papa-2",
+      "categoria": "papa",
+      "pregunta": "¿Si repito una materia reprobada con 5.0 se borra la nota mala anterior?",
+      "respuesta": "No. En la Universidad Nacional ninguna nota se borra ni se reemplaza. Ambas notas (la reprobada y la nueva) quedan en tu certificado histórico y ambas se ponderan por sus créditos en la fórmula del P.A.P.A."
+    },
+    {
+      "id": "faq-creditos-1",
+      "categoria": "creditos",
+      "pregunta": "¿Si cancelo una materia me devuelven los créditos a la bolsa?",
+      "respuesta": "Depende de la fecha: Si cancelas durante la <strong>semana oficial de cancelaciones sin pérdida de créditos</strong> (en las primeras semanas del periodo según el calendario académico), <strong>los créditos se te reintegran inmediatamente a tu bolsa disponible</strong>. Si cancelas posteriormente (cancelación ordinaria), la materia no perjudica tu P.A.P.A., pero el cupo consumido de ese semestre ya no se devuelve a tu bolsa libre."
+    },
+    {
+      "id": "faq-creditos-2",
+      "categoria": "creditos",
+      "pregunta": "¿Puedo usar créditos de Libre Elección para ver materias de maestría?",
+      "respuesta": "Sí. Puedes utilizar tus 32 créditos de Libre Elección para inscribir materias de nivel posgrado de la Facultad de Minas (u otras facultades). Si más adelante ingresas a un posgrado UNAL, estas asignaturas se pueden convalidar."
+    },
+    {
+      "id": "faq-corresp-1",
+      "categoria": "corresponsabilidad",
+      "pregunta": "¿Cuántas horas de corresponsabilidad debo pagar y qué pasa si no lo hago?",
+      "respuesta": "Las horas van desde las <strong>16 horas semestrales</strong> (según el beneficio asignado: alimentación, alojamiento o residencia). Si no las completas antes del cierre del semestre, quedas en estado de incumplimiento y <strong>pierdes de inmediato el subsidio</strong> para el periodo siguiente, sin posibilidad de renovarlo hasta ponerte al día."
+    },
+    {
+      "id": "faq-tramites-1",
+      "categoria": "tramites",
+      "pregunta": "¿En la UNAL existen exámenes de habilitación para materias perdidas?",
+      "respuesta": "No. En el régimen general de pregrado de la Universidad Nacional no existe la figura de habilitación. Debes inscribir y cursar nuevamente la materia, o presentar una validación por suficiencia si cumples con las condiciones reglamentarias."
+    }
+  ],
+  "glosario": [
+    { "sigla": "DNINFOA", "definicion": "Dirección Nacional de Información Académica. Entidad encargada de las citaciones y plataformas del SIA." },
+    { "sigla": "IPA", "definicion": "Índice de Prioridad de Asignación. Indicador que ordena las citas de matrícula de los estudiantes regulares del Grupo 4." },
+    { "sigla": "RII", "definicion": "Registro de Intención de Inscripción. Encuesta previa voluntaria que suma puntos directos en el IPA para tu cita." },
+    { "sigla": "P.A.P.A.", "definicion": "Promedio Académico Ponderado Acumulado. Pondera todas las notas cursadas por sus créditos." },
+    { "sigla": "P.A.P.P.I.", "definicion": "Promedio Académico Ponderado del Periodo Inmediato. Mide únicamente el último semestre cursado." },
+    { "sigla": "S.I.A.", "definicion": "Sistema de Información Académica de la UNAL para inscripción, notas e historia académica." },
+    { "sigla": "Bolsa de Créditos", "definicion": "Cupo total de créditos asignados para cursar la carrera (160 exigidos + 80 de bolsa adicional)." },
+    { "sigla": "Corresponsabilidad", "definicion": "Horas semestrales de apoyo institucional (desde 16 horas) requeridas a los beneficiarios de bienestar y apoyos." }
+  ],
+  "enlaces": [
+    {
+      "titulo": "Citaciones DNINFOA UNAL",
+      "url": "https://dninfoa.unal.edu.co/citaciones/",
+      "descripcion": "Consulta oficial de día, hora y grupo de prelación para la inscripción de asignaturas."
+    },
+    {
+      "titulo": "Portal SIA UNAL",
+      "url": "https://sia.unal.edu.co/",
+      "descripcion": "Inscripción de asignaturas, buscador de cursos, historia académica y cupo de créditos."
+    },
+    {
+      "titulo": "Facultad de Minas Académica",
+      "url": "https://minas.medellin.unal.edu.co/",
+      "descripcion": "Trámites curriculares, cancelaciones extemporáneas y calendario oficial de la sede."
+    },
+    {
+      "titulo": "Bienestar Universitario Sede Medellín",
+      "url": "https://bienestar.medellin.unal.edu.co/",
+      "descripcion": "Gestión alimentaria, residencias, convocatorias de corresponsabilidad y salud estudiantil."
+    }
+  ]
+}

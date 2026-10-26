@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Convenios y beneficios · Ingeniería de Sistemas e Informática UNAL Medellín</title>
+  <meta name="description" content="Convenios de la Universidad Nacional (Coursera, MATLAB, Microsoft 365) y beneficios para estudiantes (Autodesk, GitHub, JetBrains, Spotify): quién puede usarlos y cómo activarlos paso a paso.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/convenios.css">
+</head>
+<body data-pagina="convenios">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada portada--corta foto foto--entrada">
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="115" height="115">
+      </div>
+      <p class="portada__lugar">Herramientas para tu carrera · UNAL Sede Medellín</p>
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Nuestros</span>
+        <span class="letras-varsity" data-texto="Convenios">Convenios</span>
+      </h1>
+      <p class="portada__texto">Cursos, software y servicios que puedes activar con tu correo institucional. Abre cada uno para ver quién puede usarlo y cómo activarlo, paso a paso.</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="seccion convenios" aria-labelledby="convenios-titulo">
+      <div class="contenedor convenios__contenedor">
+        <div class="seccion-titulo">
+          <p class="seccion-titulo__antetitulo">Elige y activa</p>
+          <h2 id="convenios-titulo">¿Qué quieres activar?</h2>
+        </div>
+
+        <div class="filtros" id="filtros" role="group" aria-label="Filtrar por tipo"></div>
+        <p class="filtros__nota" id="filtros-nota" aria-live="polite"></p>
+
+        <ul class="lista" id="lista"><li class="cargando">Cargando convenios…</li></ul>
+
+        <p class="convenios__aviso">Los pasos vienen de las páginas oficiales de cada servicio y de los instructivos de la Universidad. Pueden cambiar con el tiempo: si algo no coincide, revisa el enlace oficial de cada uno.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script src="js/convenios.js"></script>
+</body>
+</html>

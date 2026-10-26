@@ -1,0 +1,36 @@
+[
+  {
+    "id": "unalgoritmo",
+    "nombre": "UNAlgoritmo",
+    "tipo": "Grupo estudiantil",
+    "color": "#9128d9",
+    "logo": "img/grupo-unalgoritmo.jpg",
+    "enlace": "https://www.linkedin.com/company/unalgoritmo/",
+    "descripcion": "UN Algoritmo es un grupo estudiantil adscrito a la Facultad de Minas de la Universidad Nacional de Colombia (Sede Medellín) dedicado a impulsar la programación competitiva, el pensamiento algorítmico y las estructuras de datos. Mediante entrenamientos semanales estructurados tanto para principiantes como para niveles avanzados, el grupo prepara equipos para competir en la Maratón Nacional de Programación, en las rondas clasificatorias del ICPC (International Collegiate Programming Contest) y en la Maratona Feminina de Programação (MFP), fortaleciendo la comunicación, la resolución rápida de problemas y el trabajo en equipo bajo el formato de un computador por terna."
+  },
+  {
+    "id": "aperture",
+    "nombre": "Aperture",
+    "tipo": "Semillero",
+    "color": "#1aa3b8",
+    "logo": "img/grupo-aperture.jpg",
+    "enlace": "https://aperture-systems-lab.github.io",
+    "descripcion": "Aperture es un Semillero de Investigación estudiantil donde se explora la ciencia de datos, el machine learning y la IA. Es un espacio para aprender haciendo: desarrollamos proyectos, compartimos conocimientos y conectamos esa teoría con problemas de la vida real, impulsando una comunidad colaborativa en la universidad."
+  },
+  {
+    "id": "turing-box",
+    "nombre": "Turing Box",
+    "tipo": "Grupo estudiantil",
+    "color": "#c4358c",
+    "logo": "img/grupo-turing-box.jpg",
+    "enlace": "https://www.instagram.com/turingbox/"
+  },
+  {
+    "id": "uneural",
+    "nombre": "UNeural",
+    "tipo": "Grupo estudiantil",
+    "color": "#4a4fd8",
+    "logo": "img/grupo-uneural.jpg",
+    "enlace": "https://www.instagram.com/uneuralgroup"
+  }
+]

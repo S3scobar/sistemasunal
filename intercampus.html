@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rutas Intercampus · Ingeniería de Sistemas e Informática UNAL Medellín</title>
+  <meta name="description" content="Horarios oficiales de buses intercampus (Robledo, El Volador y Río) y rutas a estaciones del Metro (Hospital, Suramericana y Caribe) - Semestre 2026-2S.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/intercampus.css">
+</head>
+<body data-pagina="intercampus">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada portada--corta foto foto--entrada">
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="115" height="115">
+      </div>
+      <p class="portada__lugar">Movilidad Universitaria · UNAL Sede Medellín</p>
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Rutas</span>
+        <span class="letras-varsity" data-texto="Intercampus">Intercampus</span>
+      </h1>
+      <p class="portada__texto">Horarios oficiales de los buses universitarios entre Robledo, El Volador y Río, y rutas a las estaciones del Metro (Hospital, Suramericana y Caribe) para el semestre 2026-2S.</p>
+    </div>
+  </section>
+
+  <main>
+    <section class="seccion intercampus" aria-label="Rutas y horarios intercampus">
+      <div class="contenedor">
+
+        <!-- SELECTOR DE RUTA (TABS) -->
+        <ul class="intercampus__tabs" id="intercampus-tabs" aria-label="Selector de ruta intercampus"></ul>
+
+        <!-- CONTENIDO DINÁMICO DE LA RUTA -->
+        <div id="intercampus-contenido">
+          <p class="cargando">Cargando horarios intercampus…</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL PARA AMPLIAR LÁMINAS OFICIALES -->
+  <div class="modal-visor" id="modal-visor" hidden>
+    <div class="modal-visor__cuerpo">
+      <button class="modal-visor__cerrar" id="modal-visor-cerrar" type="button" aria-label="Cerrar vista previa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <img id="modal-visor-img" src="" alt="">
+    </div>
+  </div>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script src="js/intercampus.js"></script>
+</body>
+</html>

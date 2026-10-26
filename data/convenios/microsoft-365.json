@@ -1,0 +1,73 @@
+{
+ "id": "microsoft-365",
+ "queEs": "Microsoft ofrece a instituciones educativas elegibles el plan gratuito Office 365 A1 (hoy bajo la marca Microsoft 365 Education). La Universidad Nacional ha tenido acuerdo de licenciamiento con Microsoft: en 2015 se anunció el acceso de estudiantes de pregrado y posgrado de todas las sedes a la suite de Office.",
+ "quienes": [
+  "Estudiantes con correo institucional de una institución elegible (el plan A1 de Microsoft)",
+  "En 2015: estudiantes de pregrado y posgrado de todas las sedes de la UNAL, mientras el contrato de licenciamiento estuviera vigente"
+ ],
+ "incluye": [
+  "Versiones web de Outlook, Word, Excel, PowerPoint y OneNote",
+  "Versiones para PC de Microsoft Publisher y Access",
+  "En la noticia de 2015: hasta cinco descargas gratuitas en portátiles, equipos de escritorio, tabletas y móviles",
+  "Sin plan de institución: Word, Excel y PowerPoint gratis en Microsoft 365 para la web"
+ ],
+ "requisitos": [
+  "Correo institucional elegible (@unal.edu.co)",
+  "Que el licenciamiento de la Universidad con Microsoft esté vigente"
+ ],
+ "pasos": [
+  {
+   "titulo": "Entra a Microsoft 365 con tu correo institucional",
+   "texto": "Abre el portal de Office (primer botón de abajo) e inicia sesión con tu correo @unal.edu.co y la contraseña asignada por la Universidad."
+  },
+  {
+   "titulo": "Deja que Microsoft verifique tu elegibilidad",
+   "texto": "En muchos casos se confirma al instante de forma automática. En otros, la verificación de la institución puede tardar hasta un mes; si te queda poco de la prueba de 30 días y no hay respuesta, Microsoft recomienda contactar con atención al cliente."
+  },
+  {
+   "titulo": "Usa las aplicaciones web o descarga las de escritorio",
+   "texto": "Con el plan activo puedes usar Outlook, Word, Excel, PowerPoint y OneNote desde el navegador, y según la licencia instalar las aplicaciones en tus equipos."
+  },
+  {
+   "titulo": "Si no eres elegible, usa la versión gratuita para la web",
+   "texto": "Puedes crear y editar documentos de Word, Excel y PowerPoint con Microsoft 365 para la web, sin depender del plan educativo."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Portal de Office",
+   "url": "https://portal.office.com",
+   "principal": true
+  },
+  {
+   "texto": "Microsoft 365 Education: qué incluye y cómo se verifica",
+   "url": "https://www.microsoft.com/es-ES/education/products/office"
+  },
+  {
+   "texto": "Noticia de 2015: acceso gratuito de estudiantes de la UNAL a programas de Microsoft",
+   "url": "https://bogota.gov.co/mi-ciudad/educacion/estudiantes-de-la-universidad-nacional-accederan-gratis-programas-de"
+  }
+ ],
+ "consejos": [
+  "Si el plan educativo caduca, las aplicaciones pasan a modo de funcionalidad reducida (puedes ver documentos, pero no editarlos) y dejan de funcionar Office para la web y OneDrive del correo institucional. Se puede ampliar volviendo a verificar tu condición.",
+  "Microsoft también anuncia, con un correo universitario, 12 meses gratis de Microsoft 365 Premium, sujeto a condiciones y por tiempo limitado."
+ ],
+ "porConfirmar": [
+  "No encontré una página oficial vigente de la Universidad con el paso a paso de Microsoft 365: lo específico de la UNAL sale de una noticia de febrero de 2015 y de una guía estudiantil de 2017, así que puede estar desactualizado.",
+  "Falta el instructivo oficial actual (o el enlace de la dependencia de TIC de la Universidad que lo publica) para confirmar la dirección de acceso, el nombre de usuario y la contraseña."
+ ],
+ "fuentes": [
+  {
+   "titulo": "Microsoft · Microsoft 365 Education",
+   "url": "https://www.microsoft.com/es-ES/education/products/office"
+  },
+  {
+   "titulo": "Alcaldía de Bogotá / Agencia de Noticias UN (23 de febrero de 2015)",
+   "url": "https://bogota.gov.co/mi-ciudad/educacion/estudiantes-de-la-universidad-nacional-accederan-gratis-programas-de"
+  },
+  {
+   "titulo": "Blog de la Nacho (2017)",
+   "url": "https://www.pasaralaunacional.com/2017/02/software-beneficios-gratis-convenios-unal.html"
+  }
+ ]
+}

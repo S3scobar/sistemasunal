@@ -1,0 +1,91 @@
+{
+ "id": "coursera",
+ "queEs": "«Coursera para la Universidad Nacional de Colombia» es el convenio que da a la comunidad universitaria acceso a cursos y programas de Coursera. Se entra con el correo institucional y, una vez dentro del convenio, ves el catálogo de la Universidad.",
+ "quienes": [
+  "Estudiantes activos",
+  "Docentes",
+  "Administrativos"
+ ],
+ "incluye": [
+  "Cursos disponibles en la página principal del convenio",
+  "Secciones «Recomendado por tu organización» y «English Universidad Nacional de Colombia» (catálogo de inglés)",
+  "Certificados descargables desde el menú «Logros» de tu cuenta"
+ ],
+ "requisitos": [
+  "Correo institucional con dominio @unal.edu.co, tanto para registrarte como para iniciar sesión",
+  "Ser estudiante activo, docente o administrativo"
+ ],
+ "pasos": [
+  {
+   "titulo": "Entra al enlace oficial del convenio",
+   "texto": "Abre la dirección del convenio (botón de abajo). También puedes usar el botón «Join Now» del correo de invitación de la Universidad Nacional + Coursera."
+  },
+  {
+   "titulo": "Regístrate o inicia sesión con tu correo @unal.edu.co",
+   "texto": "Si es tu primer ingreso con el correo UNAL, elige la opción de registro; si ya eres usuario del convenio, inicia sesión. Si Coursera te pregunta, elige «usuario nuevo» o «usuario existente» y usa siempre el correo institucional. Si eres usuario nuevo, revisa que el correo esté bien escrito: según el instructivo, la contraseña inicial es la misma de tu correo institucional."
+  },
+  {
+   "titulo": "Verifica tu correo si te lo piden",
+   "texto": "Abre tu bandeja de entrada, busca el mensaje de Coursera, confirma la dirección y cierra la ventana que aparece después."
+  },
+  {
+   "titulo": "Vuelve a entrar al convenio y únete al programa",
+   "texto": "Ingresa de nuevo con el enlace oficial. Si aparece una ventana emergente, confirma con «Unirse al programa»."
+  },
+  {
+   "titulo": "Comprueba que estás dentro del convenio",
+   "texto": "Debes ver tu nombre arriba a la derecha, el escudo de la Universidad Nacional arriba a la izquierda y, en la imagen principal, el texto «Coursera para la Universidad Nacional de Colombia». Si no es así, repite el ingreso con el enlace del convenio."
+  },
+  {
+   "titulo": "Elige tu curso e inscríbete",
+   "texto": "Explora los cursos de la página principal del convenio. Para inglés, revisa «Recomendado por tu organización» y «English Universidad Nacional de Colombia» y elige la oferta de tu interés o la que te recomiende tu docente de inglés o el Centro de Idiomas de tu sede. Luego pulsa para inscribirte y entra con «ir al curso»."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Entrar al convenio de Coursera",
+   "url": "https://www.coursera.org/programs/coursera-para-la-universidad-nacional-de-colombia-ji3sj",
+   "principal": true
+  },
+  {
+   "texto": "Instructivo: inscripción al convenio (PDF)",
+   "url": "https://dnia.unal.edu.co/coursera/documentos/instructivo2.pdf"
+  },
+  {
+   "texto": "Instructivo: cómo ingresar al convenio (PDF)",
+   "url": "https://dnia.unal.edu.co/coursera/assets/instructivo4.pdf"
+  },
+  {
+   "texto": "Instructivo: catálogo de inglés (PDF)",
+   "url": "https://dnia.unal.edu.co/coursera/documentos/instructivo6.pdf"
+  },
+  {
+   "texto": "Instructivo: activar la cuenta con la invitación (PDF)",
+   "url": "https://dnia.unal.edu.co/coursera/assets/instructivo1.pdf"
+  },
+  {
+   "texto": "Instructivo: eliminar la cuenta (PDF)",
+   "url": "https://dnia.unal.edu.co/coursera/assets/instructivo3.pdf"
+  }
+ ],
+ "soporte": {
+  "texto": "Para dudas o dificultades con el convenio escribe a",
+  "correo": "soportecoursera@unal.edu.co"
+ },
+ "consejos": [
+  "Si no puedes ingresar, borra la caché y las cookies, usa la versión más reciente de Google Chrome (el más recomendado), Firefox o Safari, o prueba con una ventana de incógnito u otro dispositivo.",
+  "Si no puedes abrir exámenes, te aparece un cobro o no puedes descargar el certificado: confirma que tu cuenta está dentro del convenio, usa el botón «verificar» si la plataforma lo pide y, si venció una fecha, pulsa «Restablecer mis fechas límite».",
+  "No abras otras páginas durante exámenes o cuestionarios: Coursera lo considera incumplimiento de su código de honor y puede bloquear el examen o el certificado.",
+  "No compartas tu usuario de Coursera: puedes perder el acceso al convenio de forma permanente.",
+  "Antes de borrar tu cuenta, descarga tus certificados desde «Logros»."
+ ],
+ "porConfirmar": [
+  "Los instructivos oficiales son de febrero de 2023. Si algún paso cambió, el soporte del convenio (soportecoursera@unal.edu.co) te confirma el proceso vigente."
+ ],
+ "fuentes": [
+  {
+   "titulo": "Instructivos del convenio Coursera · Dirección Nacional de Innovación Académica (UNAL)",
+   "url": "https://dnia.unal.edu.co/coursera/documentos/instructivo2.pdf"
+  }
+ ]
+}

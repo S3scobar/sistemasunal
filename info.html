@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Información General y Guía Estudiantil · Sistemas UNAL Medellín</title>
+  <meta name="description" content="Guía académica esencial para estudiantes de Ingeniería de Sistemas e Informática (UNAL Medellín): P.A.P.A., bolsa de créditos, horas de corresponsabilidad, citas SIA, simulador y preguntas frecuentes.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/info.css">
+</head>
+<body data-pagina="info">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada portada--corta foto foto--edificio">
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="115" height="115">
+      </div>
+      <p class="portada__lugar">Guía Académica y Vida Estudiantil · Facultad de Minas</p>
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Información</span>
+        <span class="letras-varsity" data-texto="General">General</span>
+      </h1>
+      <p class="portada__texto">El ABC indispensable de la UNAL: qué es el P.A.P.A. y cómo calcularlo, cómo cuidar tu bolsa de créditos, cómo pagar tus horas de corresponsabilidad y respuestas a las dudas más frecuentes.</p>
+      <ul class="portada__cifras" id="info-cifras" aria-label="Cifras clave del estudiante UNAL"></ul>
+    </div>
+  </section>
+
+  <main>
+    <section class="seccion info" aria-label="Módulo de Información General">
+      <div class="contenedor">
+
+        <!-- BUSCADOR PRINCIPAL Y FILTRO RÁPIDO -->
+        <div class="info-buscador-wrap">
+          <div class="info-buscador">
+            <svg class="info-buscador__icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="input-busqueda" class="info-buscador__input" placeholder="Buscar tema, concepto o pregunta (ej. PAPA, bolsa, corresponsabilidad, 3.0, SIA, cancelar)..." aria-label="Buscar en la guía estudiantil" autocomplete="off">
+            <button type="button" id="btn-limpiar-busqueda" class="info-buscador__limpiar" aria-label="Limpiar búsqueda" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div id="resultado-conteo" class="info-buscador__conteo" aria-live="polite"></div>
+        </div>
+
+        <!-- SELECTOR DE CATEGORÍAS (TABS) -->
+        <nav class="info-tabs" aria-label="Categorías de información">
+          <ul id="contenedor-tabs" class="info-tabs__lista"></ul>
+        </nav>
+
+        <!-- CONTENIDO DINÁMICO PRINCIPAL -->
+        <div id="info-contenido" class="info-contenido">
+          <p class="cargando">Cargando información general…</p>
+        </div>
+
+        <!-- SECCIÓN DE ENLACES OFICIALES -->
+        <div class="info-enlaces-seccion" id="info-enlaces-seccion">
+          <div class="seccion-titulo">
+            <p class="seccion-titulo__antetitulo">Canales y Plataformas</p>
+            <h2>Enlaces oficiales UNAL</h2>
+            <p class="seccion-titulo__intro">Acceso directo a las herramientas institucionales para trámites y consultas académicas.</p>
+          </div>
+          <div id="contenedor-enlaces" class="info-enlaces-rejilla"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script src="js/info.js"></script>
+</body>
+</html>

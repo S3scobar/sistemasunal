@@ -1,0 +1,65 @@
+{
+ "id": "github-education",
+ "queEs": "GitHub Student Developer Pack agrupa herramientas y servicios de desarrollo gratuitos para estudiantes, incluida una versión premium de GitHub. Es un programa de GitHub para estudiantes, no un convenio de la UNAL.",
+ "quienes": [
+  "Estudiantes matriculados en un programa que otorgue título o diploma",
+  "Personas de al menos 13 años con una cuenta personal de GitHub"
+ ],
+ "incluye": [
+  "Beneficios de GitHub para estudiantes y acceso al portal de GitHub Education una vez aprobada la solicitud",
+  "Servicios de desarrollo de terceros incluidos en el paquete (la lista vigente está en el portal)"
+ ],
+ "requisitos": [
+  "Estar matriculado en un programa que otorgue título o diploma",
+  "Tener una cuenta personal de GitHub",
+  "Tener al menos 13 años",
+  "Documentos que comprueben tu condición actual de estudiante",
+  "Si la solicitud pide un correo académico, añadirlo y verificarlo en tu cuenta antes de aplicar"
+ ],
+ "pasos": [
+  {
+   "titulo": "Añade y verifica tu correo @unal.edu.co en GitHub",
+   "texto": "En los ajustes de tu cuenta, agrega tu correo institucional y confírmalo con el mensaje que te llegue, antes de aplicar."
+  },
+  {
+   "titulo": "Ve a «Education benefits» en tu cuenta de GitHub",
+   "texto": "Está en la configuración de tu cuenta."
+  },
+  {
+   "titulo": "Pulsa «Start an application»",
+   "texto": "Se encuentra en la sección «GitHub Education»."
+  },
+  {
+   "titulo": "Completa el formulario y sube tu comprobante",
+   "texto": "Se aceptan, por ejemplo, una foto de tu credencial con fecha de matrícula vigente, tu horario de clases, tu historial académico o una carta de afiliación o verificación de matrícula. Luego pulsa «Submit application»."
+  },
+  {
+   "titulo": "Entra al portal cuando te aprueben",
+   "texto": "Una vez aprobada la solicitud, accede al portal de GitHub Education para usar tus beneficios."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Cómo aplicar como estudiante (documentación de GitHub)",
+   "url": "https://docs.github.com/en/education/about-github-education/github-education-for-students/apply-to-github-education-as-a-student",
+   "principal": true
+  },
+  {
+   "texto": "Portal de GitHub Education",
+   "url": "https://education.github.com/pack"
+  }
+ ],
+ "consejos": [
+  "Si GitHub no reconoce el dominio de tu correo, escribe a GitHub Education Support con el nombre completo de la universidad, su sitio web y el dominio de correo.",
+  "Si tu institución no emite correos académicos, presenta documentación oficial que lo explique y vuelve a aplicar."
+ ],
+ "porConfirmar": [
+  "La documentación de GitHub no indica cuánto tarda la revisión de la solicitud."
+ ],
+ "fuentes": [
+  {
+   "titulo": "Documentación de GitHub · Apply to GitHub Education as a student",
+   "url": "https://docs.github.com/en/education/about-github-education/github-education-for-students/apply-to-github-education-as-a-student"
+  }
+ ]
+}

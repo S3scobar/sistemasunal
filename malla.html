@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Malla curricular · Ingeniería de Sistemas e Informática UNAL Medellín</title>
+  <meta name="description" content="Malla curricular interactiva de Ingeniería de Sistemas e Informática (UNAL Sede Medellín): prerrequisitos, créditos y componente de cada asignatura.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/malla.css">
+</head>
+<body data-pagina="malla">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada portada--corta foto foto--edificio">
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="115" height="115">
+      </div>
+      <p class="portada__lugar">Programa curricular 2026-2 · Facultad de Minas</p>
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Malla</span>
+        <span class="letras-varsity" data-texto="Curricular">Curricular</span>
+      </h1>
+      <p class="portada__texto">Pasa el cursor sobre cualquier asignatura para ver en colores sus prerrequisitos y las materias que te abre, o haz clic para abrir su ficha completa.</p>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- MALLA INTERACTIVA -->
+    <section class="seccion malla" id="malla" aria-labelledby="malla-titulo">
+      <div class="contenedor contenedor--ancho">
+        <div class="seccion-titulo">
+          <p class="seccion-titulo__antetitulo" id="malla-antetitulo">Programa curricular</p>
+          <h2 id="malla-titulo">La malla</h2>
+        </div>
+
+        <ul class="leyenda" id="leyenda" aria-label="Convenciones"></ul>
+
+        <div class="malla__marco">
+          <div id="malla-rejilla"><p class="cargando">Cargando malla…</p></div>
+        </div>
+        <p class="malla__ayuda">Pasa el cursor por encima de una asignatura para marcar en amarillo sus prerrequisitos y en azul lo que te abre. Desliza a los lados para explorar todos los semestres.</p>
+      </div>
+    </section>
+
+    <!-- ASIGNATURAS POR COMPONENTE (paginadas) -->
+    <section class="seccion asignaturas" id="asignaturas" aria-labelledby="asignaturas-titulo">
+      <div class="contenedor">
+        <div class="seccion-titulo">
+          <p class="seccion-titulo__antetitulo">Catálogo del programa</p>
+          <h2 id="asignaturas-titulo">Asignaturas por componente</h2>
+          <p class="seccion-titulo__intro">Elige un componente y una agrupación; la lista se muestra por páginas.</p>
+        </div>
+
+        <div class="pestanas" id="pestanas" role="tablist" aria-label="Componentes"></div>
+        <div class="agrupaciones" id="agrupaciones" aria-label="Agrupaciones del componente"></div>
+        <div id="resumen-agrupacion"></div>
+        <ul class="catalogo" id="catalogo"></ul>
+        <nav class="paginacion" id="paginacion" aria-label="Paginación de asignaturas"></nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- DETALLE DE LA ASIGNATURA SELECCIONADA -->
+  <aside class="detalle" id="detalle" role="region" aria-label="Detalle de la asignatura" aria-live="polite" hidden></aside>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script src="js/malla.js"></script>
+</body>
+</html>

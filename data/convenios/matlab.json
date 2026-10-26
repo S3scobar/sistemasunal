@@ -1,0 +1,80 @@
+{
+ "id": "matlab",
+ "queEs": "La Universidad Nacional cuenta con licencia de MATLAB y Simulink. MathWorks tiene una página dedicada a la Universidad («MATLAB Access for Everyone») desde donde se entra al centro de licencias.",
+ "quienes": [
+  "Comunidad universitaria con acceso a la licencia de la Universidad"
+ ],
+ "incluye": [
+  "MATLAB",
+  "Simulink",
+  "Otros productos del programa de licencia campus (la lista completa está en MathWorks)",
+  "Cursos autoguiados en MATLAB Academy y documentación oficial"
+ ],
+ "requisitos": [
+  "Cuenta de MathWorks asociada a la licencia de la Universidad"
+ ],
+ "pasos": [
+  {
+   "titulo": "Abre la página de la Universidad Nacional en MathWorks",
+   "texto": "Usa el primer botón de abajo. Allí se indica que MATLAB y Simulink están disponibles a través de la licencia de la Universidad."
+  },
+  {
+   "titulo": "Pulsa «Sign in to get started»",
+   "texto": "Es el acceso al centro de licencias (segundo botón de abajo). Inicia sesión o crea tu cuenta de MathWorks."
+  },
+  {
+   "titulo": "Sigue las indicaciones de MathWorks para descargar e instalar",
+   "texto": "Una vez dentro, MathWorks te guía con las opciones disponibles para tu licencia. Si necesitas ayuda, consulta la guía de usuario del programa campus (botón de abajo)."
+  },
+  {
+   "titulo": "Aprende con los recursos gratuitos",
+   "texto": "Los cursos autoguiados de MATLAB Academy y la documentación oficial están enlazados abajo."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Página de la Universidad Nacional en MathWorks",
+   "url": "https://www.mathworks.com/academia/tah-portal/universidad-nacional-de-colombia-31430618.html",
+   "principal": true
+  },
+  {
+   "texto": "Centro de licencias: «Sign in to get started»",
+   "url": "https://www.mathworks.com/licensecenter/total_headcount/16924-82751-55730-22877-14651?cid=mktg&wid=cwl"
+  },
+  {
+   "texto": "Guía de usuario del programa campus",
+   "url": "https://www.mathworks.com/academia/campus/resources/user-guide.html"
+  },
+  {
+   "texto": "Lista de productos de la licencia campus",
+   "url": "https://www.mathworks.com/academia/campus/resources/campus-wide-license-products.html"
+  },
+  {
+   "texto": "Cursos de MATLAB Academy",
+   "url": "https://matlabacademy.mathworks.com/?page=1&sort=featured"
+  },
+  {
+   "texto": "Noticia de la Facultad de Minas: adquisición de MATLAB y Simulink",
+   "url": "https://minas.medellin.unal.edu.co/noticias/2682-adquisicion-de-matlab-y-simulink"
+  }
+ ],
+ "soporte": {
+  "texto": "Para confirmar quién es elegible, qué correo usar o cómo instalar, contacta al soporte de MathWorks o a la administración de la Universidad."
+ },
+ "consejos": [
+  "Una guía estudiantil de 2017 recomendaba crear la cuenta de MathWorks con el correo @unal.edu.co para que quede asociada a la licencia de la Universidad."
+ ],
+ "porConfirmar": [
+  "La página de MathWorks no indica quién puede acceder (estudiantes, docentes) ni qué correo exige, y no describe los pasos de instalación: esos datos hay que confirmarlos con MathWorks o con la Universidad."
+ ],
+ "fuentes": [
+  {
+   "titulo": "MathWorks · Universidad Nacional de Colombia (MATLAB Access for Everyone)",
+   "url": "https://www.mathworks.com/academia/tah-portal/universidad-nacional-de-colombia-31430618.html"
+  },
+  {
+   "titulo": "Blog de la Nacho · Programas, herramientas y servicios gratuitos (2017)",
+   "url": "https://www.pasaralaunacional.com/2017/02/software-beneficios-gratis-convenios-unal.html"
+  }
+ ]
+}
