@@ -9,6 +9,7 @@
 
 const POR_PAGINA = 12;
 const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+const ICONO_WHATSAPP = `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.07 7.71C8.89 7.71 8.6 7.78 8.36 8.04C8.11 8.3 7.41 8.96 7.41 10.3C7.41 11.63 8.38 12.92 8.52 13.1C8.66 13.29 10.42 16 13.12 17.17C15.36 18.14 15.82 17.95 16.31 17.9C16.8 17.86 17.88 17.26 18.11 16.63C18.33 16 18.33 15.46 18.26 15.35C18.2 15.24 18.01 15.18 17.73 15.04C17.45 14.9 16.08 14.23 15.83 14.13C15.57 14.04 15.39 13.99 15.2 14.27C15.02 14.55 14.49 15.18 14.33 15.36C14.17 15.55 14.01 15.57 13.73 15.43C13.45 15.29 12.27 14.9 10.87 13.65C9.78 12.68 9.05 11.48 8.84 11.12C8.63 10.76 8.82 10.56 8.96 10.42C9.09 10.29 9.25 10.08 9.39 9.92C9.53 9.76 9.58 9.64 9.67 9.46C9.76 9.27 9.72 9.11 9.65 8.97C9.58 8.83 9.07 7.58 8.86 7.07C8.66 6.58 8.45 6.64 8.3 6.63C8.15 6.63 7.97 6.63 7.78 6.63"/></svg>`;
 
 let hoverCodigoActual = null;
 
@@ -77,13 +78,14 @@ function pintarLeyenda() {
 
 function casillaAsignatura(codigo) {
   const a = estado.asignaturas.get(codigo);
+  const wppIndicador = a.whatsapp ? `<span class="materia__wpp-punto" title="Grupo de WhatsApp disponible">💬</span>` : '';
   return `
     <li>
-      <button class="materia" type="button" data-codigo="${esc(codigo)}" data-agrupacion="${esc(a.agrupacion)}"
-        style="--color: ${colorDe(a)}" aria-label="${esc(a.nombre)}, ${a.creditos} créditos">
+      <button class="materia ${a.whatsapp ? 'materia--con-wpp' : ''}" type="button" data-codigo="${esc(codigo)}" data-agrupacion="${esc(a.agrupacion)}"
+        style="--color: ${colorDe(a)}" aria-label="${esc(a.nombre)}, ${a.creditos} créditos${a.whatsapp ? ', con grupo de WhatsApp' : ''}">
         <span class="materia__nombre">${esc(a.nombre)}</span>
         <span class="materia__cred">${a.creditos}</span>
-        <span class="materia__codigo">${esc(a.codigo)}</span>
+        <span class="materia__codigo">${esc(a.codigo)}${wppIndicador}</span>
       </button>
     </li>`;
 }
@@ -222,6 +224,16 @@ function seleccionar(codigo, { desplazar = false } = {}) {
   const dependientes = estado.dependientes.get(codigo) || [];
   const semestre = a.semestre ? `Semestre ${ROMANOS[a.semestre - 1]}` : 'Optativa · sin semestre fijo';
 
+  const bloqueWhatsapp = a.whatsapp ? `
+    <div class="detalle__bloque detalle__bloque--whatsapp">
+      <h4>Comunidad de WhatsApp</h4>
+      <a class="detalle__whatsapp-boton" href="${esc(a.whatsapp)}" target="_blank" rel="noopener noreferrer">
+        ${ICONO_WHATSAPP}
+        <span>Unirse al grupo de WhatsApp</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </a>
+    </div>` : '';
+
   pintarDetalle(`
     <div class="detalle__cabeza">
       <p class="detalle__codigo">Código ${esc(a.codigo)}</p>
@@ -232,9 +244,11 @@ function seleccionar(codigo, { desplazar = false } = {}) {
         <li class="etiqueta">${esc(agrupacion.nombre)}</li>
         <li class="etiqueta">${a.obligatoria ? 'Obligatoria' : 'Optativa'}</li>
         <li class="etiqueta">${esc(semestre)}</li>
+        ${a.whatsapp ? `<li class="etiqueta etiqueta--wpp"><a href="${esc(a.whatsapp)}" target="_blank" rel="noopener noreferrer" title="Abrir grupo de WhatsApp">${ICONO_WHATSAPP} WhatsApp</a></li>` : ''}
       </ul>
     </div>
     <div class="detalle__cuerpo">
+      ${bloqueWhatsapp}
       <div class="detalle__bloque">
         <h4>Prerrequisitos</h4>
         ${a.prerrequisitos.length
@@ -423,7 +437,7 @@ function pintarCatalogo() {
           <button class="tarjeta" type="button" data-codigo="${esc(a.codigo)}" style="--color: ${colorDe(a)}">
             <span class="tarjeta__nombre">${esc(a.nombre)}</span>
             <span class="tarjeta__pie">
-              <span><span class="tarjeta__tipo">${a.obligatoria ? 'Obligatoria' : 'Optativa'}</span> · ${esc(a.codigo)}</span>
+              <span><span class="tarjeta__tipo">${a.obligatoria ? 'Obligatoria' : 'Optativa'}</span> · ${esc(a.codigo)}${a.whatsapp ? ' · <span class="tarjeta__wpp" title="Tiene grupo de WhatsApp">💬 WhatsApp</span>' : ''}</span>
               <span class="tarjeta__cred" title="Créditos">${creditosTexto(a.creditos)}</span>
             </span>
           </button>

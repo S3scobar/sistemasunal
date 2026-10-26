@@ -134,9 +134,90 @@ function pintarPie() {
         </span>
       </a>
       <p>Ingeniería de Sistemas e Informática · Facultad de Minas · Universidad Nacional de Colombia, Sede Medellín</p>
-      <p class="pie__autores">Hecha por <strong>Santiago Escobar Arias - Representante Estudiantil</strong></p>
+      <div class="pie__creditos">
+        <p class="pie__autores">Iniciativa creada y desarrollada por <strong>Santiago Escobar Arias</strong> · Representante Estudiantil</p>
+        <div class="pie__contacto">
+          <a class="pie__contacto-link" href="mailto:saescobara@unal.edu.co" title="Escribir al correo de Santiago">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            saescobara@unal.edu.co
+          </a>
+          <span class="pie__contacto-sep" aria-hidden="true">·</span>
+          <a class="pie__contacto-link" href="https://www.instagram.com/s_escobar__/" target="_blank" rel="noopener noreferrer" title="Instagram de Santiago Escobar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            @s_escobar__
+          </a>
+        </div>
+      </div>
     </footer>`;
+}
+
+/* ---------- Mensaje de bienvenida y reconocimiento del creador ---------- */
+
+function mostrarMensajeAutor() {
+  if (sessionStorage.getItem('mensaje_autor_cerrado') === '1') return;
+
+  const toast = document.createElement('aside');
+  toast.className = 'toast-autor';
+  toast.id = 'toast-autor';
+  toast.setAttribute('aria-label', 'Mensaje del creador del portal');
+  toast.innerHTML = `
+    <div class="toast-autor__tarjeta">
+      <button class="toast-autor__cerrar" id="toast-autor-cerrar" type="button" aria-label="Cerrar mensaje">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="toast-autor__cabecera">
+        <div class="toast-autor__avatar" aria-hidden="true">
+          <img src="img/logo-sistemas.jpg" alt="" class="toast-autor__avatar-img">
+        </div>
+        <div class="toast-autor__titulos">
+          <span class="toast-autor__nombre">Santiago Escobar Arias</span>
+          <span class="toast-autor__cargo">Representante Estudiantil</span>
+        </div>
+      </div>
+
+      <p class="toast-autor__mensaje">
+        ¡Hola! Creé este portal con el propósito de apoyar, guiar y facilitar la vida universitaria de todos los estudiantes de <strong>Ingeniería de Sistemas e Informática</strong>. Seguiré incluyendo más herramientas, funciones y recursos para acompañarte en tu paso por la U.
+      </p>
+
+      <div class="toast-autor__pie">
+        <div class="toast-autor__redes">
+          <a class="toast-autor__enlace" href="https://www.instagram.com/s_escobar__/" target="_blank" rel="noopener noreferrer" title="Instagram de Santiago">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            @s_escobar__
+          </a>
+          <a class="toast-autor__enlace" href="mailto:saescobara@unal.edu.co" title="Correo de Santiago">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            saescobara@unal.edu.co
+          </a>
+        </div>
+        <button class="toast-autor__btn-ok" id="toast-autor-ok" type="button">¡Entendido!</button>
+      </div>
+    </div>`;
+
+  document.body.appendChild(toast);
+
+  // Aparece suavemente después de 800ms
+  setTimeout(() => {
+    toast.classList.add('is-visible');
+  }, 800);
+
+  function cerrarToast() {
+    toast.classList.remove('is-visible');
+    toast.classList.add('is-hiding');
+    sessionStorage.setItem('mensaje_autor_cerrado', '1');
+    setTimeout(() => {
+      toast.remove();
+    }, 300);
+  }
+
+  $('#toast-autor-cerrar')?.addEventListener('click', cerrarToast);
+  $('#toast-autor-ok')?.addEventListener('click', cerrarToast);
 }
 
 pintarBarra();
 pintarPie();
+mostrarMensajeAutor();

@@ -10,6 +10,185 @@
 .barra__escudo { border-radius: 50%; }
 
 
+/* ---------- 0. Apartado Unidad Compartida / Drive ---------- */
+
+.malla-drive {
+  max-width: 980px;
+  margin: 0 auto 48px;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid var(--linea);
+  border-left: 6px solid var(--azul);
+  box-shadow: 0 12px 30px -12px rgba(10, 44, 82, .18), 0 2px 6px rgba(0, 0, 0, .03);
+  padding: 24px 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+.malla-drive::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle at top right, rgba(22, 103, 194, .08), transparent 70%);
+  pointer-events: none;
+}
+
+.malla-drive__contenido {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.malla-drive__icono-wrap {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: #f0f6fd;
+  border: 1px solid #d4e5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.malla-drive__logo {
+  display: block;
+}
+
+.malla-drive__cuerpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.malla-drive__encabezado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.malla-drive__tag {
+  font-family: var(--letra-universidad);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--azul);
+  background: #eef5fc;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.malla-drive__titulo {
+  font-family: var(--letra-titulo);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--azul-marino);
+}
+
+.malla-drive__desc {
+  font-size: 14px;
+  color: var(--tinta-suave);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.malla-drive__fila-acciones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+}
+
+.malla-drive__btn-principal {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--azul);
+  color: #fff !important;
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 14px -3px rgba(22, 103, 194, .45);
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+
+.malla-drive__btn-principal:hover {
+  background: var(--azul-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -4px rgba(10, 44, 82, .45);
+}
+
+.malla-drive__btn-principal svg {
+  flex-shrink: 0;
+}
+
+.malla-drive__acceso-secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--gris);
+}
+
+.malla-drive__acceso-pregunta {
+  color: var(--tinta-suave);
+}
+
+.malla-drive__acceso-enlace {
+  color: var(--azul);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color .15s, text-decoration .15s;
+}
+
+.malla-drive__acceso-enlace:hover {
+  color: var(--azul-oscuro);
+  text-decoration: underline;
+}
+
+.malla-drive__acceso-enlace svg {
+  flex-shrink: 0;
+}
+
+.malla-drive__nota {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  background: #f4f6f8;
+  font-size: 12.5px;
+  color: var(--tinta-suave);
+  line-height: 1.4;
+  border-left: 3px solid #f7b61a;
+}
+
+.malla-drive__nota svg {
+  color: #c98e09;
+  flex-shrink: 0;
+}
+
+.malla-drive__nota strong {
+  color: var(--azul-marino);
+}
+
+
 /* ---------- 1. Convenciones ---------- */
 
 .leyenda {
@@ -293,6 +472,23 @@ body.con-detalle { padding-bottom: 44vh; }
 }
 .etiqueta--comp { background: var(--color); color: #fff; }
 .etiqueta--cred { background: var(--azul-marino); color: #fff; }
+.etiqueta--wpp {
+  background: #e7f9ee !important;
+  border: 1px solid #9fe5be;
+  padding: 0 !important;
+}
+.etiqueta--wpp a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  color: #0b6b3a !important;
+  text-decoration: none;
+  font-weight: 700;
+}
+.etiqueta--wpp a:hover {
+  color: #064e29 !important;
+}
 
 .detalle__cuerpo {
   display: grid;
@@ -359,6 +555,61 @@ body.con-detalle { padding-bottom: 44vh; }
   color: #fff;
 }
 .detalle__boton:hover { background: var(--azul-oscuro); }
+
+.detalle__bloque--whatsapp {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: linear-gradient(135deg, #effaf3 0%, #f7fdf9 100%);
+  border: 1.5px solid #a3e9c0;
+  border-radius: 16px;
+  padding: 14px 18px;
+}
+.detalle__bloque--whatsapp h4 {
+  color: #0b6b3a !important;
+  margin-bottom: 0 !important;
+  font-weight: 700;
+  font-size: 12px;
+}
+.detalle__whatsapp-boton {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: #25d366;
+  color: #fff !important;
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, .35);
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.detalle__whatsapp-boton:hover {
+  background: #1eb855;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, .45);
+}
+.detalle__whatsapp-boton svg {
+  flex-shrink: 0;
+}
+
+.tarjeta__wpp {
+  color: #0d8448;
+  font-weight: 600;
+}
+.materia__wpp-punto {
+  display: inline-block;
+  margin-left: 2px;
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: middle;
+}
 
 
 /* ---------- 4. Catálogo por componente y paginación ---------- */
@@ -507,6 +758,33 @@ body.con-detalle { padding-bottom: 44vh; }
 
 
 @media (max-width: 720px) {
+  .malla-drive {
+    padding: 18px 16px;
+    margin-bottom: 32px;
+  }
+  .malla-drive__contenido {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .malla-drive__fila-acciones {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .malla-drive__btn-principal {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+  .malla-drive__acceso-secundario {
+    justify-content: center;
+    font-size: 13px;
+  }
+  .malla-drive__nota {
+    font-size: 12px;
+  }
   .detalle { padding: 18px 16px 20px; max-height: 58vh; }
   .detalle__cuerpo { grid-template-columns: 1fr; }
   body.con-detalle { padding-bottom: 56vh; }

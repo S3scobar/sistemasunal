@@ -532,7 +532,7 @@
         {
           "paso": "4",
           "titulo": "Espera la validación",
-          "desc": "En dos días hábiles tras confirmar debe llegarte un mensaje de recepción con una posible fecha de atención; si no, escribe al correo de asesoría estudiantil."
+          "desc": "En dos días hábiles tras confirmar debe llegarte un mensaje de recepción con una posible fecha de atención; si no, escribe al correo de asesoría estudiantil (asesorestu_med@unal.edu.co)."
         },
         {
           "paso": "5",
@@ -801,7 +801,7 @@
   "asesoria": {
     "titulo": "¿Necesitas asesoría sobre un tema?",
     "texto": "Escribe desde tu correo institucional al área de asesoría estudiantil.",
-    "correo": "asesorestu@unal.edu.co",
+    "correo": "asesorestu_med@unal.edu.co",
     "telefono": "(+57 604) 43096653",
     "direccion": "Carrera 80 No 65-223, Campus Robledo, Medellín",
     "solicitudes": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles"

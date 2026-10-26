@@ -1,12 +1,23 @@
 [
  {
+  "codigo": "1000001-M",
+  "nombre": "Matemáticas Básicas",
+  "creditos": 4,
+  "obligatoria": false,
+  "agrupacion": "ciencias-basicas",
+  "semestre": null,
+  "prerrequisitos": [],
+  "whatsapp": "https://chat.whatsapp.com/ILzwQnMaszQIKQRAdz1kBE"
+ },
+ {
   "codigo": "1000008-M",
   "nombre": "Geometría Vectorial y Analítica",
   "creditos": 4,
   "obligatoria": true,
   "agrupacion": "ciencias-basicas",
   "semestre": 1,
-  "prerrequisitos": []
+  "prerrequisitos": [],
+  "whatsapp": "https://chat.whatsapp.com/IJm4C8FXrDw6pcucHvf1rb"
  },
  {
   "codigo": "1000004-M",
@@ -15,7 +26,8 @@
   "obligatoria": true,
   "agrupacion": "ciencias-basicas",
   "semestre": 2,
-  "prerrequisitos": []
+  "prerrequisitos": [],
+  "whatsapp": "https://chat.whatsapp.com/BbiNmrfk09eLd5TP7aSYqo"
  },
  {
   "codigo": "1000005-M",
@@ -26,7 +38,8 @@
   "semestre": 3,
   "prerrequisitos": [
    "1000004-M"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/CJ5GSTAAMM1CZN7d6StQjX"
  },
  {
   "codigo": "1000003-M",
@@ -37,7 +50,8 @@
   "semestre": 2,
   "prerrequisitos": [
    "1000008-M"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/FQd8uw0RPKVKPEdkGQTHJJ"
  },
  {
   "codigo": "3006906",
@@ -46,7 +60,8 @@
   "obligatoria": true,
   "agrupacion": "ciencias-basicas",
   "semestre": 1,
-  "prerrequisitos": []
+  "prerrequisitos": [],
+  "whatsapp": "https://chat.whatsapp.com/IDdrLBVgv9zFFFAibsrkqV"
  },
  {
   "codigo": "3010651",
@@ -83,7 +98,8 @@
    "1000005-M",
    "1000003-M"
   ],
-  "porConfirmar": "El PDF imprime el código 1000004-M junto al nombre «Cálculo Integral» (cuyo código es 1000005-M)."
+  "porConfirmar": "El PDF imprime el código 1000004-M junto al nombre «Cálculo Integral» (cuyo código es 1000005-M).",
+  "whatsapp": "https://chat.whatsapp.com/E0J9vaSAkUg4DVWRLHKUp4"
  },
  {
   "codigo": "1000006-M",
@@ -94,7 +110,8 @@
   "semestre": null,
   "prerrequisitos": [
    "1000005-M"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/J1QLLSgQ6m7JCERd8FAqEO"
  },
  {
   "codigo": "3006905",
@@ -126,7 +143,8 @@
   "obligatoria": false,
   "agrupacion": "ciencias-basicas",
   "semestre": null,
-  "prerrequisitos": []
+  "prerrequisitos": [],
+  "whatsapp": "https://chat.whatsapp.com/ILzwQnMaszQIKQRAdz1kBE"
  },
  {
   "codigo": "3010391",
@@ -250,7 +268,8 @@
   "semestre": 3,
   "prerrequisitos": [
    "3010435"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/CaxfA8rpsp5HfrBsG2CNcW?mode=ems_copy_c"
  },
  {
   "codigo": "3007741",
@@ -261,7 +280,8 @@
   "semestre": 4,
   "prerrequisitos": [
    "3007744"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/Bp2eC809StN7ITJVGKrXFG?mode=ems_share_c"
  },
  {
   "codigo": "3007847",
@@ -272,7 +292,8 @@
   "semestre": 5,
   "prerrequisitos": [
    "3007741"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/GgRSz0BFrp54jnYomQZPiA?mode=ems_copy_c"
  },
  {
   "codigo": "3010426",
@@ -284,7 +305,8 @@
   "prerrequisitos": [
    "3010435",
    "3006906"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/DCd04JcExC37CvCE2dwRqD?mode=ems_copy_c"
  },
  {
   "codigo": "3010476",
@@ -296,7 +318,8 @@
   "prerrequisitos": [
    "3010651",
    "3007847"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/GVjsHES4Dyl74TyjWT5sXH?mode=ems_copy_c"
  },
  {
   "codigo": "3007867",
@@ -307,7 +330,8 @@
   "semestre": 4,
   "prerrequisitos": [
    "3010426"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/D9Buixvhpi8KpCWJmOaXev"
  },
  {
   "codigo": "3007865",
@@ -318,7 +342,8 @@
   "semestre": 5,
   "prerrequisitos": [
    "3007867"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/EWYxiF9bOJm1UNSh2CIdnB?mode=ems_copy_c"
  },
  {
   "codigo": "3011020",
@@ -330,7 +355,8 @@
   "prerrequisitos": [
    "3010651",
    "3007847"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/J1NKD5Nbnp4IWKiPW4HSXe?mode=ems_copy_c"
  },
  {
   "codigo": "3007853",
@@ -341,7 +367,8 @@
   "semestre": 4,
   "prerrequisitos": [
    "3007744"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/I8iLBRRSCacGijgwutIOcA?mode=ems_copy_c"
  },
  {
   "codigo": "3007852",
@@ -352,7 +379,8 @@
   "semestre": 5,
   "prerrequisitos": [
    "3007853"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/JVG5GmJp73h6fJVcanhlPz?mode=ems_copy_c"
  },
  {
   "codigo": "3010440",
@@ -363,7 +391,8 @@
   "semestre": 6,
   "prerrequisitos": [
    "3007852"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/HCTNta7mB4IH5mYsOm6SUc?mode=ems_copy_c"
  },
  {
   "codigo": "3010438",
@@ -384,7 +413,8 @@
   "prerrequisitos": [
    "3010435",
    "1000003-M"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/I9frlkRRLANLBQKTzi0BBv?mode=ems_copy_c"
  },
  {
   "codigo": "3010415",
@@ -395,7 +425,8 @@
   "semestre": 6,
   "prerrequisitos": [
    "3007331"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/I9xSYhsdbV07PPn4ULBHEa?mode=ems_copy_c"
  },
  {
   "codigo": "3007331",
@@ -407,7 +438,8 @@
   "prerrequisitos": [
    "3010651",
    "3007324"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/IEcyYFor2fgAXpihLUWY1r"
  },
  {
   "codigo": "3010408",
@@ -563,7 +595,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3010476"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/CYO4FcweDeRK2fwNAdXtWG"
  },
  {
   "codigo": "3009150",
@@ -596,7 +629,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3010440"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/KQC2bXXcimjDmQVLVdBKoz"
  },
  {
   "codigo": "3007848",
@@ -640,7 +674,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3007331"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/LiDfAdAd1et3QcYR0XsQ5S?mode=gi_t"
  },
  {
   "codigo": "3007325",
@@ -662,7 +697,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3007331"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/LhFEuP1VQzH9dfJQTs8UbW"
  },
  {
   "codigo": "3007873",
@@ -904,7 +940,8 @@
   "prerrequisitos": [
    "3007847",
    "3007865"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/HrfZtSMjbS163c5nQpn0PO"
  },
  {
   "codigo": "3011019",
@@ -916,7 +953,8 @@
   "prerrequisitos": [
    "3007847",
    "3007865"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/LEf3ZueybZKJF5tyv68bE7?mode=gi_t"
  },
  {
   "codigo": "3011018",
@@ -927,7 +965,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3007744"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/CBpBvSqnf5Q6PY1QpZ97wL?mode=gi_t"
  },
  {
   "codigo": "3011171",
@@ -950,7 +989,8 @@
   "prerrequisitos": [
    "3007741",
    "3010651"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/FyUhcgvJ6NQ4rMMAbg1P9T?mode=gi_t"
  },
  {
   "codigo": "3011167",
@@ -994,7 +1034,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3007852"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/EU3ovoBfxv9G3RHsC7eMQ4"
  },
  {
   "codigo": "3011174",
@@ -1027,7 +1068,8 @@
   "semestre": null,
   "prerrequisitos": [
    "3007324"
-  ]
+  ],
+  "whatsapp": "https://chat.whatsapp.com/Ba7Z8MJSQNg4MCuNM2rszg"
  },
  {
   "codigo": "3011172",
