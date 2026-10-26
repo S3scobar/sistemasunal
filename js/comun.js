@@ -60,17 +60,66 @@ const PAGINAS = [
 function pintarBarra() {
   const actual = document.body.dataset.pagina;
   $('#barra').outerHTML = `
-    <header class="barra">
+    <header class="barra" id="encabezado-barra">
       <div class="contenedor barra__contenido">
         <a class="barra__marca" href="index.html" aria-label="Ingeniería de Sistemas e Informática, inicio">
           <span class="barra__escudo"><img src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática" class="barra__escudo-img"></span>
           <span class="barra__texto">Ingeniería de Sistemas e Informática<small>UNAL · Sede Medellín</small></span>
         </a>
-        <nav class="nav" aria-label="Módulos del sitio">
+        <button class="barra__boton-menu" id="btn-menu" type="button" aria-expanded="false" aria-controls="menu-navegacion" aria-label="Abrir menú de navegación">
+          <span class="barra__icono barra__icono--abrir" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+          </span>
+          <span class="barra__icono barra__icono--cerrar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </span>
+          <span class="barra__boton-texto">Menú</span>
+        </button>
+        <nav class="nav" id="menu-navegacion" aria-label="Módulos del sitio">
           ${PAGINAS.map((p) => `<a href="${p.url}" ${p.id === actual ? 'aria-current="page"' : ''}>${p.texto}</a>`).join('')}
         </nav>
       </div>
     </header>`;
+
+  configurarMenuMovil();
+}
+
+function configurarMenuMovil() {
+  const barra = $('#encabezado-barra');
+  const btn = $('#btn-menu');
+  const nav = $('#menu-navegacion');
+  if (!barra || !btn || !nav) return;
+
+  function toggleMenu(abrir) {
+    const estaAbierto = abrir !== undefined ? abrir : !barra.classList.contains('is-menu-abierto');
+    barra.classList.toggle('is-menu-abierto', estaAbierto);
+    btn.setAttribute('aria-expanded', String(estaAbierto));
+    btn.setAttribute('aria-label', estaAbierto ? 'Cerrar menú de navegación' : 'Abrir menú de navegación');
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  nav.addEventListener('click', (e) => {
+    if (e.target.closest('a')) {
+      toggleMenu(false);
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (barra.classList.contains('is-menu-abierto') && !barra.contains(e.target)) {
+      toggleMenu(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && barra.classList.contains('is-menu-abierto')) {
+      toggleMenu(false);
+      btn.focus();
+    }
+  });
 }
 
 function pintarPie() {
@@ -85,7 +134,7 @@ function pintarPie() {
         </span>
       </a>
       <p>Ingeniería de Sistemas e Informática · Facultad de Minas · Universidad Nacional de Colombia, Sede Medellín</p>
-      <p class="pie__autores">Estilo basado en la web de la Semana de Sistemas, hecha por <strong>Santiago Escobar Arias</strong> y <strong>Jerónimo Hoyos Botero</strong></p>
+      <p class="pie__autores">Hecha por <strong>Santiago Escobar Arias - Representante Estudiantil</strong></p>
     </footer>`;
 }
 
