@@ -54,6 +54,7 @@ function inicializar() {
   pintarCifras();
   pintarTabs();
   pintarEnlaces();
+  pintarAsesoria();
   configurarBuscador();
   renderizarVista();
 }
@@ -370,7 +371,9 @@ function generarHtmlGuia(guia) {
       <div class="info-chips-rejilla">
         ${guia.tramitesComunes.map((t) => `
           <div class="info-chip-card">
-            <strong>${esc(t.titulo)}</strong>
+            ${t.url && /^https?:\/\//.test(t.url)
+              ? `<a href="${esc(t.url)}" target="_blank" rel="noopener noreferrer"><strong>${esc(t.titulo)}</strong></a>`
+              : `<strong>${esc(t.titulo)}</strong>`}
             <span>${esc(t.desc)}</span>
           </div>
         `).join('')}
@@ -765,4 +768,20 @@ function pintarEnlaces() {
         </div>
       </a>
     `).join('');
+}
+
+/* ---------- Asesoría (parte inferior de la página) ---------- */
+
+function pintarAsesoria() {
+  const a = datosInfo?.asesoria, caja = $('#info-asesoria');
+  if (!a || !caja) return;
+  caja.innerHTML = `
+    <h2>${esc(a.titulo)}</h2>
+    <p>${esc(a.texto)}</p>
+    <a class="info-asesoria__correo" href="mailto:${esc(a.correo)}">${esc(a.correo)}</a>
+    <ul class="info-asesoria__datos">
+      <li>Teléfono: ${esc(a.telefono)}</li>
+      <li>${esc(a.direccion)}</li>
+      <li><a href="${esc(a.solicitudes)}" target="_blank" rel="noopener noreferrer">Solicitudes estudiantiles de la Facultad de Minas</a></li>
+    </ul>`;
 }

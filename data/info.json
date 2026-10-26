@@ -1,9 +1,21 @@
 {
   "cifras": [
-    { "valor": "4 Grupos", "texto": "Prelación de citas DNINFOA" },
-    { "valor": "3.00", "texto": "P.A.P.A. mínimo de permanencia" },
-    { "valor": "160", "texto": "Créditos exigidos del plan" },
-    { "valor": "16 a 40 h", "texto": "Corresponsabilidad semestral" }
+    {
+      "valor": "4 Grupos",
+      "texto": "Prelación de citas DNINFOA"
+    },
+    {
+      "valor": "3.00",
+      "texto": "P.A.P.A. mínimo de permanencia"
+    },
+    {
+      "valor": "160",
+      "texto": "Créditos exigidos del plan"
+    },
+    {
+      "valor": "16 a 40 h",
+      "texto": "Corresponsabilidad semestral"
+    }
   ],
   "categorias": [
     {
@@ -41,6 +53,18 @@
       "nombre": "Trámites y Cupo",
       "icono": "documento",
       "descripcion": "Causales de pérdida de cupo, reserva de semestre, cancelaciones y doble titulación."
+    },
+    {
+      "id": "calendario",
+      "nombre": "Calendario Académico",
+      "icono": "calendario",
+      "descripcion": "Dónde consultar las fechas oficiales de cada periodo y qué calendarios publica la Sede Medellín."
+    },
+    {
+      "id": "solicitudes",
+      "nombre": "Solicitudes Estudiantiles",
+      "icono": "documento",
+      "descripcion": "Cómo radicar solicitudes en la Facultad de Minas: SGS, soportes, plazos y las 25 solicitudes disponibles."
     },
     {
       "id": "faq",
@@ -157,7 +181,11 @@
       ],
       "formula": "P.A.P.A. = ∑ (Nota Asignatura × Créditos) ÷ ∑ Créditos Totales Cursados",
       "tabla": {
-        "cabecera": ["Métrica", "¿Qué calcula?", "¿Para qué sirve hoy?"],
+        "cabecera": [
+          "Métrica",
+          "¿Qué calcula?",
+          "¿Para qué sirve hoy?"
+        ],
         "filas": [
           [
             "<strong>P.A.P.A.</strong>",
@@ -328,6 +356,249 @@
         }
       ],
       "consejo": "Ante cualquier dificultad académica o de salud, comunícate de inmediato con la Vicedecanatura Académica o la Dirección de Área Curricular de Sistemas."
+    },
+    {
+      "id": "calendario-academico",
+      "categoria": "calendario",
+      "etiqueta": "Sede Medellín",
+      "titulo": "Calendario académico de la Sede Medellín",
+      "subtitulo": "La Facultad de Minas publica un calendario de pregrado y otro de posgrado por cada periodo. Las fechas de inscripción, cancelaciones, plazos de solicitudes y fin de clases salen de ahí, y pueden cambiar.",
+      "enlaceExterno": {
+        "texto": "Ver calendarios académicos de la Sede Medellín",
+        "url": "https://old-minas.medellin.unal.edu.co/tramitesestudiantiles/calendarios/calendario-academico-sede-medellin.html"
+      },
+      "puntosClave": [
+        {
+          "icono": "alerta",
+          "titulo": "Las fechas pueden cambiar",
+          "texto": "La página oficial advierte que «estas fechas pueden estar sujetas a cambios» y recomienda consultar el repositorio legal de la Universidad."
+        },
+        {
+          "icono": "check",
+          "titulo": "Un calendario por nivel y periodo",
+          "texto": "Cada periodo tiene calendario de pregrado y de posgrado. Tú necesitas el de pregrado del periodo en curso."
+        },
+        {
+          "icono": "reloj",
+          "titulo": "Las solicitudes también tienen fechas",
+          "texto": "Cada solicitud de la Facultad remite al «Calendario Académico y de Solicitudes» para saber hasta cuándo se puede radicar."
+        }
+      ],
+      "tabla": {
+        "cabecera": [
+          "Periodo",
+          "Calendarios publicados en la página de la Sede"
+        ],
+        "filas": [
+          [
+            "2026-2S (periodo actual)",
+            "Pregrado y posgrado"
+          ],
+          [
+            "2026-1S",
+            "Pregrado y posgrado"
+          ],
+          [
+            "2025-2S",
+            "Pregrado y posgrado"
+          ],
+          [
+            "2025-1S",
+            "Pregrado y posgrado"
+          ],
+          [
+            "2024-2S",
+            "Pregrado y posgrado"
+          ]
+        ]
+      },
+      "consejo": "La página de la Sede aparece «En actualización» y sus calendarios no muestran las fechas dentro de la propia página. Por eso aquí no copiamos fechas: ábrelas siempre en la fuente oficial (la web de la Sede o legal.unal.edu.co).",
+      "enlaceOficial": {
+        "texto": "Repositorio legal de la Universidad Nacional (acuerdos de calendario)",
+        "url": "http://www.legal.unal.edu.co/"
+      }
+    },
+    {
+      "id": "solicitudes-estudiantiles",
+      "categoria": "solicitudes",
+      "etiqueta": "Facultad de Minas · GAE",
+      "titulo": "Cómo radicar una solicitud estudiantil en la Facultad de Minas",
+      "subtitulo": "Gestión de Asuntos Estudiantiles (GAE) recibe las solicitudes por el Sistema de Gestión de Solicitudes (SGS). Cada una tiene su página con requisitos y soportes; el procedimiento general es el mismo.",
+      "enlaceExterno": {
+        "texto": "Ver las solicitudes estudiantiles disponibles",
+        "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles"
+      },
+      "pasos": [
+        {
+          "paso": "1",
+          "titulo": "Entra al formulario SGS",
+          "desc": "Abre la solicitud que necesitas y usa el botón «Medios para realizar su solicitud». Pasa el cursor por los campos para ver las ayudas."
+        },
+        {
+          "paso": "2",
+          "titulo": "Revisa y envía",
+          "desc": "Verifica los datos, sobre todo los correos: el sistema escribe a cada persona que debe confirmar. Sube todos los soportes dentro del formulario."
+        },
+        {
+          "paso": "3",
+          "titulo": "Confirma desde el correo",
+          "desc": "Cada persona involucrada confirma con el enlace que recibe. Si algo está mal, cancela y presenta una nueva."
+        },
+        {
+          "paso": "4",
+          "titulo": "Espera la validación",
+          "desc": "En dos días hábiles tras confirmar debe llegarte un mensaje de recepción con una posible fecha de atención; si no, escribe al correo de asesoría estudiantil."
+        },
+        {
+          "paso": "5",
+          "titulo": "Recibe la respuesta",
+          "desc": "Se envía a tu correo institucional, como máximo 15 días calendario después de la sesión del Consejo de Facultad que la estudie."
+        }
+      ],
+      "puntosClave": [
+        {
+          "icono": "alerta",
+          "titulo": "Si alguien no confirma, no se tramita",
+          "texto": "La fecha de la solicitud es la de la última confirmación. En la cancelación de asignaturas, las no confirmadas en 12 días hábiles se descartan."
+        },
+        {
+          "icono": "check",
+          "titulo": "Soportes dentro del formulario",
+          "texto": "En la cancelación de asignaturas la página aclara que los soportes enviados por fuera del formulario no se aceptan. Deben incluir tu nombre, documento, fecha de expedición y contacto."
+        },
+        {
+          "icono": "reloj",
+          "titulo": "Formato sugerido solo como alternativa",
+          "texto": "Se usa únicamente si te lo indican o si el SGS falla: se envía desde tu correo @unal.edu.co; lo recibido después de las 5:00 p. m. se registra el siguiente día hábil."
+        }
+      ],
+      "tramitesComunes": [
+        {
+          "titulo": "Admisión Automática",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-admision-automatica"
+        },
+        {
+          "titulo": "Aval de Asignaturas Definitivas Movilidad Saliente",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-aval-de-asignaturas-definitivas-movilidad-saliente"
+        },
+        {
+          "titulo": "Cambio de Tutor",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-cambio-de-tutor"
+        },
+        {
+          "titulo": "Cancelación de Asignatura(s)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-cancelacion-de-asignatura-s"
+        },
+        {
+          "titulo": "Cancelación del Periodo Académico",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-cancelacion-del-periodo-academico"
+        },
+        {
+          "titulo": "Carga Inferior a la Mínima",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-carga-inferior-a-la-minima"
+        },
+        {
+          "titulo": "Devolución de Dinero",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-devolucion-de-dinero"
+        },
+        {
+          "titulo": "Doble Titulación (misma sede, otra carrera)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-doble-titulacion"
+        },
+        {
+          "titulo": "Doble Titulación Internacional",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-doble-titulacion-internacional"
+        },
+        {
+          "titulo": "Evaluación de Actividad Académica",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-evaluacion-de-actividad-academica"
+        },
+        {
+          "titulo": "Inscripción/Adición de Asignatura(s) y/o Actividad(es)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-inscripcion-adicion-asignatura-s-y-o-actividad-es-academica-s"
+        },
+        {
+          "titulo": "Jurado(s)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-jurado-s"
+        },
+        {
+          "titulo": "Modificación de Actividad Académica",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-modificacion-de-actividad-academica"
+        },
+        {
+          "titulo": "Modificación de Trabajo de Grado (TDG)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-modificacion-de-trabajo-de-grado-tdg"
+        },
+        {
+          "titulo": "Movilidad Interna Entre Sedes",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-movilidad-interna-entre-sedes"
+        },
+        {
+          "titulo": "Práctica Académica Especial (PAE)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-practica-academica-especial-pae"
+        },
+        {
+          "titulo": "Reconocimiento de Asignatura(s)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-reconocimiento-de-asignatura-s"
+        },
+        {
+          "titulo": "Recurso de reposición y/o apelación",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-recurso-de-reposicion-y-o-apelacion"
+        },
+        {
+          "titulo": "Reingreso",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-reingreso"
+        },
+        {
+          "titulo": "Reserva de Cupo Adicional",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-reserva-de-cupo-adicional"
+        },
+        {
+          "titulo": "Retiro de la Universidad",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-retiro-de-la-universidad"
+        },
+        {
+          "titulo": "Trabajo de Grado (TDG)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-trabajo-de-grado-tdg"
+        },
+        {
+          "titulo": "Tránsito (Nivel de Formación Superior POS)",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-transito-nivel-de-formacion-superior-pos"
+        },
+        {
+          "titulo": "Traslado",
+          "desc": "Ver requisitos y pasos en la página oficial de esta solicitud.",
+          "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles/gae-solicitud-traslado"
+        }
+      ],
+      "consejo": "Antes de radicar, lee la página de tu solicitud: allí están los requisitos y soportes exactos y el enlace al calendario de solicitudes. Algunas (como cancelación de asignaturas) no se pueden apelar ni revertir.",
+      "enlaceOficial": {
+        "texto": "Gestión de Asuntos Estudiantiles · Facultad de Minas",
+        "url": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles"
+      }
     }
   ],
   "faq": [
@@ -393,14 +664,38 @@
     }
   ],
   "glosario": [
-    { "sigla": "DNINFOA", "definicion": "Dirección Nacional de Información Académica. Entidad encargada de las citaciones y plataformas del SIA." },
-    { "sigla": "IPA", "definicion": "Índice de Prioridad de Asignación. Indicador que ordena las citas de matrícula de los estudiantes regulares del Grupo 4." },
-    { "sigla": "RII", "definicion": "Registro de Intención de Inscripción. Encuesta previa voluntaria que suma puntos directos en el IPA para tu cita." },
-    { "sigla": "P.A.P.A.", "definicion": "Promedio Académico Ponderado Acumulado. Pondera todas las notas cursadas por sus créditos." },
-    { "sigla": "P.A.P.P.I.", "definicion": "Promedio Académico Ponderado del Periodo Inmediato. Mide únicamente el último semestre cursado." },
-    { "sigla": "S.I.A.", "definicion": "Sistema de Información Académica de la UNAL para inscripción, notas e historia académica." },
-    { "sigla": "Bolsa de Créditos", "definicion": "Cupo total de créditos asignados para cursar la carrera (160 exigidos + 80 de bolsa adicional)." },
-    { "sigla": "Corresponsabilidad", "definicion": "Horas semestrales de apoyo institucional (desde 16 horas) requeridas a los beneficiarios de bienestar y apoyos." }
+    {
+      "sigla": "DNINFOA",
+      "definicion": "Dirección Nacional de Información Académica. Entidad encargada de las citaciones y plataformas del SIA."
+    },
+    {
+      "sigla": "IPA",
+      "definicion": "Índice de Prioridad de Asignación. Indicador que ordena las citas de matrícula de los estudiantes regulares del Grupo 4."
+    },
+    {
+      "sigla": "RII",
+      "definicion": "Registro de Intención de Inscripción. Encuesta previa voluntaria que suma puntos directos en el IPA para tu cita."
+    },
+    {
+      "sigla": "P.A.P.A.",
+      "definicion": "Promedio Académico Ponderado Acumulado. Pondera todas las notas cursadas por sus créditos."
+    },
+    {
+      "sigla": "P.A.P.P.I.",
+      "definicion": "Promedio Académico Ponderado del Periodo Inmediato. Mide únicamente el último semestre cursado."
+    },
+    {
+      "sigla": "S.I.A.",
+      "definicion": "Sistema de Información Académica de la UNAL para inscripción, notas e historia académica."
+    },
+    {
+      "sigla": "Bolsa de Créditos",
+      "definicion": "Cupo total de créditos asignados para cursar la carrera (160 exigidos + 80 de bolsa adicional)."
+    },
+    {
+      "sigla": "Corresponsabilidad",
+      "definicion": "Horas semestrales de apoyo institucional (desde 16 horas) requeridas a los beneficiarios de bienestar y apoyos."
+    }
   ],
   "enlaces": [
     {
@@ -423,5 +718,13 @@
       "url": "https://bienestar.medellin.unal.edu.co/",
       "descripcion": "Gestión alimentaria, residencias, convocatorias de corresponsabilidad y salud estudiantil."
     }
-  ]
+  ],
+  "asesoria": {
+    "titulo": "¿Necesitas asesoría sobre un tema?",
+    "texto": "Escribe desde tu correo institucional al área de asesoría estudiantil.",
+    "correo": "asesorestu@unal.edu.co",
+    "telefono": "(+57 604) 43096653",
+    "direccion": "Carrera 80 No 65-223, Campus Robledo, Medellín",
+    "solicitudes": "https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles"
+  }
 }

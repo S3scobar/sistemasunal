@@ -1272,3 +1272,31 @@
     font-size: 12px;
   }
 }
+
+
+/* ---------- Asesoría (parte inferior) ---------- */
+.info-asesoria {
+  margin-top: 40px; padding: 28px 24px; border-radius: 20px; text-align: center;
+  background: var(--azul-marino); color: #fff;
+}
+.info-asesoria h2 { font-family: var(--letra-titulo); font-weight: 400; font-size: clamp(22px, 3.4vw, 30px); }
+.info-asesoria p { margin-top: 6px; color: #bcd8f5; }
+.info-asesoria__correo {
+  display: inline-block; margin-top: 14px; padding: 10px 22px; border-radius: 999px; background: #fff;
+  font-weight: 600; font-size: 18px; color: var(--azul-marino); text-decoration: none; word-break: break-all;
+}
+.info-asesoria__correo:hover { background: #eaf3fd; }
+.info-asesoria__datos { margin: 16px 0 0; padding: 0; list-style: none; font-size: 14px; color: #cfe4fa; }
+.info-asesoria__datos li + li { margin-top: 4px; }
+.info-asesoria__datos a { color: #fff; }
+.info-chip-card a { color: inherit; }
+.info-tabla-wrap { max-width: 100%; overflow-x: auto; }
+@media (max-width: 640px) { .info-tabla th, .info-tabla td { padding: 8px 10px; font-size: 14px; } }
+.calculadora-inicial > *, .calculadora-inputs > *, .campo-calc { min-width: 0; }
+.campo-calc input { max-width: 100%; box-sizing: border-box; }
+@media (max-width: 640px) { .calculadora-inputs { grid-template-columns: 1fr; } }
+.calculadora-grid > * { min-width: 0; }
+@media (max-width: 640px) { .calculadora-grid { grid-template-columns: minmax(0, 1fr); } }
+.calc-materia-fila > * { min-width: 0; }
+.calc-materia-fila input { width: 100%; box-sizing: border-box; }
+@media (max-width: 640px) { .calc-materia-fila { grid-template-columns: minmax(0, 1fr) 60px 64px 32px; } }
