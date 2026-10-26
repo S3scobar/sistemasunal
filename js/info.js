@@ -529,7 +529,7 @@ function generarHtmlCalculadora() {
 
   let diagnostico = '';
   if (res.nuevoPAPA >= 4.2) {
-    diagnostico = 'Excelente rendimiento. Te ubicas en rango de Matrícula de Honor y becas de posgrado.';
+    diagnostico = 'Excelente rendimiento. Un promedio alto te acerca al estímulo por mejores promedios (depende del ranking de tu programa, no de un PAPA fijo).';
   } else if (res.nuevoPAPA >= 3.8) {
     diagnostico = 'Muy buen promedio. Mantienes una trayectoria académica sólida y competitiva.';
   } else if (res.nuevoPAPA >= 3.2) {
@@ -654,7 +654,7 @@ function activarEventosCalculadora() {
 
     if (diagEl) {
       if (res.nuevoPAPA >= 4.2) {
-        diagEl.textContent = 'Excelente rendimiento. Te ubicas en rango de Matrícula de Honor y becas de posgrado.';
+        diagEl.textContent = 'Excelente rendimiento. Un promedio alto te acerca al estímulo por mejores promedios (depende del ranking de tu programa, no de un PAPA fijo).';
       } else if (res.nuevoPAPA >= 3.8) {
         diagEl.textContent = 'Muy buen promedio. Mantienes una trayectoria académica sólida y competitiva.';
       } else if (res.nuevoPAPA >= 3.2) {
@@ -897,7 +897,7 @@ document.addEventListener('click', (ev) => {
 
 /* ---------- Encabezado moderno de cada tarjeta ---------- */
 
-const ICONO_CATEGORIA = { citas: 'calendario', papa: 'grafica', creditos: 'bolsa', corresponsabilidad: 'manos', tramites: 'documento', calendario: 'calendario', solicitudes: 'documento' };
+const ICONO_CATEGORIA = { citas: 'calendario', papa: 'grafica', creditos: 'bolsa', corresponsabilidad: 'manos', calendario: 'calendario', solicitudes: 'documento' };
 
 function heroGuia(guia) {
   return `

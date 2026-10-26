@@ -55,12 +55,6 @@
       "descripcion": "Compromiso de apoyos y becas desde 16 horas, dónde pagarlas en Minas y normatividad."
     },
     {
-      "id": "tramites",
-      "nombre": "Trámites y Cupo",
-      "icono": "documento",
-      "descripcion": "Causales de pérdida de cupo, reserva de semestre, cancelaciones y doble titulación."
-    },
-    {
       "id": "faq",
       "nombre": "Preguntas Frecuentes",
       "icono": "faq",
@@ -151,7 +145,7 @@
       "categoria": "papa",
       "etiqueta": "Métrica de Rendimiento",
       "titulo": "¿Qué es el P.A.P.A. y para qué sirve?",
-      "subtitulo": "El Promedio Académico Ponderado Acumulado rige la permanencia en la UNAL, becas de posgrado y Matrícula de Honor.",
+      "subtitulo": "El Promedio Académico Ponderado Acumulado rige la permanencia en la UNAL y es la base de estímulos como la exención de matrícula por mejores promedios.",
       "enlaceOficial": {
         "texto": "Consultar Estatuto Estudiantil (Acuerdo 008 de 2008 CSU) · Régimen Académico",
         "url": "https://legal.unal.edu.co/rlunal/home/doc.jsp?d_i=34983"
@@ -169,8 +163,8 @@
         },
         {
           "icono": "estrella",
-          "titulo": "Premios a la Excelencia",
-          "texto": "Tener un PAPA destacado (> 4.2) otorga Matrícula de Honor (exoneración de pago), créditos de posgrado y prioridad en dobles titulaciones."
+          "titulo": "Estímulo por mejores promedios",
+          "texto": "No se otorga por superar un PAPA fijo: en la Sede Medellín se premia, con exención del pago de la matrícula del periodo siguiente, a los 15 mejores promedios de cada programa (con empates). Hay que haber inscrito el mínimo de 10 créditos."
         }
       ],
       "formula": "P.A.P.A. = ∑ (Nota Asignatura × Créditos) ÷ ∑ Créditos Totales Cursados",
@@ -184,7 +178,7 @@
           [
             "<strong>P.A.P.A.</strong>",
             "Promedio histórico de toda la carrera ponderado por créditos.",
-            "Permanencia (mínimo 3.00), becas, Matrícula de Honor, posgrados y dobles titulaciones."
+            "Permanencia (mínimo 3.00), estímulo por mejores promedios, becas de posgrado y dobles titulaciones."
           ],
           [
             "<strong>P.A.P.P.I.</strong>",
@@ -307,49 +301,6 @@
         "Proyectos Ambientales y Eventos: Huertas de la sede, Semana de Sistemas y ferias de inducción."
       ],
       "consejo": "No dejes las horas de corresponsabilidad para las semanas de parciales finales. Comienza a pagarlas desde las primeras semanas de clase."
-    },
-    {
-      "id": "tramites-y-permanencia",
-      "categoria": "tramites",
-      "etiqueta": "Estatuto Estudiantil",
-      "titulo": "Permanencia, Pérdida de Cupo y Trámites Clave",
-      "subtitulo": "Reglas del Estatuto Estudiantil (Acuerdo 008 de 2008) sobre cómo mantener tu condición de estudiante activo.",
-      "enlaceOficial": {
-        "texto": "Portal de Trámites y Reglamentación · Facultad de Minas",
-        "url": "https://minas.medellin.unal.edu.co/"
-      },
-      "puntosClave": [
-        {
-          "icono": "alerta",
-          "titulo": "4 Causales de Pérdida de Cupo",
-          "texto": "1) PAPA < 3.00. 2) Agotar la bolsa de créditos. 3) No inscribir materias sin reserva. 4) Sanción disciplinaria de suspensión."
-        },
-        {
-          "icono": "documento",
-          "titulo": "Reserva de Cupo (Hasta 2 veces)",
-          "texto": "Si no puedes estudiar un semestre, tramita la reserva en el SIA dentro del calendario oficial para proteger tu cupo."
-        },
-        {
-          "icono": "check",
-          "titulo": "En la UNAL no hay habilitaciones",
-          "texto": "Si repruebas una materia debes repetirla completa en un semestre posterior (o solicitar examen de validación por suficiencia)."
-        }
-      ],
-      "tramitesComunes": [
-        {
-          "titulo": "Cancelación de Semestre / Asignaturas",
-          "desc": "Se realiza en el SIA dentro de las fechas fijadas en el calendario de la sede. Si es extemporánea, requiere soportes médicos o de fuerza mayor radicados ante la Vicedecanatura."
-        },
-        {
-          "titulo": "Doble Titulación",
-          "desc": "Exige PAPA sobresaliente (generalmente ≥ 4.0), haber aprobado al menos el 40% de los créditos de Sistemas y contar con aval de los comités asesores de ambos programas."
-        },
-        {
-          "titulo": "Solicitud de Readmisión",
-          "desc": "Si perdiste cupo por PAPA < 3.00, puedes radicar solicitud ante el Consejo de Facultad según los plazos reglamentarios."
-        }
-      ],
-      "consejo": "Ante cualquier dificultad académica o de salud, comunícate de inmediato con la Vicedecanatura Académica o la Dirección de Área Curricular de Sistemas."
     },
     {
       "id": "calendario-academico",
@@ -789,12 +740,6 @@
       "categoria": "corresponsabilidad",
       "pregunta": "¿Cuántas horas de corresponsabilidad debo pagar y qué pasa si no lo hago?",
       "respuesta": "Las horas van desde las <strong>16 horas semestrales</strong> (según el beneficio asignado: alimentación, alojamiento o residencia). Si no las completas antes del cierre del semestre, quedas en estado de incumplimiento y <strong>pierdes de inmediato el subsidio</strong> para el periodo siguiente, sin posibilidad de renovarlo hasta ponerte al día."
-    },
-    {
-      "id": "faq-tramites-1",
-      "categoria": "tramites",
-      "pregunta": "¿En la UNAL existen exámenes de habilitación para materias perdidas?",
-      "respuesta": "No. En el régimen general de pregrado de la Universidad Nacional no existe la figura de habilitación. Debes inscribir y cursar nuevamente la materia, o presentar una validación por suficiencia si cumples con las condiciones reglamentarias."
     }
   ],
   "glosario": [
