@@ -433,15 +433,11 @@ function generarHtmlGuia(guia) {
   }
 
   return `
-    <article class="info-tarjeta" id="${esc(guia.id)}">
-      <div class="info-tarjeta__encabezado">
-        <span class="info-tarjeta__badge">${esc(guia.etiqueta)}</span>
+    <article class="info-tarjeta" id="${esc(guia.id)}" data-cat="${esc(guia.categoria)}">
+      ${heroGuia(guia)}
+      <div class="info-cuerpo">
+        ${subseccionesHtml}
       </div>
-
-      <h3 class="info-tarjeta__titulo">${esc(guia.titulo)}</h3>
-      <p class="info-tarjeta__subtitulo">${esc(guia.subtitulo)}</p>
-
-      ${subseccionesHtml}
     </article>
   `;
 }
@@ -849,10 +845,9 @@ function generarHtmlCalendario(guia) {
   const cuenta = (clave) => filas.filter((f) => (clave === 'todos') || estadoCalendario(f, hoy).clave === 'fin' === (clave === 'fin')).length;
 
   return `
-    <article class="info-tarjeta cal" id="${esc(guia.id)}">
-      <div class="info-tarjeta__encabezado"><span class="info-tarjeta__badge">${esc(guia.etiqueta)}</span></div>
-      <h3 class="info-tarjeta__titulo">${esc(guia.titulo)}</h3>
-      <p class="info-tarjeta__subtitulo">${esc(guia.subtitulo)}</p>
+    <article class="info-tarjeta cal" id="${esc(guia.id)}" data-cat="${esc(guia.categoria)}">
+      ${heroGuia(guia)}
+      <div class="info-cuerpo">
 
       ${proximos.length ? `
       <h4 class="info-subseccion-titulo">${ICONOS.reloj} Próximos vencimientos</h4>
@@ -882,6 +877,7 @@ function generarHtmlCalendario(guia) {
           ${ICONOS.documento}<span>${esc(cal.fuente.texto)}</span>${ICONOS.externo}
         </a>
       </div>
+      </div>
     </article>`;
 }
 
@@ -894,3 +890,20 @@ document.addEventListener('click', (ev) => {
   $$('.cal-fila', raiz).forEach((li) => { li.hidden = !(f === 'todos' || li.dataset.estado === f); });
   $$('.cal-grupo', raiz).forEach((g) => { g.hidden = !$$('.cal-fila:not([hidden])', g).length; });
 });
+
+
+/* ---------- Encabezado moderno de cada tarjeta ---------- */
+
+const ICONO_CATEGORIA = { citas: 'calendario', papa: 'grafica', creditos: 'bolsa', corresponsabilidad: 'manos', tramites: 'documento', calendario: 'calendario', solicitudes: 'documento' };
+
+function heroGuia(guia) {
+  return `
+    <header class="info-hero">
+      <span class="info-hero__icono" aria-hidden="true">${ICONOS[ICONO_CATEGORIA[guia.categoria]] || ICONOS.documento}</span>
+      <div class="info-hero__texto">
+        <span class="info-hero__badge">${esc(guia.etiqueta)}</span>
+        <h3 class="info-hero__titulo">${esc(guia.titulo)}</h3>
+        <p class="info-hero__subtitulo">${esc(guia.subtitulo)}</p>
+      </div>
+    </header>`;
+}

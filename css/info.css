@@ -1351,3 +1351,96 @@
   .cal-fila { grid-template-columns: 1fr; gap: 10px; }
   .cal-fila__estado { flex-direction: row; align-items: center; gap: 10px; flex-wrap: wrap; }
 }
+
+/* =========================================================
+   REDISEÑO DE TARJETAS (más moderno, menos «diapositiva»)
+   ========================================================= */
+.info-tarjeta {
+  --acento: #1667c2; --acento-osc: #0a2c52; --acento-suave: #eaf3fd;
+  padding: 0; border: 0; border-radius: 28px;
+  box-shadow: 0 1px 2px rgba(10, 44, 82, .06), 0 22px 44px -26px rgba(10, 44, 82, .45);
+}
+.info-tarjeta:hover { box-shadow: 0 1px 2px rgba(10, 44, 82, .06), 0 28px 54px -26px rgba(10, 44, 82, .5); }
+.info-tarjeta[data-cat="papa"]               { --acento: #8e5fb8; --acento-osc: #4a2a72; --acento-suave: #f3ebfa; }
+.info-tarjeta[data-cat="creditos"]           { --acento: #d99a00; --acento-osc: #7a4f00; --acento-suave: #fff5d9; }
+.info-tarjeta[data-cat="corresponsabilidad"],
+.info-tarjeta[data-cat="calendario"]         { --acento: #1f9d92; --acento-osc: #0b4d52; --acento-suave: #e3f6f4; }
+.info-tarjeta[data-cat="tramites"]           { --acento: #0f4f93; --acento-osc: #071d38; --acento-suave: #e8f0fa; }
+.info-tarjeta[data-cat="solicitudes"]        { --acento: #e8590c; --acento-osc: #7d2a05; --acento-suave: #fdeee4; }
+
+/* Encabezado con degradado */
+.info-hero {
+  position: relative; display: flex; gap: 22px; align-items: flex-start; padding: 34px 38px 36px;
+  color: #fff; overflow: hidden;
+  background: linear-gradient(135deg, var(--acento-osc) 0%, var(--acento) 100%);
+}
+.info-hero::before, .info-hero::after { content: ""; position: absolute; border-radius: 50%; background: rgba(255, 255, 255, .09); pointer-events: none; }
+.info-hero::before { width: 260px; height: 260px; right: -70px; top: -110px; }
+.info-hero::after { width: 140px; height: 140px; right: 110px; bottom: -80px; }
+.info-hero__icono { position: relative; z-index: 1; display: grid; place-items: center; flex: none; width: 62px; height: 62px; border-radius: 20px; background: rgba(255, 255, 255, .18); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .3); }
+.info-hero__icono svg { width: 30px; height: 30px; }
+.info-hero__texto { position: relative; z-index: 1; min-width: 0; max-width: 780px; }
+.info-hero__badge { display: inline-block; padding: 4px 12px; border-radius: 999px; background: rgba(255, 255, 255, .2); font-family: var(--letra-universidad); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; }
+.info-hero__titulo { margin: 10px 0 8px; font-family: var(--letra-titulo); font-weight: 400; font-size: clamp(23px, 3.4vw, 32px); line-height: 1.15; color: #fff; }
+.info-hero__subtitulo { font-size: 16px; line-height: 1.55; color: rgba(255, 255, 255, .88); }
+.info-cuerpo { padding: 26px 38px 36px; display: grid; gap: 0; }
+.info-cuerpo > .info-cta-btn { margin-bottom: 8px; }
+
+/* Botón destacado */
+.info-cta-btn { border-radius: 14px; background: var(--acento); box-shadow: 0 10px 22px -12px var(--acento); width: fit-content; }
+.info-cta-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+/* Títulos de subsección */
+.info-subseccion-titulo { display: flex; align-items: center; gap: 10px; margin: 26px 0 14px; font-size: 13px; letter-spacing: .16em; color: var(--acento-osc); }
+.info-subseccion-titulo svg { flex: none; padding: 6px; box-sizing: content-box; width: 18px; height: 18px; border-radius: 10px; background: var(--acento-suave); color: var(--acento); }
+
+/* Puntos clave */
+.info-puntos-grid { gap: 14px; }
+.info-punto-card { border: 0; border-radius: 20px; background: var(--acento-suave); padding: 18px 20px; box-shadow: none; transition: transform .2s; }
+.info-punto-card:hover { transform: translateY(-3px); }
+.info-punto-card__icono { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; background: var(--acento); color: #fff; box-shadow: 0 8px 16px -10px var(--acento); }
+.info-punto-card__icono svg { width: 20px; height: 20px; }
+.info-punto-card h4 { font-family: var(--letra-texto); font-size: 16px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--acento-osc); }
+.info-punto-card p { color: var(--tinta-suave); }
+
+/* Grupos de prelación */
+.info-grupo-item { position: relative; overflow: hidden; border: 0; border-radius: 20px; background: #fff; box-shadow: 0 0 0 1px var(--linea), 0 14px 26px -22px rgba(10, 44, 82, .6); transition: transform .2s, box-shadow .2s; }
+.info-grupo-item::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 5px; background: linear-gradient(90deg, var(--acento), var(--acento-osc)); }
+.info-grupo-item:hover { transform: translateY(-4px); box-shadow: 0 0 0 1px var(--acento), 0 22px 34px -22px rgba(10, 44, 82, .6); }
+.info-grupo-numero { background: linear-gradient(135deg, var(--acento), var(--acento-osc)); box-shadow: 0 8px 16px -8px var(--acento); }
+.info-grupo-nombre { font-family: var(--letra-texto); font-size: 15px; letter-spacing: 0; text-transform: none; }
+
+/* Factores IPA */
+.info-factor-card { border: 0; border-radius: 18px; background: linear-gradient(160deg, var(--acento-suave), #fff); box-shadow: 0 0 0 1px var(--linea); }
+.info-factor-card h5 { color: var(--acento-osc); }
+
+/* Pasos como línea de tiempo */
+.info-pasos-track { position: relative; gap: 14px; }
+.info-paso-card { border: 0; border-radius: 20px; background: #fff; box-shadow: 0 0 0 1px var(--linea), 0 14px 26px -22px rgba(10, 44, 82, .6); }
+.info-paso-numero { background: linear-gradient(135deg, var(--acento), var(--acento-osc)); box-shadow: 0 10px 18px -10px var(--acento); }
+
+/* Reglas */
+.info-reglas-lista { gap: 8px; }
+.info-regla-item { border: 0; border-radius: 16px; background: var(--acento-suave); padding: 13px 18px; }
+.info-regla-item svg { flex: none; width: 24px; height: 24px; padding: 5px; box-sizing: border-box; border-radius: 50%; background: var(--acento); color: #fff; }
+
+/* Chips de trámites / lugares */
+.info-chip-card { border: 0; border-radius: 18px; background: #fff; box-shadow: 0 0 0 1px var(--linea), 0 12px 24px -22px rgba(10, 44, 82, .7); transition: transform .2s, box-shadow .2s; }
+.info-chip-card:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px var(--acento), 0 20px 30px -22px rgba(10, 44, 82, .6); }
+.info-chip-card strong, .info-chip-card a strong { color: var(--acento-osc); }
+
+/* Fórmula, tabla, consejo */
+.formula-caja { border: 0; border-radius: 20px; background: linear-gradient(135deg, var(--acento-osc), var(--acento)); }
+.formula-texto { color: #fff; }
+.info-tabla-wrap { border: 0; border-radius: 18px; box-shadow: 0 0 0 1px var(--linea), 0 14px 26px -24px rgba(10, 44, 82, .6); }
+.info-tabla thead th { background: var(--acento-suave); color: var(--acento-osc); }
+.info-tabla tbody tr:nth-child(even) { background: #f9fbfd; }
+.info-consejo { border: 0; border-left: 6px solid #f7b61a; border-radius: 16px; background: #fff8e1; }
+.info-guia-footer { border-top: 0; margin-top: 22px; }
+.info-enlace-oficial { border-radius: 14px; background: var(--acento-suave); border: 0; color: var(--acento-osc); }
+
+@media (max-width: 760px) {
+  .info-hero { flex-direction: column; gap: 14px; padding: 26px 22px 28px; }
+  .info-hero__icono { width: 52px; height: 52px; border-radius: 16px; }
+  .info-cuerpo { padding: 20px 18px 28px; }
+}
