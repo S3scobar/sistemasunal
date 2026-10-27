@@ -780,7 +780,8 @@ function pintarAsesoria() {
     <p>${esc(a.texto)}</p>
     <a class="info-asesoria__correo" href="mailto:${esc(a.correo)}">${esc(a.correo)}</a>
     <ul class="info-asesoria__datos">
-      <li>Teléfono: ${esc(a.telefono)}</li>
+      <li>Representación Estudiantil de Sistemas: <a href="https://wa.me/573123772091" target="_blank" rel="noopener noreferrer"><strong>💬 WhatsApp (+57) ${esc(a.representacion || '312 377 2091')}</strong></a></li>
+      <li>Teléfono Facultad de Minas: ${esc(a.telefono)}</li>
       <li>${esc(a.direccion)}</li>
       <li><a href="${esc(a.solicitudes)}" target="_blank" rel="noopener noreferrer">Solicitudes estudiantiles de la Facultad de Minas</a></li>
     </ul>`;

@@ -543,6 +543,13 @@ a { color: var(--azul); }
   color: var(--azul-oscuro);
   text-decoration: underline;
 }
+.pie__contacto-link--wpp {
+  color: #0b6b3a;
+  font-weight: 600;
+}
+.pie__contacto-link--wpp:hover {
+  color: #064e29;
+}
 .pie__contacto-link svg {
   flex-shrink: 0;
 }
@@ -705,6 +712,18 @@ a { color: var(--azul); }
 
 .toast-autor__enlace:hover {
   background: var(--azul);
+  color: #fff;
+}
+
+.toast-autor__enlace--wpp {
+  background: #e7f9ee;
+  color: #0b6b3a;
+  border: 1px solid #b3eccb;
+}
+
+.toast-autor__enlace--wpp:hover {
+  background: #25d366;
+  border-color: #25d366;
   color: #fff;
 }
 
