@@ -467,95 +467,58 @@ a { color: var(--azul); }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 32px 16px;
+  gap: 26px;
+  padding: 36px 16px 44px;
   text-align: center;
   font-size: 14px;
-  color: #8a9099;
+  color: var(--tinta-suave);
   border-top: 1px solid #cfd0cd;
 }
-.pie__instagram {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: inherit;
-  text-decoration: none;
-}
-.pie__escudo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-}
+.pie__marca { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pie__escudo { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; }
 .pie__escudo-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, .75);
-  background: #fff;
-  display: block;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
-  transition: transform .2s ease, filter .2s;
+  width: 56px; height: 56px; border-radius: 50%; object-fit: cover; display: block;
+  border: 2px solid rgba(255, 255, 255, .85); background: #fff; box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
 }
-.pie__instagram:hover .pie__escudo-img {
-  transform: scale(1.08);
+.pie__redes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.pie__red {
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: 999px;
+  background: rgba(10, 44, 82, .07); color: var(--tinta-suave); font-weight: 600; font-size: 14px; text-decoration: none;
+  transition: background .15s, color .15s;
 }
-.pie__usuario { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--tinta-suave); transition: color .2s; }
-.pie__usuario svg { width: 16px; height: 16px; }
-.pie__instagram:hover .pie__usuario { color: var(--azul); }
-.pie__creditos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  margin-top: 4px;
+.pie__red svg { width: 16px; height: 16px; }
+.pie__red:hover { background: rgba(22, 103, 194, .14); color: var(--azul); }
+.pie__red--wpp { color: #0b6b3a; background: rgba(37, 211, 102, .14); }
+.pie__red--wpp:hover { background: rgba(37, 211, 102, .26); color: #064e29; }
+.pie__redes .pie__contacto-sep { display: none; }
+.pie__facultad { max-width: 780px; font-size: 13.5px; color: var(--gris); }
+.pie__facultad strong { color: var(--azul-marino); font-weight: 600; }
+
+.pie__tarjetas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; max-width: 1040px; }
+.pie__tarjeta {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 22px 20px;
+  border-radius: 20px; border-top: 5px solid var(--azul); background: #fff;
+  box-shadow: 0 1px 2px rgba(10, 44, 82, .06), 0 14px 30px -20px rgba(10, 44, 82, .45);
 }
-.pie__autores {
-  font-size: 13.5px;
-  color: var(--tinta-suave);
+.pie__tarjeta--web { border-top-color: var(--azul-marino); }
+.pie__tarjeta-titulo {
+  margin-bottom: 4px; font-family: var(--letra-universidad); font-weight: 400; font-size: 11.5px;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gris);
 }
-.pie__autores strong {
-  font-weight: 600;
-  color: var(--azul-marino);
-  white-space: nowrap;
-}
-.pie__contacto {
-  display: inline-flex;
-  align-items: center;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 14px;
-  font-size: 13px;
-}
-.pie__contacto-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--azul);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color .15s;
-}
-.pie__contacto-link:hover {
-  color: var(--azul-oscuro);
-  text-decoration: underline;
-}
-.pie__contacto-link--wpp {
-  color: #0b6b3a;
-  font-weight: 600;
-}
-.pie__contacto-link--wpp:hover {
-  color: #064e29;
-}
-.pie__contacto-link svg {
-  flex-shrink: 0;
-}
-.pie__contacto-sep {
-  color: #adb5bd;
-}
+.pie__bloque { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; }
+.pie__bloque + .pie__bloque { margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.pie__persona { font-size: 15px; line-height: 1.45; color: var(--tinta-suave); }
+.pie__persona strong { font-weight: 700; color: var(--azul-marino); }
+.pie__contacto { display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 8px 14px; margin-top: 4px; font-size: 13px; }
+.pie__contacto-link { display: inline-flex; align-items: center; gap: 6px; color: var(--azul); text-decoration: none; font-weight: 500; transition: color .15s; word-break: break-all; }
+.pie__contacto-link:hover { color: var(--azul-oscuro); text-decoration: underline; }
+.pie__contacto-link--wpp { color: #0b6b3a; font-weight: 600; }
+.pie__contacto-link--wpp:hover { color: #064e29; }
+.pie__contacto-link svg { flex-shrink: 0; }
+.pie__contacto-sep { color: #adb5bd; }
+.pie a:focus-visible { outline: 3px solid var(--azul-marino); outline-offset: 2px; border-radius: 6px; }
+
+@media (max-width: 760px) { .pie__tarjetas { grid-template-columns: 1fr; } }
 
 
 /* ---------- 7. Mensaje flotante de bienvenida / Creador ---------- */
