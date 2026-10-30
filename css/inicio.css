@@ -393,3 +393,251 @@ a.banderin:focus-visible { outline: 3px solid #a9d1ff; outline-offset: 6px; bord
 }
 
 
+
+
+/* =========================================================
+   4. ESTÉTICA "SISTEMAS" (solo la página de inicio)
+   Terminal, código y cuadrícula de circuito. Solo capa visual:
+   no cambia ningún dato ni texto de las secciones.
+   ========================================================= */
+
+body[data-pagina="inicio"] {
+  --neon: #3de6c1;
+  --cian: #5cc8ff;
+  --mono: ui-monospace, 'JetBrains Mono', 'Fira Code', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+/* --- Portada --- */
+body[data-pagina="inicio"] .portada::after {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(61, 230, 193, .16), transparent 60%),
+    linear-gradient(rgba(6, 22, 44, .78), rgba(6, 22, 44, .92));
+}
+body[data-pagina="inicio"] .portada__codigo {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(92, 200, 255, .09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(92, 200, 255, .09) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+}
+body[data-pagina="inicio"] .portada__codigo::before,
+body[data-pagina="inicio"] .portada__codigo::after {
+  content: '{ }  < />  01  ;  =>  [ ]  &&  ||  0x1F  10110';
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .4em;
+  white-space: nowrap;
+  color: rgba(61, 230, 193, .28);
+}
+body[data-pagina="inicio"] .portada__codigo::before { top: 16px; left: 18px; }
+body[data-pagina="inicio"] .portada__codigo::after { bottom: 16px; right: 18px; }
+
+body[data-pagina="inicio"] .portada__logo {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 4px rgba(61, 230, 193, .25), 0 0 34px rgba(61, 230, 193, .45), 0 10px 30px rgba(0, 0, 0, .5);
+}
+body[data-pagina="inicio"] .portada__lugar {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .12em;
+  color: var(--neon);
+}
+body[data-pagina="inicio"] .portada__lugar::before { content: '// '; opacity: .7; }
+body[data-pagina="inicio"] .portada__antetitulo { font-family: var(--mono); font-weight: 700; letter-spacing: .22em; color: var(--cian); }
+body[data-pagina="inicio"] .portada__antetitulo::before { content: '<'; margin-right: .5em; color: var(--neon); }
+body[data-pagina="inicio"] .portada__antetitulo::after { content: '/>'; margin-left: .5em; color: var(--neon); }
+body[data-pagina="inicio"] .letras-varsity {
+  text-shadow: 0 0 30px rgba(92, 200, 255, .35);
+}
+
+/* Cifras como panel de terminal */
+body[data-pagina="inicio"] .portada__cifras {
+  position: relative;
+  margin-top: 40px;
+  padding-top: 26px;
+  border: 1px solid rgba(61, 230, 193, .55);
+  border-radius: 12px;
+  background: rgba(4, 16, 32, .78);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .4), 0 0 28px rgba(61, 230, 193, .18);
+}
+body[data-pagina="inicio"] .portada__cifras::before {
+  content: '';
+  position: absolute;
+  top: 9px; left: 12px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #ff5f57;
+  box-shadow: 14px 0 0 #febc2e, 28px 0 0 #28c840;
+}
+body[data-pagina="inicio"] .portada__cifras li {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0;
+  color: var(--neon);
+}
+body[data-pagina="inicio"] .portada__cifras li + li { border-left: 1px dashed rgba(92, 200, 255, .35); }
+body[data-pagina="inicio"] .portada__cifras small { font-family: var(--mono); color: #9fc4e6; }
+
+/* Línea de comando con cursor */
+.portada__prompt { display: none; }
+body[data-pagina="inicio"] .portada__prompt {
+  display: block;
+  margin-top: 26px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: #cfe6ff;
+}
+.portada__prompt-ruta { color: var(--cian); }
+.portada__prompt-signo { color: var(--neon); }
+.cursor {
+  display: inline-block;
+  width: .55em; height: 1.05em;
+  margin-left: 4px;
+  vertical-align: -2px;
+  background: var(--neon);
+  animation: parpadeo-cursor 1.05s steps(1) infinite;
+}
+@keyframes parpadeo-cursor { 50% { opacity: 0; } }
+
+/* --- Títulos de sección --- */
+body[data-pagina="inicio"] .seccion-titulo__antetitulo {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: .08em;
+  text-transform: none;
+  color: var(--azul);
+}
+body[data-pagina="inicio"] .seccion-titulo__antetitulo::before { content: '// '; color: #1aa88a; }
+body[data-pagina="inicio"] .seccion-titulo h2 {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: clamp(28px, 4.6vw, 44px);
+  letter-spacing: -.02em;
+  color: var(--azul-marino);
+  -webkit-text-stroke: 0;
+  filter: none;
+}
+body[data-pagina="inicio"] .seccion-titulo h2::before { content: '> '; color: #1aa88a; }
+body[data-pagina="inicio"] .seccion-titulo h2::after {
+  content: '_';
+  color: #1aa88a;
+  animation: parpadeo-cursor 1.05s steps(1) infinite;
+}
+body[data-pagina="inicio"] .grupos .seccion-titulo h2 { color: #fff; }
+body[data-pagina="inicio"] .grupos .seccion-titulo__antetitulo { color: var(--cian); }
+body[data-pagina="inicio"] .grupos .seccion-titulo h2::before,
+body[data-pagina="inicio"] .grupos .seccion-titulo h2::after,
+body[data-pagina="inicio"] .grupos .seccion-titulo__antetitulo::before { color: var(--neon); }
+
+/* --- Fondos con cuadrícula de puntos --- */
+body[data-pagina="inicio"] .programa {
+  background:
+    radial-gradient(rgba(22, 103, 194, .16) 1px, transparent 1.4px) 0 0 / 22px 22px,
+    #f4f8fd;
+}
+body[data-pagina="inicio"] .perfil {
+  background:
+    radial-gradient(rgba(10, 44, 82, .16) 1px, transparent 1.4px) 0 0 / 22px 22px,
+    #dfe8f2;
+}
+body[data-pagina="inicio"] .grupos {
+  background:
+    linear-gradient(rgba(92, 200, 255, .06) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgba(92, 200, 255, .06) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(#071f3c, #04111f);
+}
+
+/* --- Tarjetas como ventanas de editor --- */
+body[data-pagina="inicio"] .programa__texto,
+body[data-pagina="inicio"] .ficha,
+body[data-pagina="inicio"] .acreditacion__tarjeta,
+body[data-pagina="inicio"] .rasgo {
+  position: relative;
+  border: 1px solid #b9cde4;
+  border-radius: 12px;
+  box-shadow: 0 14px 30px -22px rgba(10, 44, 82, .6), 4px 4px 0 rgba(22, 103, 194, .12);
+}
+body[data-pagina="inicio"] .programa__texto { padding-top: 46px; }
+body[data-pagina="inicio"] .programa__texto::before,
+body[data-pagina="inicio"] .rasgo::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 28px;
+  border-radius: 11px 11px 0 0;
+  background:
+    radial-gradient(circle, #ff5f57 3.5px, transparent 4px) 12px 50% / 14px 14px no-repeat,
+    radial-gradient(circle, #febc2e 3.5px, transparent 4px) 28px 50% / 14px 14px no-repeat,
+    radial-gradient(circle, #28c840 3.5px, transparent 4px) 44px 50% / 14px 14px no-repeat,
+    #e6eef8;
+  border-bottom: 1px solid #b9cde4;
+}
+body[data-pagina="inicio"] .rasgo { padding-top: 46px; border-top: 1px solid #b9cde4; }
+body[data-pagina="inicio"] .rasgo__icono { border-radius: 10px; background: var(--azul-marino); box-shadow: 0 0 0 3px rgba(61, 230, 193, .35); }
+body[data-pagina="inicio"] .rasgo h3 { font-family: var(--mono); font-weight: 700; font-size: 16px; letter-spacing: 0; }
+
+body[data-pagina="inicio"] .programa__lema {
+  border-radius: 6px;
+  background: #04111f;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: var(--neon);
+}
+body[data-pagina="inicio"] .programa__lema::before { content: '$ '; opacity: .7; }
+
+/* Ficha como pares clave: valor */
+body[data-pagina="inicio"] .ficha li { border-bottom: 1px dashed #c9d9ec; }
+body[data-pagina="inicio"] .ficha li:last-child { border-bottom: 0; }
+body[data-pagina="inicio"] .ficha__etiqueta {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: #1a8f78;
+}
+body[data-pagina="inicio"] .ficha__etiqueta::after { content: ':'; }
+body[data-pagina="inicio"] .ficha__valor { font-family: var(--mono); font-size: 14px; }
+
+/* Acreditación */
+body[data-pagina="inicio"] .acreditacion {
+  border: 1px solid #9fc0e4;
+  border-radius: 14px;
+  background: #fff;
+}
+body[data-pagina="inicio"] .acreditacion__sello-icono { border-radius: 10px; background: var(--azul-marino); box-shadow: 0 0 0 3px rgba(61, 230, 193, .4); }
+body[data-pagina="inicio"] .acreditacion__antetitulo,
+body[data-pagina="inicio"] .acreditacion__hito-tipo { font-family: var(--mono); letter-spacing: .04em; text-transform: none; }
+body[data-pagina="inicio"] .acreditacion__estado { font-family: var(--mono); font-weight: 800; letter-spacing: 0; }
+body[data-pagina="inicio"] .acreditacion__tarjeta::before { background: linear-gradient(90deg, var(--azul), var(--cian)); }
+body[data-pagina="inicio"] .acreditacion__tarjeta--renovacion::before { background: linear-gradient(90deg, var(--cian), var(--neon)); }
+body[data-pagina="inicio"] .acreditacion__anio-badge { border-radius: 6px; background: #04111f; color: var(--neon); font-family: var(--mono); font-weight: 700; }
+body[data-pagina="inicio"] .acreditacion__tarjeta--renovacion .acreditacion__anio-badge { background: #04111f; }
+
+/* Grupos: etiqueta tipo comentario */
+body[data-pagina="inicio"] .grupo__tipo {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: var(--neon);
+}
+body[data-pagina="inicio"] .grupo__tipo::before { content: '// '; opacity: .7; }
+
+@media (max-width: 640px) {
+  body[data-pagina="inicio"] .portada__codigo::before,
+  body[data-pagina="inicio"] .portada__codigo::after { font-size: 11px; letter-spacing: .25em; }
+  body[data-pagina="inicio"] .portada__cifras li { font-size: 19px; }
+  body[data-pagina="inicio"] .portada__prompt { font-size: 12.5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor, body[data-pagina="inicio"] .seccion-titulo h2::after { animation: none; }
+}
