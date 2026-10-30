@@ -192,3 +192,60 @@ body[data-pagina="intercampus"] :is(.hora-chip, .proxima-salida__hora, .proxima-
 body[data-pagina="malla"] :is(.materia__cred, .materia__codigo) {
   font-family: var(--mono);
 }
+
+
+/* ---------- Malla: tarjeta "Unidad Compartida" como ventana de terminal ---------- */
+
+body[data-pagina="malla"] .malla-drive {
+  padding: 50px 28px 24px;
+  border-left: 1px solid #b9cde4;
+  background: #fff;
+}
+body[data-pagina="malla"] .malla-drive::after { display: none; }
+body[data-pagina="malla"] .malla-drive::before {
+  content: 'drive/unidad-compartida-sistemas';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 30px;
+  padding: 0 14px 0 66px;
+  display: flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: #8fb3d6;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: 1px solid #0d2a4b;
+  background:
+    radial-gradient(circle, #ff5f57 3.5px, transparent 4px) 12px 50% / 14px 14px no-repeat,
+    radial-gradient(circle, #febc2e 3.5px, transparent 4px) 28px 50% / 14px 14px no-repeat,
+    radial-gradient(circle, #28c840 3.5px, transparent 4px) 44px 50% / 14px 14px no-repeat,
+    #04111f;
+}
+body[data-pagina="malla"] .malla-drive__icono-wrap { border-radius: 10px; box-shadow: 0 0 0 3px rgba(61, 230, 193, .35); }
+body[data-pagina="malla"] .malla-drive__tag {
+  border-radius: 6px;
+  background: #04111f;
+  color: var(--neon);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: .02em;
+  text-transform: none;
+}
+body[data-pagina="malla"] .malla-drive__tag::before { content: '$ '; opacity: .7; }
+body[data-pagina="malla"] .malla-drive__titulo { font-family: var(--mono); font-weight: 800; font-size: 19px; letter-spacing: -.02em; }
+body[data-pagina="malla"] .malla-drive__btn-principal {
+  border-radius: 8px;
+  border: 1px solid var(--neon);
+  background: #04111f;
+  color: var(--neon) !important;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  letter-spacing: .02em;
+  text-transform: none;
+  box-shadow: 0 0 18px rgba(61, 230, 193, .25);
+}
+body[data-pagina="malla"] .malla-drive__btn-principal:hover { background: #0a2c52; box-shadow: 0 0 26px rgba(61, 230, 193, .45); }
+body[data-pagina="malla"] .malla-drive__acceso-secundario { font-family: var(--mono); font-size: 12.5px; }
+body[data-pagina="malla"] .malla-drive__nota { font-family: var(--mono); font-size: 12px; border-left-color: var(--neon); background: #eef5fb; }
+body[data-pagina="malla"] .malla-drive__nota svg { color: #1aa88a; }
