@@ -173,7 +173,7 @@ function pintarPie() {
             ${santiago}
           </div>
           <div class="pie__bloque">
-            <p class="pie__persona"><strong>Catalina Arango Sierra</strong> · Representante Suplente</p>
+            <p class="pie__persona"><strong>Catalina Arango Sierra</strong> · Representante Estudiantil</p>
             ${catalina}
           </div>
         </section>
