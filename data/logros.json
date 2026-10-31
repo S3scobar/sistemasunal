@@ -1,36 +1,303 @@
 {
-  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, regla}. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo} (>=), {tipo:\"avance\",minimo} (porcentaje, MÁS de), {tipo:\"papa\",minimo} (>=), {tipo:\"materias_aprobadas\",minimo} (>=), {tipo:\"componente_completo\",clave} (clave de tipología del SIA, p. ej. \"LIBRE ELECCIÓN\"), {tipo:\"nota_en_grupo\",grupo,minimo} (alguna materia aprobada del grupo fundamentacion|disciplinar|libre con nota MAYOR que minimo).",
+  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, categoria, icono, regla}. Categorías: bronce, plata, oro, platino. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"avance\",minimo}, {tipo:\"componente_completo\",clave}, {tipo:\"nota_en_grupo\",grupo,minimo}, {tipo:\"papa\",minimo}, {tipo:\"materias_aprobadas\",minimo}, {tipo:\"speedrun\"}, {tipo:\"materias_con_nota\",minimo,nota}, {tipo:\"sin_perder_materias\"}, {tipo:\"sin_cancelar\"}, {tipo:\"ingles_completo\"}, {tipo:\"materia_especifica\",patron}, {tipo:\"reprobada_luego_aprobada\"}, {tipo:\"avance_y_papa\",minimoAvance,minimoPapa}.",
   "logros": [
     {
-      "id": "codigo-abierto",
-      "nombre": "Código Abierto",
-      "descripcion": "Terminaste el componente de libre elección.",
-      "puntos": 150,
+      "id": "primer-commit",
+      "nombre": "Primer Commit",
+      "descripcion": "Aprobaste tu primera asignatura en la universidad.",
+      "puntos": 50,
+      "categoria": "bronce",
+      "icono": "git-commit",
       "regla": {
-        "tipo": "componente_completo",
-        "clave": "LIBRE ELECCIÓN"
-      }
+        "tipo": "materias_aprobadas",
+        "minimo": 1
+      },
+      "porcentaje": 96.4
+    },
+    {
+      "id": "press-start",
+      "nombre": "Press Start",
+      "descripcion": "Superaste el 25 % de avance en el plan de estudios.",
+      "puntos": 50,
+      "categoria": "bronce",
+      "icono": "gamepad",
+      "regla": {
+        "tipo": "avance",
+        "minimo": 25
+      },
+      "porcentaje": 78.2
+    },
+    {
+      "id": "checkpoint-80",
+      "nombre": "Checkpoint 80",
+      "descripcion": "Aprobaste 80 créditos: superaste la mitad del plan de estudios.",
+      "puntos": 80,
+      "categoria": "bronce",
+      "icono": "bandera",
+      "regla": {
+        "tipo": "creditos_aprobados",
+        "minimo": 80
+      },
+      "porcentaje": 54.6
+    },
+    {
+      "id": "de-los-errores-se-aprende",
+      "nombre": "De los errores se aprende",
+      "descripcion": "Aprobaste en tu segundo intento una asignatura que habías reprobado.",
+      "puntos": 80,
+      "categoria": "bronce",
+      "icono": "fenix",
+      "regla": {
+        "tipo": "reprobada_luego_aprobada"
+      },
+      "porcentaje": 68.9
     },
     {
       "id": "version-beta",
       "nombre": "Versión Beta",
       "descripcion": "Llevas más del 50 % de avance en la carrera.",
       "puntos": 100,
+      "categoria": "plata",
+      "icono": "cohete",
       "regla": {
         "tipo": "avance",
         "minimo": 50
-      }
+      },
+      "porcentaje": 51.3
+    },
+    {
+      "id": "polyglot",
+      "nombre": "Políglota",
+      "descripcion": "Superaste todos los niveles de inglés o el requisito de acreditación de idioma extranjero.",
+      "puntos": 120,
+      "categoria": "plata",
+      "icono": "globo",
+      "regla": {
+        "tipo": "ingles_completo"
+      },
+      "porcentaje": 42.7
+    },
+    {
+      "id": "codigo-abierto",
+      "nombre": "Código Abierto",
+      "descripcion": "Terminaste el componente de libre elección explorando otras disciplinas.",
+      "puntos": 120,
+      "categoria": "plata",
+      "icono": "codigo",
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "LIBRE ELECCIÓN"
+      },
+      "porcentaje": 38.5
+    },
+    {
+      "id": "arbol-de-habilidades",
+      "nombre": "Árbol de Habilidades",
+      "descripcion": "Terminaste el componente de fundamentación optativa.",
+      "puntos": 120,
+      "categoria": "plata",
+      "icono": "arbol",
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "FUND. OPTATIVA"
+      },
+      "porcentaje": 45.1
+    },
+    {
+      "id": "build-personalizada",
+      "nombre": "Build Personalizada",
+      "descripcion": "Completaste el componente de formación disciplinar optativa.",
+      "puntos": 150,
+      "categoria": "plata",
+      "icono": "engranaje",
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "DISCIPLINAR OPTATIVA"
+      },
+      "porcentaje": 34.2
+    },
+    {
+      "id": "overclocking",
+      "nombre": "Overclocking",
+      "descripcion": "Mantienes un P.A.P.A. igual o superior a 4.0 con rendimiento destacado.",
+      "puntos": 150,
+      "categoria": "plata",
+      "icono": "rayo",
+      "regla": {
+        "tipo": "papa",
+        "minimo": 4
+      },
+      "porcentaje": 24.8
     },
     {
       "id": "teorema-demostrado",
       "nombre": "Teorema Demostrado",
       "descripcion": "Sacaste más de 4.6 en una asignatura del componente de fundamentación.",
-      "puntos": 200,
+      "puntos": 150,
+      "categoria": "plata",
+      "icono": "teorema",
       "regla": {
         "tipo": "nota_en_grupo",
         "grupo": "fundamentacion",
         "minimo": 4.6
-      }
+      },
+      "porcentaje": 31.4
+    },
+    {
+      "id": "senior-developer",
+      "nombre": "Senior Developer",
+      "descripcion": "Sacaste más de 4.6 en una asignatura del componente disciplinar o profesional.",
+      "puntos": 150,
+      "categoria": "plata",
+      "icono": "terminal",
+      "regla": {
+        "tipo": "nota_en_grupo",
+        "grupo": "disciplinar",
+        "minimo": 4.6
+      },
+      "porcentaje": 36.2
+    },
+    {
+      "id": "el-fin-de-la-guerra",
+      "nombre": "El fin de la Guerra",
+      "descripcion": "Completaste todas las asignaturas obligatorias de fundamentación.",
+      "puntos": 200,
+      "categoria": "oro",
+      "icono": "espada",
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "FUND. OBLIGATORIA"
+      },
+      "porcentaje": 28.6
+    },
+    {
+      "id": "release-candidate",
+      "nombre": "Release Candidate",
+      "descripcion": "Superaste el 80 % de avance: entraste al grupo de prelación de graduación.",
+      "puntos": 200,
+      "categoria": "oro",
+      "icono": "escudo-check",
+      "regla": {
+        "tipo": "avance",
+        "minimo": 80
+      },
+      "porcentaje": 19.5
+    },
+    {
+      "id": "nucleo-del-sistema",
+      "nombre": "Núcleo del Sistema",
+      "descripcion": "Superaste todas las asignaturas disciplinares obligatorias de Ingeniería de Sistemas.",
+      "puntos": 250,
+      "categoria": "oro",
+      "icono": "cpu",
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "DISCIPLINAR OBLIGATORIA"
+      },
+      "porcentaje": 17.2
+    },
+    {
+      "id": "jefe-final",
+      "nombre": "El Jefe Final",
+      "descripcion": "Aprobaste el Trabajo de Grado y derrotaste la última gran prueba académica.",
+      "puntos": 250,
+      "categoria": "oro",
+      "icono": "calavera",
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "TRABAJO DE GRADO"
+      },
+      "porcentaje": 14.1
+    },
+    {
+      "id": "el-elegido",
+      "nombre": "El Elegido",
+      "descripcion": "Alcanzaste el 80 % de avance manteniendo un P.A.P.A. superior a 4.3.",
+      "puntos": 300,
+      "categoria": "oro",
+      "icono": "corona",
+      "regla": {
+        "tipo": "avance_y_papa",
+        "minimoAvance": 80,
+        "minimoPapa": 4.3
+      },
+      "porcentaje": 6.4
+    },
+    {
+      "id": "uno-en-un-millon",
+      "nombre": "Uno en un millón",
+      "descripcion": "Lograste matricular o cursar Introducción al Manejo de Datos Estadísticos",
+      "puntos": 300,
+      "categoria": "platino",
+      "icono": "dado",
+      "regla": {
+        "tipo": "materia_especifica",
+        "patron": "DATOS ESTAD"
+      },
+      "porcentaje": 3.2
+    },
+    {
+      "nombre": "Big Six",
+      "descripcion": "Obtuviste 5.0 como calificación definitiva en al menos 6 asignaturas.",
+      "puntos": 350,
+      "categoria": "platino",
+      "icono": "fuego",
+      "regla": {
+        "tipo": "materias_con_nota",
+        "minimo": 6,
+        "nota": 5
+      },
+      "id": "big-six",
+      "porcentaje": 4.8
+    },
+    {
+      "id": "modo-ironman",
+      "nombre": "Modo Ironman",
+      "descripcion": "Llegaste al final de la carrera sin haber cancelado ninguna asignatura.",
+      "puntos": 400,
+      "categoria": "platino",
+      "icono": "armadura",
+      "regla": {
+        "tipo": "sin_cancelar"
+      },
+      "porcentaje": 5.1
+    },
+    {
+      "id": "the-completionist",
+      "nombre": "The Completionist",
+      "descripcion": "¡Alcanzaste el 100 % de avance en el plan de estudios! Carrera completada.",
+      "puntos": 400,
+      "categoria": "platino",
+      "icono": "trofeo-platino",
+      "regla": {
+        "tipo": "avance",
+        "minimo": 100
+      },
+      "porcentaje": 11.8
+    },
+    {
+      "id": "no-hit-run",
+      "nombre": "No-Hit Run",
+      "descripcion": "Llegaste al final de la carrera sin haber reprobado ninguna sola asignatura.",
+      "puntos": 500,
+      "categoria": "platino",
+      "icono": "corazon-intacto",
+      "regla": {
+        "tipo": "sin_perder_materias"
+      },
+      "porcentaje": 2.4
+    },
+    {
+      "id": "speedrun",
+      "nombre": "Speedrun",
+      "descripcion": "¡Completaste toda la carrera en menos de 10 semestres!",
+      "puntos": 500,
+      "categoria": "platino",
+      "icono": "reloj",
+      "regla": {
+        "tipo": "speedrun"
+      },
+      "porcentaje": 1.3
     }
   ]
 }

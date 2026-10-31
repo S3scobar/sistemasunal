@@ -113,7 +113,11 @@ function leerHistoria(textoOriginal) {
     cupo: leerCifraSuelta(texto, /Cupo\s+de\s+cr[ée]ditos\s+(\d+)/i),
     disponibles: leerCifraSuelta(texto, /Cr[ée]ditos\s+disponibles\s+(\d+)/i),
     adicionales: leerCifraSuelta(texto, /Cr[ée]ditos\s+adicionales\s+(\d+)/i),
-    esSistemas: /SISTEMAS\s+E\s+INFORM/i.test(quitarTildes(texto)) || /SISTEMAS\s+E\s+INFORM/i.test(texto),
+    esSistemas:
+      /SISTEMAS\s+E\s+INFORM/i.test(quitarTildes(texto)) ||
+      /INGENIERIA\s+DE\s+SISTEMAS/i.test(quitarTildes(texto)) ||
+      /2879\s*-\s*INGENIERIA/i.test(quitarTildes(texto)) ||
+      /PROGRAMA:\s*2879/i.test(quitarTildes(texto)),
   };
 }
 

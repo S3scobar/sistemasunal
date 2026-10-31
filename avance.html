@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi avance · Ingeniería de Sistemas e Informática UNAL Medellín</title>
-  <meta name="description" content="Pega tu historia académica del SIA y mira tu progreso en la carrera, en qué semestre terminarías según tu ritmo y tus logros. Todo se queda en tu navegador.">
+  <meta name="description" content="Inicia sesión con tu cuenta UNAL para consultar tu progreso en la carrera, tu nivel, graduación estimada y tus logros desbloqueados.">
   <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,7 @@
         <span class="portada__antetitulo">Mi</span>
         <span class="letras-varsity" data-texto="Avance">Avance</span>
       </h1>
-      <p class="portada__texto">Pega tu historia académica del SIA y mira tu nivel, tu graduación estimada y tus logros. Todo se procesa en tu navegador: nada se envía ni se guarda en servidores.</p>
+      <p class="portada__texto">Portal exclusivo para estudiantes de Ingeniería de Sistemas e Informática. Consulta tu nivel, tu proyección de graduación y tus logros académicos.</p>
       <p class="portada__prompt" aria-hidden="true"><span class="portada__prompt-ruta">~/sistemas/avance</span> <span class="portada__prompt-signo">$</span> ./jugar<span class="cursor"></span></p>
     </div>
   </section>
@@ -38,28 +38,125 @@
     <section class="seccion avance" aria-label="Mi avance en la carrera">
       <div class="contenedor avance__contenedor">
 
-        <!-- ENTRADA: pegar la historia académica -->
-        <details class="entrada" id="entrada" open>
-          <summary class="entrada__resumen"><span class="entrada__resumen-texto">Cargar o actualizar mi historia académica</span></summary>
-          <div class="entrada__cuerpo">
-            <ol class="entrada__pasos">
-              <li><b>1</b><span>Entra al <strong>SIA</strong> y abre <strong>Historia Académica</strong>.</span></li>
-              <li><b>2</b><span>Selecciona todo con <kbd>Ctrl</kbd> + <kbd>A</kbd> y copia con <kbd>Ctrl</kbd> + <kbd>C</kbd>. <small>(En celular: mantén presionado y elige «Seleccionar todo» y «Copiar»).</small></span></li>
-              <li><b>3</b><span>Pega aquí abajo y dale <strong>Guardar</strong>.</span></li>
-            </ol>
-            <label class="entrada__etiqueta" for="historia-texto">Pega aquí tu historia académica</label>
-            <textarea id="historia-texto" class="entrada__texto" rows="7" spellcheck="false" placeholder="Ctrl + V"></textarea>
-            <p class="entrada__error" id="entrada-error" role="alert" hidden></p>
-            <div class="entrada__acciones">
-              <button type="button" class="boton-juego" id="btn-guardar">Guardar y generar</button>
-              <button type="button" class="boton-juego boton-juego--suave" id="btn-borrar" hidden>Borrar mis datos</button>
+        <!-- BARRA DE SESIÓN ACTIVA (Visible solo cuando el usuario está autenticado) -->
+        <div class="barra-sesion" id="barra-sesion" hidden>
+          <div class="barra-sesion__info">
+            <span class="barra-sesion__icono" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </span>
+            <div class="barra-sesion__textos">
+              <span class="barra-sesion__etiqueta">Estudiante autenticado</span>
+              <span class="barra-sesion__usuario" id="sesion-correo">cargando...</span>
             </div>
-            <p class="entrada__privacidad">🔒 El texto se queda solo en este navegador (almacenamiento local). Puedes borrarlo cuando quieras.</p>
           </div>
-        </details>
+          <div class="barra-sesion__acciones">
+            <button type="button" class="barra-sesion__btn-salir" id="btn-cerrar-sesion">Cerrar sesión</button>
+          </div>
+        </div>
 
-        <!-- JUEGO: se pinta con JS al guardar -->
-        <div id="avance-juego" hidden></div>
+        <!-- TARJETA DE AUTENTICACIÓN (Visible si NO ha iniciado sesión) -->
+        <div class="tarjeta-auth" id="tarjeta-auth">
+          <div class="tarjeta-auth__cabecera">
+            <div class="tarjeta-auth__escudo-wrap">
+              <img src="img/logo-sistemas.jpg" alt="Logo de Sistemas" class="tarjeta-auth__escudo" width="60" height="60">
+            </div>
+            <h2 class="tarjeta-auth__titulo">Acceso a Mi Avance</h2>
+            <p class="tarjeta-auth__subtitulo">Ingeniería de Sistemas e Informática · UNAL Medellín</p>
+            <p class="tarjeta-auth__desc">Para acceder a tus estadísticas, historia académica y logros debes iniciar sesión con tu cuenta institucional de la UNAL.</p>
+          </div>
+
+          <!-- Pestañas Iniciar Sesión / Registrarse -->
+          <div class="tarjeta-auth__tabs" role="tablist">
+            <button type="button" class="tarjeta-auth__tab is-activa" id="tab-login" role="tab" aria-selected="true" aria-controls="form-login">Iniciar Sesión</button>
+            <button type="button" class="tarjeta-auth__tab" id="tab-registro" role="tab" aria-selected="false" aria-controls="form-registro">Registrarse</button>
+          </div>
+
+          <!-- 1. FORMULARIO DE INICIO DE SESIÓN -->
+          <form class="tarjeta-auth__formulario" id="form-login" role="tabpanel" aria-labelledby="tab-login">
+            <div class="campo">
+              <label class="campo__etiqueta" for="login-email">Correo institucional UNAL</label>
+              <input class="campo__entrada" id="login-email" type="email" placeholder="estudiante@unal.edu.co" autocomplete="username" required>
+            </div>
+            <div class="campo">
+              <label class="campo__etiqueta" for="login-password">Contraseña</label>
+              <input class="campo__entrada" id="login-password" type="password" placeholder="Tu contraseña" autocomplete="current-password" required>
+            </div>
+            <div class="tarjeta-auth__alerta" id="login-alerta" role="alert" hidden></div>
+            <button type="submit" class="boton-juego boton-juego--grande" id="btn-login-enviar">Iniciar Sesión</button>
+          </form>
+
+          <!-- 2. FORMULARIO DE REGISTRO CON VERIFICACIÓN OBLIGATORIA DE SISTEMAS -->
+          <form class="tarjeta-auth__formulario" id="form-registro" role="tabpanel" aria-labelledby="tab-registro" hidden>
+            <div class="tarjeta-auth__banner-sistemas">
+              <span class="tarjeta-auth__banner-icono" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+              </span>
+              <p><strong>Verificación exclusiva:</strong> El registro solo está permitido para estudiantes de <strong>Ingeniería de Sistemas e Informática</strong>. El sistema verificará tu carrera directamente en tu historia académica del SIA.</p>
+            </div>
+
+            <div class="campo">
+              <label class="campo__etiqueta" for="registro-email">Correo institucional UNAL (@unal.edu.co)</label>
+              <input class="campo__entrada" id="registro-email" type="email" placeholder="estudiante@unal.edu.co" autocomplete="username" required>
+            </div>
+
+            <div class="campo-fila">
+              <div class="campo">
+                <label class="campo__etiqueta" for="registro-password">Contraseña (mínimo 6 caracteres)</label>
+                <input class="campo__entrada" id="registro-password" type="password" minlength="6" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required>
+              </div>
+              <div class="campo">
+                <label class="campo__etiqueta" for="registro-password-confirma">Confirmar contraseña</label>
+                <input class="campo__entrada" id="registro-password-confirma" type="password" minlength="6" placeholder="Repite tu contraseña" autocomplete="new-password" required>
+              </div>
+            </div>
+
+            <div class="campo">
+              <label class="campo__etiqueta" for="registro-historia">Pega tu historia académica del SIA (para verificar tu programa de Sistemas)</label>
+              <ol class="entrada__pasos">
+                <li><b>1</b><span>Entra al <strong>SIA</strong> y abre <strong>Historia Académica</strong>.</span></li>
+                <li><b>2</b><span>Selecciona todo (<kbd>Ctrl</kbd> + <kbd>A</kbd>) y copia (<kbd>Ctrl</kbd> + <kbd>C</kbd>).</span></li>
+                <li><b>3</b><span>Pega aquí abajo:</span></li>
+              </ol>
+              <textarea id="registro-historia" class="entrada__texto" rows="6" spellcheck="false" placeholder="Pega aquí el contenido copiado del SIA (Ctrl + V)..." required></textarea>
+            </div>
+
+            <div class="tarjeta-auth__alerta" id="registro-alerta" role="alert" hidden></div>
+            <button type="submit" class="boton-juego boton-juego--grande" id="btn-registro-enviar">Verificar programa y Registrarme</button>
+          </form>
+
+          <!-- Banner informativo sobre Supabase -->
+          <div class="tarjeta-auth__pie" id="tarjeta-auth-pie">
+            <span class="tarjeta-auth__estado-db" id="estado-db-texto">Conectando servicio de autenticación...</span>
+          </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL: SOLO VISIBLE CON SESIÓN INICIADA -->
+        <div class="zona-avance" id="zona-avance" hidden>
+
+          <!-- ENTRADA: actualizar historia académica -->
+          <details class="entrada" id="entrada">
+            <summary class="entrada__resumen"><span class="entrada__resumen-texto">Actualizar o recargar mi historia académica</span></summary>
+            <div class="entrada__cuerpo">
+              <ol class="entrada__pasos">
+                <li><b>1</b><span>Entra al <strong>SIA</strong> y abre <strong>Historia Académica</strong>.</span></li>
+                <li><b>2</b><span>Selecciona todo con <kbd>Ctrl</kbd> + <kbd>A</kbd> y copia con <kbd>Ctrl</kbd> + <kbd>C</kbd>.</span></li>
+                <li><b>3</b><span>Pega aquí abajo y dale <strong>Actualizar datos</strong>.</span></li>
+              </ol>
+              <label class="entrada__etiqueta" for="historia-texto">Pega aquí tu historia académica actualizada</label>
+              <textarea id="historia-texto" class="entrada__texto" rows="7" spellcheck="false" placeholder="Ctrl + V"></textarea>
+              <p class="entrada__error" id="entrada-error" role="alert" hidden></p>
+              <div class="entrada__acciones">
+                <button type="button" class="boton-juego" id="btn-guardar">Actualizar y sincronizar</button>
+                <button type="button" class="boton-juego boton-juego--suave" id="btn-borrar">Limpiar datos locales</button>
+              </div>
+              <p class="entrada__privacidad">El texto se procesa de forma segura en tu navegador y en tu cuenta. Puedes actualizarlo cuando quieras.</p>
+            </div>
+          </details>
+
+          <!-- PANTALLA DE JUEGO / AVANCE -->
+          <div id="avance-juego"></div>
+
+        </div>
 
       </div>
     </section>
@@ -67,6 +164,9 @@
 
   <div id="pie"></div>
 
+  <!-- LIBRERÍAS Y SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
   <script src="js/comun.js"></script>
   <script src="js/avance-lector.js"></script>
   <script src="js/avance.js"></script>
