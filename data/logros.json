@@ -2,8 +2,8 @@
   "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, regla}. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo} (>=), {tipo:\"avance\",minimo} (porcentaje, MÁS de), {tipo:\"papa\",minimo} (>=), {tipo:\"materias_aprobadas\",minimo} (>=), {tipo:\"componente_completo\",clave} (clave de tipología del SIA, p. ej. \"LIBRE ELECCIÓN\"), {tipo:\"nota_en_grupo\",grupo,minimo} (alguna materia aprobada del grupo fundamentacion|disciplinar|libre con nota MAYOR que minimo).",
   "logros": [
     {
-      "id": "esto-quedara-registrado",
-      "nombre": "Esto Quedará Registrado",
+      "id": "efecto-mariposa",
+      "nombre": "Efecto Mariposa",
       "descripcion": "Terminaste el componente de libre elección.",
       "puntos": 100,
       "regla": {
@@ -12,8 +12,8 @@
       }
     },
     {
-      "id": "punto-de-no-retorno",
-      "nombre": "Punto de No Retorno",
+      "id": "crisalida",
+      "nombre": "Crisálida",
       "descripcion": "Llevas más del 50 % de avance en la carrera.",
       "puntos": 100,
       "regla": {
@@ -22,8 +22,8 @@
       }
     },
     {
-      "id": "el-lobo-entre-las-ecuaciones",
-      "nombre": "El Lobo Entre Las Ecuaciones",
+      "id": "teoria-del-caos",
+      "nombre": "Teoría del Caos",
       "descripcion": "Sacaste más de 4.6 en una asignatura del componente de fundamentación.",
       "puntos": 100,
       "regla": {
