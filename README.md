@@ -63,3 +63,14 @@ data/
 ---
 
 Estilo basado en la web de la Semana de Sistemas, hecha por Santiago Escobar Arias y Jerónimo Hoyos Botero.
+
+## Licencia y Propiedad Intelectual
+
+© 2026 Santiago Escobar Arias. Todos los derechos reservados.
+
+Este proyecto cuenta con una licencia de autoría estricta contenida en el archivo [`LICENSE`](LICENSE). Queda expresamente prohibida la copia no autorizada, el plagio o la supresión de créditos de autor en el código fuente.
+
+**Huella de autoría:** `SEA-SIS-UNAL-2026-AUTH-F45123`
+**SHA-256:** `f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c`, calculado sobre la cadena `Santiago Escobar Arias|saescobara@unal.edu.co|sistemasunal|UNAL-MEDELLIN|2026`.
+
+El proyecto lleva marcas de autoría en cabeceras de HTML, CSS y JS, metadatos, atributos `data-author`, un sello en la consola del navegador y una marca invisible en textos visibles. Para revisar una copia sospechosa: `node tools/verificar-huella.js <carpeta>`.
