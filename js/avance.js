@@ -393,8 +393,9 @@ function pintarLogros(avance, historia) {
         ${lista.map((l) => {
           const ok = logroDesbloqueado(l, avance, historia);
           const cat = l.categoria || 'bronce';
-          const pct = (estado.statsLogros && estado.statsLogros[l.id] !== undefined)
-            ? estado.statsLogros[l.id]
+          // Con datos reales de la comunidad, un logro que nadie tiene vale 0 %, no el valor de referencia
+          const pct = estado.statsLogros
+            ? (estado.statsLogros[l.id] !== undefined ? estado.statsLogros[l.id] : 0)
             : (l.porcentaje !== undefined ? l.porcentaje : 25.0);
           const pctTexto = formatear(pct, 1) + '%';
 

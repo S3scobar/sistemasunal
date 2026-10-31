@@ -314,6 +314,7 @@ const ServicioAuth = {
     try {
       // 1) Preferido: función del servidor que devuelve solo porcentajes agregados (ver supabase_endurecer.sql)
       const { data: agregados, error: errRpc } = await clienteSupabase.rpc('estadisticas_logros');
+      if (errRpc) console.warn('[estadisticas_logros] la función del servidor falló:', errRpc.message || errRpc);
       if (!errRpc && Array.isArray(agregados)) {
         if (!agregados.length) return null;
         const porcentajes = {};
