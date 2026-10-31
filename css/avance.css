@@ -1471,7 +1471,6 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
   background-size: 260% 100%;
   animation: brillo 5s ease-in-out infinite;
 }
-.logro--listo .logro__icono { animation: flota 4.5s ease-in-out infinite; }
 .logros__filtro { border-color: rgba(143, 179, 214, .2); }
 
 /* ---------- Bitácora y entrada ---------- */
@@ -1520,6 +1519,6 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
 @media (prefers-reduced-motion: reduce) {
   body[data-pagina="avance"] main::before, body[data-pagina="avance"] main::after,
   .jugador__avatar img, .anillo__valor, .anillo__curso, .jugador__nivel, .xp__relleno::after, .meta__valor,
-  .mapa__tramo, .mapa__col--curso .mapa__marca, .logro--listo::after, .logro--listo .logro__icono,
+  .mapa__tramo, .mapa__col--curso .mapa__marca, .logro--listo::after,
   #avance-juego > *, #avance-juego .estadistica, .pestana-panel.entra { animation: none !important; }
 }
