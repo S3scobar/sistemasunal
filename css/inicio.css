@@ -495,3 +495,99 @@ body[data-pagina="inicio"] .grupo__tipo {
   color: var(--neon);
 }
 body[data-pagina="inicio"] .grupo__tipo::before { content: '// '; opacity: .7; }
+
+
+/* ---------- Estratigrafía del plan ---------- */
+
+.estrato { margin-top: 36px; }
+.estrato:empty { display: none; }
+body[data-pagina="inicio"] .estrato {
+  padding: 22px 26px 24px;
+  border: 1px solid #b9cde4;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 14px 30px -22px rgba(10, 44, 82, .6), 4px 4px 0 rgba(22, 103, 194, .12);
+}
+.estrato__titulo {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--azul-marino);
+}
+.estrato__titulo::before { content: '// '; color: #0b73e0; }
+.estrato__titulo span { color: var(--azul); }
+.estrato__enlace {
+  display: inline-block;
+  margin: 10px 0 16px;
+  font-family: var(--mono);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0b73e0;
+  text-decoration: none;
+}
+.estrato__enlace:hover { text-decoration: underline; }
+.estrato__barra {
+  display: flex;
+  gap: 3px;
+  height: 46px;
+  padding: 3px;
+  border-radius: 8px;
+  background: #04111f;
+  box-shadow: 0 0 22px rgba(47, 168, 255, .25);
+}
+.estrato__tramo {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  border-radius: 5px;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, .12) 0 2px, transparent 2px 8px),
+    var(--color);
+  transform-origin: left;
+  animation: crecer-tramo .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+.estrato__tramo:nth-child(2) { animation-delay: .12s; }
+.estrato__tramo:nth-child(3) { animation-delay: .24s; }
+.estrato__tramo b {
+  font-family: var(--mono);
+  font-size: 14px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .45);
+  white-space: nowrap;
+}
+.estrato__escala {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gris);
+  border-top: 1px dashed #b9cde4;
+  padding-top: 4px;
+}
+.estrato__leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14.5px;
+  color: var(--tinta);
+}
+.estrato__leyenda i {
+  display: inline-block;
+  width: 12px; height: 12px;
+  margin-right: 8px;
+  border-radius: 3px;
+  background: var(--color);
+}
+.estrato__leyenda em { font-family: var(--mono); font-style: normal; font-size: 13px; color: var(--tinta-suave); }
+@keyframes crecer-tramo { from { transform: scaleX(0); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .estrato__tramo { animation: none; } }
+@media (max-width: 640px) {
+  body[data-pagina="inicio"] .estrato { padding: 18px 16px 20px; }
+  .estrato__tramo b { font-size: 12px; }
+}

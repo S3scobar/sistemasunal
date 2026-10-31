@@ -41,6 +41,8 @@ function pintarPrograma(p) {
       </ul>
     </div>
 
+    <div class="estrato" id="estrato"></div>
+
     <div class="acreditacion">
       <div class="acreditacion__cabecera">
         <span class="acreditacion__sello-icono">${ICONO_SELLO}</span>
@@ -68,6 +70,48 @@ function pintarPrograma(p) {
     <p class="fuentes">Fuentes:
       ${p.fuentes.map((f) => `<a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.titulo)}</a>`).join(' · ')}
     </p>`;
+
+  cargarEstrato((p.ficha.find((f) => f.etiqueta === 'Créditos del plan') || {}).valor);
+}
+
+
+/* ---------- Estratigrafía del plan (créditos por componente) ---------- */
+
+// Todo sale de los datos de la malla: fundamentación y disciplinar suman los créditos
+// exigidos de sus agrupaciones; libre elección suma las casillas de libre elección del plan.
+function pintarEstrato(componentes, plan, total) {
+  const exigidos = (id) => componentes.agrupaciones
+    .filter((a) => a.componente === id)
+    .reduce((suma, a) => suma + (a.exigidos || 0), 0);
+  const libres = plan
+    .flatMap((semestre) => semestre.items)
+    .filter((it) => it.tipo === 'bolsa' && it.agrupacion === 'libre-eleccion')
+    .reduce((suma, it) => suma + it.creditos, 0);
+
+  const partes = componentes.componentes.map((c) => ({
+    nombre: c.nombre,
+    color: c.color,
+    creditos: c.id === 'libre-eleccion' ? libres : exigidos(c.id),
+  }));
+  const suma = partes.reduce((s, p) => s + p.creditos, 0);
+  if (!suma || (total && suma !== Number(total))) return;   // si no cuadra con el plan, no se muestra
+
+  $('#estrato').innerHTML = `
+    <h3 class="estrato__titulo">Estratigrafía del plan de estudios <span>(${suma} créditos)</span></h3>
+    <a class="estrato__enlace" href="malla.html">Explorar malla curricular <span aria-hidden="true">→</span></a>
+    <div class="estrato__barra" role="img" aria-label="${partes.map((p) => `${p.nombre}: ${p.creditos} créditos`).join('; ')}">
+      ${partes.map((p) => `<span class="estrato__tramo" style="--color: ${esc(p.color)}; flex: ${p.creditos}"><b>${p.creditos} cr</b></span>`).join('')}
+    </div>
+    <div class="estrato__escala" aria-hidden="true"><span>0</span><span>${suma} cr</span></div>
+    <ul class="estrato__leyenda">
+      ${partes.map((p) => `<li style="--color: ${esc(p.color)}"><i></i>${esc(p.nombre)} <em>(${p.creditos} cr · ${Math.round(p.creditos / suma * 100)} %)</em></li>`).join('')}
+    </ul>`;
+}
+
+function cargarEstrato(totalCreditos) {
+  Promise.all([cargarDatos('malla/componentes'), cargarDatos('malla/plan')])
+    .then(([componentes, plan]) => pintarEstrato(componentes, plan, totalCreditos))
+    .catch(() => { const e = $('#estrato'); if (e) e.remove(); });   // es un extra: si falla, la página sigue igual
 }
 
 
