@@ -723,11 +723,21 @@ a { color: var(--azul); }
 }
 
 /* En escritorios medianos ajustamos levemente los enlaces para que quepan holgados */
-@media (min-width: 981px) and (max-width: 1120px) {
+@media (min-width: 981px) and (max-width: 1320px) {
+  .nav { gap: 2px; }
   .nav a {
-    padding: 8px 12px;
-    font-size: 12px;
+    padding: 8px 11px;
+    font-size: 11.5px;
+    letter-spacing: .08em;
   }
+  .barra__marca { flex: none; }
+  .barra__texto { font-size: 11.5px; letter-spacing: .08em; max-width: 190px; }
+}
+@media (min-width: 981px) and (max-width: 1120px) {
+  .barra__contenido { gap: 8px; }
+  .barra__marca { gap: 8px; }
+  .barra__texto { font-size: 10.5px; letter-spacing: .04em; max-width: 150px; }
+  .nav a { padding: 8px 7px; font-size: 10.5px; letter-spacing: .03em; }
 }
 
 /* De 980px hacia abajo (tablets y móviles): Barra compacta con menú colapsable */

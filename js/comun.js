@@ -54,6 +54,7 @@ const PAGINAS = [
   { id: 'malla', texto: 'Malla curricular', url: 'malla.html' },
   { id: 'intercampus', texto: 'Rutas Intercampus', url: 'intercampus.html' },
   { id: 'convenios', texto: 'Convenios', url: 'convenios.html' },
+  { id: 'avance', texto: 'Mi avance', url: 'avance.html' },
   { id: 'info', texto: 'Información general', url: 'info.html' },
 ];
 

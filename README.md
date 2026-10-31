@@ -10,6 +10,7 @@ Sitio web del programa de Ingeniería de Sistemas e Informática de la Facultad 
 | `malla.html` | Malla curricular interactiva (clic en una asignatura: prerrequisitos, créditos y componente) y catálogo de asignaturas por componente, con paginación |
 | `intercampus.html` | Rutas intercampus (Robledo ➔ El Volador, El Volador ➔ Robledo, Río ➔ El Volador), cálculo de próxima salida en tiempo real, guía explicativa y láminas oficiales |
 | `info.html` | Información general y guía estudiantil (P.A.P.A., bolsa de créditos, horas de corresponsabilidad, citas SIA, simulador interactivo y preguntas frecuentes) |
+| `avance.html` | Mi avance: se pega la historia académica del SIA (Ctrl+A, Ctrl+C), se procesa solo en el navegador y muestra nivel/XP, graduación estimada según tu ritmo, avance por componente y logros (se agregan en `data/logros.json`) |
 | `convenios.html` | Convenios de la UNAL (Coursera, MATLAB, Microsoft 365) y beneficios para estudiantes (Autodesk, GitHub, JetBrains, Spotify): lista desplegable con quién puede usarlos, qué incluyen y cómo activarlos paso a paso |
 
 Cada página carga solo los datos que necesita, y las secciones largas del inicio se cargan cuando la persona se acerca a ellas.
@@ -52,7 +53,7 @@ Para publicarlo, sirve cualquier hosting estático (por ejemplo GitHub Pages des
 ## Estructura
 
 ```
-index.html · malla.html · intercampus.html · info.html
+index.html · malla.html · intercampus.html · avance.html · info.html
 css/   base.css (común) · inicio.css · malla.css · intercampus.css · info.css
 js/    comun.js (datos, barra y pie) · inicio.js · malla.js · intercampus.js · info.js
 img/

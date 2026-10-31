@@ -4,19 +4,19 @@
    no cambia ningún dato ni texto de las secciones.
    ========================================================= */
 
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) {
   --neon: #2fa8ff;
   --cian: #8fd2ff;
   --mono: ui-monospace, 'JetBrains Mono', 'Fira Code', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
 }
 
 /* --- Portada --- */
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada::after {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada::after {
   background:
     radial-gradient(ellipse at 50% 0%, rgba(47, 168, 255, .16), transparent 60%),
     linear-gradient(rgba(6, 22, 44, .78), rgba(6, 22, 44, .92));
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo {
   position: absolute;
   inset: 0;
   z-index: -1;
@@ -28,8 +28,8 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
   -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
   mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo::before,
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo::after {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo::before,
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo::after {
   content: '{ }  < />  01  ;  =>  [ ]  &&  ||  0x1F  10110';
   position: absolute;
   font-family: var(--mono);
@@ -38,29 +38,29 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
   white-space: nowrap;
   color: rgba(47, 168, 255, .28);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo::before { top: 16px; left: 18px; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo::after { bottom: 16px; right: 18px; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo::before { top: 16px; left: 18px; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo::after { bottom: 16px; right: 18px; }
 
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__logo {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__logo {
   border-color: var(--neon);
   box-shadow: 0 0 0 4px rgba(47, 168, 255, .25), 0 0 34px rgba(47, 168, 255, .45), 0 10px 30px rgba(0, 0, 0, .5);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__lugar {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__lugar {
   font-family: var(--mono);
   font-size: 13px;
   letter-spacing: .12em;
   color: var(--neon);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__lugar::before { content: '// '; opacity: .7; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__antetitulo { font-family: var(--mono); font-weight: 700; letter-spacing: .22em; color: var(--cian); }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__antetitulo::before { content: '<'; margin-right: .5em; color: var(--neon); }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__antetitulo::after { content: '/>'; margin-left: .5em; color: var(--neon); }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .letras-varsity {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__lugar::before { content: '// '; opacity: .7; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__antetitulo { font-family: var(--mono); font-weight: 700; letter-spacing: .22em; color: var(--cian); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__antetitulo::before { content: '<'; margin-right: .5em; color: var(--neon); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__antetitulo::after { content: '/>'; margin-left: .5em; color: var(--neon); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .letras-varsity {
   text-shadow: 0 0 30px rgba(92, 200, 255, .35);
 }
 
 /* Cifras como panel de terminal */
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__cifras {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__cifras {
   position: relative;
   margin-top: 40px;
   padding-top: 26px;
@@ -69,7 +69,7 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
   background: rgba(4, 16, 32, .78);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, .4), 0 0 28px rgba(47, 168, 255, .18);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__cifras::before {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__cifras::before {
   content: '';
   position: absolute;
   top: 9px; left: 12px;
@@ -78,19 +78,19 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
   background: #ff5f57;
   box-shadow: 14px 0 0 #febc2e, 28px 0 0 #28c840;
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__cifras li {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__cifras li {
   font-family: var(--mono);
   font-weight: 700;
   font-size: 22px;
   letter-spacing: 0;
   color: var(--neon);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__cifras li + li { border-left: 1px dashed rgba(92, 200, 255, .35); }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__cifras small { font-family: var(--mono); color: #9fc4e6; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__cifras li + li { border-left: 1px dashed rgba(92, 200, 255, .35); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__cifras small { font-family: var(--mono); color: #9fc4e6; }
 
 /* Línea de comando con cursor */
 .portada__prompt { display: none; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__prompt {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__prompt {
   display: block;
   margin-top: 26px;
   font-family: var(--mono);
@@ -110,15 +110,15 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
 @keyframes parpadeo-cursor { 50% { opacity: 0; } }
 
 /* --- Títulos de sección --- */
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo__antetitulo {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo__antetitulo {
   font-family: var(--mono);
   font-size: 13px;
   letter-spacing: .08em;
   text-transform: none;
   color: var(--azul);
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo__antetitulo::before { content: '// '; color: #0b73e0; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo h2 {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo__antetitulo::before { content: '// '; color: #0b73e0; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo h2 {
   font-family: var(--mono);
   font-weight: 800;
   font-size: clamp(28px, 4.6vw, 44px);
@@ -127,40 +127,40 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
   -webkit-text-stroke: 0;
   filter: none;
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo h2::before { content: '> '; color: #0b73e0; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo h2::after {
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo h2::before { content: '> '; color: #0b73e0; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo h2::after {
   content: '_';
   color: #0b73e0;
   animation: parpadeo-cursor 1.05s steps(1) infinite;
 }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .grupos .seccion-titulo h2 { color: #fff; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .grupos .seccion-titulo__antetitulo { color: var(--cian); }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .grupos .seccion-titulo h2::before,
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .grupos .seccion-titulo h2::after,
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .grupos .seccion-titulo__antetitulo::before { color: var(--neon); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .grupos .seccion-titulo h2 { color: #fff; }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .grupos .seccion-titulo__antetitulo { color: var(--cian); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .grupos .seccion-titulo h2::before,
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .grupos .seccion-titulo h2::after,
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .grupos .seccion-titulo__antetitulo::before { color: var(--neon); }
 
 @media (max-width: 640px) {
-  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo::before,
-  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__codigo::after { font-size: 11px; letter-spacing: .25em; }
-  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__cifras li { font-size: 19px; }
-  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .portada__prompt { font-size: 12.5px; }
+  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo::before,
+  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__codigo::after { font-size: 11px; letter-spacing: .25em; }
+  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__cifras li { font-size: 19px; }
+  body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__prompt { font-size: 12.5px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cursor, body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo h2::after { animation: none; }
+  .cursor, body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo h2::after { animation: none; }
 }
 
 
 /* ---------- Fondos y componentes de malla, intercampus y convenios ---------- */
 
-body:is([data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) main {
+body:is([data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) main {
   background:
     radial-gradient(rgba(22, 103, 194, .15) 1px, transparent 1.4px) 0 0 / 22px 22px,
     #f1f6fb;
 }
-body:is([data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"]) .seccion-titulo__antetitulo { color: var(--azul); }
+body:is([data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .seccion-titulo__antetitulo { color: var(--azul); }
 
 /* Botones de selección: de píldora a "chip" de código */
-body:is([data-pagina="intercampus"], [data-pagina="convenios"]) :is(.intercampus__tab-btn, .filtro, .intercampus__filtro-btn) {
+body:is([data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) :is(.intercampus__tab-btn, .filtro, .intercampus__filtro-btn) {
   border-radius: 8px;
   border-width: 1px;
   font-family: var(--mono);

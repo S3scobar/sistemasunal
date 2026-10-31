@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi avance · Ingeniería de Sistemas e Informática UNAL Medellín</title>
+  <meta name="description" content="Pega tu historia académica del SIA y mira tu progreso en la carrera, en qué semestre terminarías según tu ritmo y tus logros. Todo se queda en tu navegador.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sistemas.css">
+  <link rel="stylesheet" href="css/avance.css">
+</head>
+<body data-pagina="avance">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada portada--corta foto foto--edificio">
+    <div class="portada__codigo" aria-hidden="true"></div>
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="115" height="115">
+      </div>
+      <p class="portada__lugar">Tu progreso en la carrera · UNAL Sede Medellín</p>
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Mi</span>
+        <span class="letras-varsity" data-texto="Avance">Avance</span>
+      </h1>
+      <p class="portada__texto">Pega tu historia académica del SIA y mira tu nivel, tu graduación estimada y tus logros. Todo se procesa en tu navegador: nada se envía ni se guarda en servidores.</p>
+      <p class="portada__prompt" aria-hidden="true"><span class="portada__prompt-ruta">~/sistemas/avance</span> <span class="portada__prompt-signo">$</span> ./jugar<span class="cursor"></span></p>
+    </div>
+  </section>
+
+  <main>
+    <section class="seccion avance" aria-label="Mi avance en la carrera">
+      <div class="contenedor avance__contenedor">
+
+        <!-- ENTRADA: pegar la historia académica -->
+        <details class="entrada" id="entrada" open>
+          <summary class="entrada__resumen"><span class="entrada__resumen-texto">Cargar o actualizar mi historia académica</span></summary>
+          <div class="entrada__cuerpo">
+            <ol class="entrada__pasos">
+              <li><b>1</b><span>Entra al <strong>SIA</strong> y abre <strong>Historia Académica</strong>.</span></li>
+              <li><b>2</b><span>Selecciona todo con <kbd>Ctrl</kbd> + <kbd>A</kbd> y copia con <kbd>Ctrl</kbd> + <kbd>C</kbd>. <small>(En celular: mantén presionado y elige «Seleccionar todo» y «Copiar»).</small></span></li>
+              <li><b>3</b><span>Pega aquí abajo y dale <strong>Guardar</strong>.</span></li>
+            </ol>
+            <label class="entrada__etiqueta" for="historia-texto">Pega aquí tu historia académica</label>
+            <textarea id="historia-texto" class="entrada__texto" rows="7" spellcheck="false" placeholder="Ctrl + V"></textarea>
+            <p class="entrada__error" id="entrada-error" role="alert" hidden></p>
+            <div class="entrada__acciones">
+              <button type="button" class="boton-juego" id="btn-guardar">Guardar y generar</button>
+              <button type="button" class="boton-juego boton-juego--suave" id="btn-borrar" hidden>Borrar mis datos</button>
+            </div>
+            <p class="entrada__privacidad">🔒 El texto se queda solo en este navegador (almacenamiento local). Puedes borrarlo cuando quieras.</p>
+          </div>
+        </details>
+
+        <!-- JUEGO: se pinta con JS al guardar -->
+        <div id="avance-juego" hidden></div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script src="js/avance-lector.js"></script>
+  <script src="js/avance.js"></script>
+</body>
+</html>

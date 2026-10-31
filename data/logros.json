@@ -1,0 +1,1 @@
+{ "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, regla}. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"papa\",minimo}, {tipo:\"avance\",minimo (%)}, {tipo:\"materias_aprobadas\",minimo}.", "logros": [] }
