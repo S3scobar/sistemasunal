@@ -12,7 +12,7 @@ const guardado = {
   borrar() { try { localStorage.removeItem(CLAVE_GUARDADO); } catch (e) { /* sin almacenamiento */ } },
 };
 
-const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null };
+const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, pestana: 'ruta' };
 
 const GRUPOS_COMPONENTE = {
   fundamentacion: { nombre: 'Fundamentación', color: 'var(--fundamentacion)' },
@@ -203,11 +203,16 @@ function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
   return `
     <section class="jugador" aria-label="Jugador">
       <div class="jugador__avatar">
+        <svg class="anillo" viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="anillo__pista" cx="60" cy="60" r="54" pathLength="100"></circle>
+          <circle class="anillo__curso" cx="60" cy="60" r="54" pathLength="100" style="--ini: ${pasoXp}; --len: ${pasoCurso}"></circle>
+          <circle class="anillo__valor" cx="60" cy="60" r="54" pathLength="100" style="--pct: ${pasoXp}"></circle>
+        </svg>
         <img src="img/logo-sistemas.jpg" alt="" width="88" height="88">
         <span class="jugador__nivel"><small>NIVEL</small><b data-cuenta="${avance.nivel}">${avance.nivel}</b></span>
       </div>
       <div class="jugador__datos">
-        <p class="etiqueta-hud">JUGADOR 1</p>
+        <p class="etiqueta-hud">ESTUDIANTE</p>
         <label class="jugador__nombre-wrap">
           <span class="visualmente-oculto">Tu nombre</span>
           <input class="jugador__nombre" id="nombre-jugador" type="text" maxlength="40" value="${esc(estado.nombre)}" placeholder="Escribe tu nombre">
@@ -218,7 +223,7 @@ function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
             <span class="xp__relleno" style="--ancho: ${pasoXp}%"></span>
             <span class="xp__curso" style="--inicio: ${pasoXp}%; --ancho: ${pasoCurso}%"></span>
           </div>
-          <div class="xp__texto"><span><b>${avance.aprobados}</b> / ${avance.exigidos} cr · XP</span><span>${formatear(avance.porcentaje, 1)} %</span></div>
+          <div class="xp__texto"><span><b>${avance.aprobados}</b> / ${avance.exigidos} créditos</span><span>${formatear(avance.porcentaje, 1)} %</span></div>
         </div>
       </div>
       <div class="jugador__puntos">
@@ -281,8 +286,8 @@ function pintarMapa(avance) {
       <p class="panel__titulo">Mapa de niveles · créditos por semestre</p>
       <div class="mapa__scroll" tabindex="0">
         <ol class="mapa__lista" style="--columnas: ${columnas.length}">
-          ${columnas.map((c) => `
-            <li class="mapa__col mapa__col--${c.tipo}">
+          ${columnas.map((c, i) => `
+            <li class="mapa__col mapa__col--${c.tipo}" style="--i: ${i}">
               <span class="mapa__cr">${c.aprobados + c.reprobados} cr</span>
               <span class="mapa__barra">
                 <span class="mapa__tramo mapa__tramo--ok" style="height: ${alto(c.aprobados)}"></span>
@@ -409,7 +414,7 @@ function pintarLogros(avance, historia) {
 function pintarHistorial(historia) {
   const materias = [...historia.materias].sort((a, b) => clavePeriodo(b.periodo) - clavePeriodo(a.periodo));
   return `
-    <details class="panel historial">
+    <details class="panel historial" open>
       <summary class="panel__titulo panel__titulo--resumen">Bitácora · ${materias.length} materias leídas</summary>
       <div class="historial__tabla-wrap">
         <table class="historial__tabla">
@@ -422,6 +427,35 @@ function pintarHistorial(historia) {
         </table>
       </div>
     </details>`;
+}
+
+const PESTANAS = [
+  { id: 'ruta', texto: 'Ruta' },
+  { id: 'misiones', texto: 'Misiones' },
+  { id: 'logros', texto: 'Logros' },
+  { id: 'bitacora', texto: 'Bitácora' },
+];
+
+function activarPestana(juego, id, animar = true) {
+  const botones = $$('.pestana-juego', juego);
+  const paneles = $$('.pestana-panel', juego);
+  if (!botones.some((b) => b.dataset.pestana === id)) id = 'ruta';
+  estado.pestana = id;
+  botones.forEach((b) => {
+    const activa = b.dataset.pestana === id;
+    b.classList.toggle('is-activa', activa);
+    b.setAttribute('aria-selected', activa ? 'true' : 'false');
+    b.tabIndex = activa ? 0 : -1;
+    if (activa) {
+      const barra = $('.pestanas-juego__indicador', juego);
+      if (barra) { barra.style.setProperty('--x', `${b.offsetLeft}px`); barra.style.setProperty('--w', `${b.offsetWidth}px`); }
+    }
+  });
+  paneles.forEach((p) => {
+    const activo = p.dataset.pestana === id;
+    p.hidden = !activo;
+    if (activo && animar) { p.classList.remove('entra'); void p.offsetWidth; p.classList.add('entra'); }
+  });
 }
 
 function animarCifras(contenedor) {
@@ -452,20 +486,38 @@ function dibujar() {
     ServicioAuth.sincronizarLogrosDesbloqueados(estado.usuarioId, ids).catch(() => {});
   }
 
+  const misiones = pintarMisiones(historia);
   const juego = $('#avance-juego');
+  const sinAnimar = Boolean(juego.dataset.visto);   // al recalcular (p. ej. mover el ritmo) no se repiten las animaciones de entrada
+  juego.classList.toggle('sin-animar', sinAnimar);
   juego.hidden = false;
   juego.innerHTML = `
     ${historia.esSistemas ? '' : '<p class="aviso-juego">Ojo: no veo «Ingeniería de Sistemas e Informática» en lo que pegaste. Las cuentas usan el plan de 160 créditos.</p>'}
     ${pintarJugador(avance, historia, puntos, estado.logros.length, desbloqueados.length)}
     ${pintarEstadisticas(avance, historia)}
-    <div class="avance__dos">
-      ${pintarGraduacion(avance)}
-      ${pintarMisiones(historia)}
+    ${pintarGraduacion(avance)}
+    <div class="pestanas-juego" role="tablist" aria-label="Secciones de Mi avance">
+      ${PESTANAS.filter((t) => t.id !== 'misiones' || misiones).map((t) => `
+        <button type="button" class="pestana-juego" role="tab" id="pest-${t.id}" data-pestana="${t.id}" aria-controls="panel-${t.id}">${t.texto}${t.id === 'logros' && estado.logros.length ? ` <span class="pestana-juego__cuenta">${desbloqueados.length}/${estado.logros.length}</span>` : ''}</button>`).join('')}
+      <span class="pestanas-juego__indicador" aria-hidden="true"></span>
     </div>
-    ${pintarMapa(avance)}
-    ${pintarLogros(avance, historia)}
-    ${pintarHistorial(historia)}`;
-  animarCifras(juego);
+    <div class="pestana-panel" role="tabpanel" id="panel-ruta" data-pestana="ruta" aria-labelledby="pest-ruta">${pintarMapa(avance)}</div>
+    ${misiones ? `<div class="pestana-panel" role="tabpanel" id="panel-misiones" data-pestana="misiones" aria-labelledby="pest-misiones" hidden>${misiones}</div>` : ''}
+    <div class="pestana-panel" role="tabpanel" id="panel-logros" data-pestana="logros" aria-labelledby="pest-logros" hidden>${pintarLogros(avance, historia)}</div>
+    <div class="pestana-panel" role="tabpanel" id="panel-bitacora" data-pestana="bitacora" aria-labelledby="pest-bitacora" hidden>${pintarHistorial(historia)}</div>`;
+  if (!sinAnimar) animarCifras(juego);
+  juego.dataset.visto = '1';
+
+  $$('.pestana-juego', juego).forEach((btn, i, todos) => {
+    btn.addEventListener('click', () => activarPestana(juego, btn.dataset.pestana));
+    btn.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      const siguiente = todos[(i + (e.key === 'ArrowRight' ? 1 : todos.length - 1)) % todos.length];
+      siguiente.focus();
+      activarPestana(juego, siguiente.dataset.pestana);
+    });
+  });
+  activarPestana(juego, estado.pestana, false);
 
   $('#nombre-jugador').addEventListener('input', (e) => { estado.nombre = e.target.value; persistir(); });
   const ritmo = $('#ritmo');
@@ -581,7 +633,7 @@ function aplicarSinSesion() {
   estado.historia = null;
 
   const juego = $('#avance-juego');
-  if (juego) juego.innerHTML = '';
+  if (juego) { juego.innerHTML = ''; delete juego.dataset.visto; }
   const historiaTexto = $('#historia-texto');
   if (historiaTexto) historiaTexto.value = '';
 }
@@ -761,6 +813,7 @@ async function iniciar() {
     if (juego) {
       juego.hidden = true;
       juego.innerHTML = '';
+      delete juego.dataset.visto;
     }
     const btnBorrar = $('#btn-borrar');
     if (btnBorrar) btnBorrar.hidden = true;
@@ -768,5 +821,11 @@ async function iniciar() {
     if (entrada) entrada.open = true;
   });
 }
+
+// El indicador de la pestaña activa se reajusta si cambia el ancho de la ventana
+window.addEventListener('resize', () => {
+  const juego = $('#avance-juego');
+  if (juego && juego.dataset.visto && estado.historia) activarPestana(juego, estado.pestana, false);
+}, { passive: true });
 
 iniciar();

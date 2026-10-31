@@ -1187,3 +1187,328 @@ kbd { padding: 1px 7px; border: 1px solid var(--borde); border-bottom-width: 3px
 @media (prefers-reduced-motion: reduce) {
   .xp__relleno, .xp__curso, .mision__relleno, .mapa__tramo { animation: none; }
 }
+
+
+/* =========================================================
+   REDISEÑO: más limpio y con vida
+   Capa final que suaviza el HUD (sin esquinas recortadas ni líneas de escaneo),
+   da jerarquía (anillo de progreso, meta destacada, pestañas) y añade movimiento
+   sutil. No cambia datos, textos ni la lógica de logros.
+   ========================================================= */
+
+/* ---------- Fondo: aurora lenta en lugar de cuadrícula ---------- */
+body[data-pagina="avance"] main {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #06142b 0%, #050f1f 55%, #040b18 100%);
+}
+body[data-pagina="avance"] main::before,
+body[data-pagina="avance"] main::after {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  width: 60vw; max-width: 760px; aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: .5;
+  pointer-events: none;
+}
+body[data-pagina="avance"] main::before { top: -180px; left: -120px; background: radial-gradient(circle, rgba(47, 168, 255, .55), transparent 65%); animation: deriva-a 26s ease-in-out infinite alternate; }
+body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; background: radial-gradient(circle, rgba(247, 182, 26, .28), transparent 65%); animation: deriva-b 32s ease-in-out infinite alternate; }
+@keyframes deriva-a { to { transform: translate(18vw, 14vh) scale(1.15); } }
+@keyframes deriva-b { to { transform: translate(-16vw, -12vh) scale(1.2); } }
+.avance { position: relative; z-index: 1; }
+.avance__contenedor { max-width: 980px; }
+.zona-avance, #avance-juego { gap: 20px; }
+#avance-juego { display: grid; min-width: 0; }
+
+/* ---------- Superficies suaves ---------- */
+.panel, .entrada, .jugador, .estadistica {
+  clip-path: none;
+  border: 1px solid rgba(143, 179, 214, .16);
+  border-radius: 20px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .06);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.panel { padding: 24px 26px; }
+.panel__titulo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+  font-size: 11.5px; font-weight: 700; letter-spacing: .16em;
+  color: #9fcfff;
+}
+.panel__titulo::before {
+  content: ''; flex: none;
+  width: 8px; height: 8px; margin: 0; border-radius: 50%;
+  background: var(--neon-2); box-shadow: 0 0 12px var(--neon-2);
+}
+.panel__titulo--resumen { display: flex; }
+.etiqueta-hud { font-size: 10.5px; letter-spacing: .24em; color: #7fb6e6; }
+
+/* ---------- Jugador: anillo de progreso ---------- */
+.jugador {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 28px;
+  padding: 28px 30px;
+  border-color: rgba(47, 168, 255, .32);
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(47, 168, 255, .16), transparent 55%),
+    linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .8), 0 0 60px -20px rgba(47, 168, 255, .35), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+.jugador__avatar { width: 116px; height: 116px; display: grid; place-items: center; }
+.jugador__avatar img {
+  grid-area: 1 / 1;
+  width: 84px; height: 84px;
+  border: 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+  animation: flota 6s ease-in-out infinite;
+}
+.anillo { grid-area: 1 / 1; width: 116px; height: 116px; transform: rotate(-90deg); overflow: visible; }
+.anillo circle { fill: none; stroke-width: 5; }
+.anillo__pista { stroke: rgba(255, 255, 255, .09); }
+.anillo__valor {
+  stroke: var(--neon-2); stroke-linecap: round;
+  stroke-dasharray: var(--pct) 100;
+  filter: drop-shadow(0 0 7px rgba(47, 168, 255, .85));
+  animation: anillo 1.6s cubic-bezier(.2, .8, .2, 1) both;
+}
+.anillo__curso {
+  stroke: var(--ambar); stroke-linecap: butt; opacity: .9;
+  stroke-dasharray: 0 var(--ini) var(--len) 100;
+  animation: aparece .8s 1.1s both;
+}
+@keyframes anillo { from { stroke-dasharray: 0 100; } }
+@keyframes aparece { from { opacity: 0; } }
+@keyframes flota { 50% { transform: translateY(-3px); } }
+.jugador__nivel {
+  right: -2px; bottom: 2px;
+  border: 0; border-radius: 12px;
+  padding: 4px 9px 5px;
+  background: linear-gradient(160deg, #ffd25a, var(--ambar));
+  box-shadow: 0 6px 16px rgba(247, 182, 26, .45);
+  animation: rebote .7s 1.2s cubic-bezier(.3, 1.6, .5, 1) both;
+}
+@keyframes rebote { from { transform: scale(0); } }
+.jugador__nombre {
+  border-bottom: 1px solid transparent;
+  font-size: clamp(22px, 3.2vw, 30px);
+  transition: border-color .2s;
+}
+.jugador__nombre:hover { border-bottom-color: rgba(143, 179, 214, .35); }
+.jugador__nombre:focus { border-bottom-color: var(--neon-2); }
+.jugador__programa { margin: 4px 0 14px; font-size: 11.5px; }
+
+.xp__barra {
+  height: 10px; padding: 0;
+  border: 0; border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+}
+.xp__relleno, .xp__curso { top: 0; bottom: 0; border-radius: 999px; }
+.xp__relleno {
+  left: 0; width: var(--ancho);
+  background: linear-gradient(90deg, #1f7fe0, #5cc8ff);
+  box-shadow: 0 0 14px rgba(47, 168, 255, .7);
+  overflow: hidden;
+}
+.xp__relleno::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .55) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: brillo 3.4s 1.4s ease-in-out infinite;
+}
+.xp__curso { left: var(--inicio); width: var(--ancho); background: linear-gradient(90deg, rgba(247, 182, 26, .9), rgba(255, 210, 90, .6)); }
+.xp__texto { font-size: 12px; }
+@keyframes brillo { 0% { background-position: 150% 0; } 55%, 100% { background-position: -50% 0; } }
+
+.jugador__puntos {
+  min-width: 118px; padding: 16px 20px;
+  border: 1px solid rgba(247, 182, 26, .28); border-radius: 18px;
+  background: radial-gradient(100% 100% at 50% 0%, rgba(247, 182, 26, .18), rgba(247, 182, 26, .04));
+}
+.puntos__valor { font-size: clamp(34px, 5vw, 46px); text-shadow: 0 0 24px rgba(247, 182, 26, .5); }
+
+/* ---------- Estadísticas ---------- */
+.estadisticas { grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 12px; }
+.estadistica {
+  padding: 16px 18px 15px; gap: 6px;
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1), border-color .25s, box-shadow .25s;
+}
+.estadistica::before {
+  content: ''; width: 18px; height: 3px; border-radius: 3px; background: var(--c, var(--neon-2));
+  box-shadow: 0 0 10px var(--c, var(--neon-2));
+}
+.estadistica--azul { --c: var(--neon-2); }
+.estadistica--ambar { --c: var(--ambar); }
+.estadistica--cian { --c: #8fd2ff; }
+.estadistica:hover { transform: translateY(-4px); border-color: rgba(143, 179, 214, .4); box-shadow: 0 26px 40px -24px rgba(0, 0, 0, .8), 0 0 24px -8px var(--c); }
+.estadistica__valor { font-size: 28px; }
+.estadistica--azul .estadistica__valor b, .estadistica--ambar .estadistica__valor b, .estadistica--cian .estadistica__valor b { color: #fff; text-shadow: none; }
+.estadistica__etiqueta { font-size: 11px; letter-spacing: .03em; }
+
+/* ---------- Meta final destacada ---------- */
+.meta {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 40px; row-gap: 6px;
+  align-items: center;
+  padding: 26px 30px;
+  border-color: rgba(247, 182, 26, .3);
+  background:
+    radial-gradient(90% 140% at 0% 0%, rgba(247, 182, 26, .16), transparent 60%),
+    linear-gradient(160deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+  box-shadow: 0 26px 50px -30px rgba(0, 0, 0, .8), 0 0 50px -24px rgba(247, 182, 26, .5);
+}
+.meta .panel__titulo { grid-column: 1 / -1; color: #ffd978; }
+.meta .panel__titulo::before { background: var(--ambar); box-shadow: 0 0 12px var(--ambar); }
+.meta__valor {
+  grid-column: 1; grid-row: 2 / span 3;
+  font-size: clamp(46px, 8vw, 76px);
+  background: linear-gradient(100deg, #fff 20%, #ffd25a 45%, #fff 70%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 22px rgba(247, 182, 26, .4));
+  animation: viaja 7s ease-in-out infinite alternate;
+}
+.meta__valor--listo { grid-column: 1 / -1; grid-row: auto; }
+@keyframes viaja { to { background-position: 100% 0; } }
+.meta__texto { grid-column: 2; grid-row: 2; margin: 0; }
+.meta__ritmo { grid-column: 2; grid-row: 3; margin-top: 8px; }
+.meta .boton-juego { grid-column: 2; justify-self: start; }
+.meta__aviso { grid-column: 1 / -1; margin-top: 10px; }
+.meta__ritmo input { height: 22px; cursor: grab; }
+
+/* ---------- Pestañas con indicador deslizante ---------- */
+.pestanas-juego {
+  position: relative;
+  display: flex; gap: 4px;
+  padding: 5px;
+  border: 1px solid rgba(143, 179, 214, .16); border-radius: 999px;
+  background: rgba(255, 255, 255, .04);
+  overflow-x: auto; scrollbar-width: none;
+  justify-self: start; max-width: 100%;
+}
+.pestanas-juego::-webkit-scrollbar { display: none; }
+.pestanas-juego__indicador {
+  position: absolute; z-index: 0; top: 5px; bottom: 5px; left: 0;
+  width: var(--w, 0); transform: translateX(var(--x, 0));
+  border-radius: 999px;
+  background: linear-gradient(160deg, #5cc8ff, var(--neon-2));
+  box-shadow: 0 6px 20px -4px rgba(47, 168, 255, .7);
+  transition: transform .4s cubic-bezier(.3, 1.3, .5, 1), width .4s cubic-bezier(.3, 1.3, .5, 1);
+}
+.pestana-juego {
+  position: relative; z-index: 1; flex: none;
+  padding: 10px 20px;
+  border: 0; border-radius: 999px; background: transparent;
+  color: var(--suave);
+  font-family: var(--mono); font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: color .25s;
+}
+.pestana-juego:hover { color: #fff; }
+.pestana-juego.is-activa { color: #04111f; }
+.pestana-juego:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+.pestana-juego__cuenta {
+  margin-left: 6px; padding: 2px 7px; border-radius: 999px;
+  background: rgba(255, 255, 255, .12); font-size: 11px;
+}
+.pestana-juego.is-activa .pestana-juego__cuenta { background: rgba(4, 17, 31, .15); }
+.pestana-panel { min-width: 0; }
+.pestana-panel[hidden] { display: none; }
+.pestana-panel.entra { animation: sube .5s cubic-bezier(.2, .8, .2, 1) both; }
+
+/* ---------- Mapa de semestres ---------- */
+.mapa__barra { height: 170px; border: 0; border-radius: 12px; background: rgba(255, 255, 255, .05); padding: 0; overflow: hidden; }
+.mapa__tramo { border-radius: 10px; animation: crecer .9s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(var(--i, 0) * 80ms); }
+.mapa__tramo--ok { background: linear-gradient(180deg, #7dd3ff, #1f7fe0); box-shadow: 0 0 18px rgba(47, 168, 255, .45); }
+.mapa__tramo--mal { background: linear-gradient(180deg, #ff8c9c, var(--mal)); }
+.mapa__col--curso .mapa__tramo--ok { background: linear-gradient(180deg, #ffd978, var(--ambar)); box-shadow: 0 0 22px rgba(247, 182, 26, .55); animation: crecer .9s cubic-bezier(.2, .8, .2, 1) both, latido 2.4s 1.5s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 80ms), 1.5s; }
+.mapa__col--proyectado .mapa__barra { background: transparent; border: 1px dashed rgba(143, 179, 214, .35); }
+.mapa__col--proyectado .mapa__tramo--ok { background: linear-gradient(180deg, rgba(92, 200, 255, .45), rgba(47, 168, 255, .12)); box-shadow: none; animation: crecer .9s cubic-bezier(.2, .8, .2, 1) both, respira 3.2s 1.5s ease-in-out infinite; animation-delay: calc(var(--i, 0) * 80ms), 1.5s; }
+.mapa__col { transition: transform .25s cubic-bezier(.2, .8, .2, 1); }
+.mapa__col:hover { transform: translateY(-5px); }
+.mapa__marca { font-size: 13px; }
+.mapa__col--curso .mapa__marca { animation: latido 1.6s ease-in-out infinite; }
+@keyframes latido { 50% { filter: brightness(1.25); } }
+@keyframes respira { 50% { opacity: .55; } }
+.l-ok { background: #3aa9ff; border-radius: 50%; } .l-mal { border-radius: 50%; } .l-curso { border-radius: 50%; }
+.l-proy { border-radius: 50%; background: transparent; }
+
+/* ---------- Misiones ---------- */
+.misiones__lista { gap: 20px; }
+.mision__barra { height: 10px; margin: 8px 0 6px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .08); }
+.mision__relleno, .mision__curso { border-radius: 999px; }
+.mision__relleno {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color) 70%, #000), var(--color));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--color) 60%, transparent);
+}
+.mision__curso { background: rgba(255, 255, 255, .35); }
+.mision__estado--lista { padding: 2px 10px; border-radius: 999px; background: rgba(125, 255, 176, .12); }
+
+/* ---------- Logros (se conserva el diseño de rarezas; solo vida) ---------- */
+.logro { border-radius: 16px; transition: transform .25s cubic-bezier(.2, .8, .2, 1), border-color .2s, box-shadow .2s, opacity .2s; }
+.logro:hover { transform: translateY(-5px); }
+.logro--listo { overflow: hidden; }
+.logro--listo::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, .13) 50%, transparent 65%);
+  background-size: 260% 100%;
+  animation: brillo 5s ease-in-out infinite;
+}
+.logro--listo .logro__icono { animation: flota 4.5s ease-in-out infinite; }
+.logros__filtro { border-color: rgba(143, 179, 214, .2); }
+
+/* ---------- Bitácora y entrada ---------- */
+.historial__tabla td { border-bottom: 1px solid rgba(143, 179, 214, .1); }
+.historial__tabla tbody tr { transition: background .2s; }
+.historial__tabla tbody tr:hover { background: rgba(47, 168, 255, .07); }
+.entrada__resumen { transition: color .2s; }
+.entrada__resumen:hover { color: var(--neon-2); }
+.boton-juego { border-radius: 12px; }
+
+/* ---------- Entrada escalonada (solo la primera vez) ---------- */
+@keyframes sube { from { opacity: 0; transform: translateY(18px); } }
+#avance-juego > .jugador { animation: sube .6s cubic-bezier(.2, .8, .2, 1) both; }
+#avance-juego > .estadisticas .estadistica { animation: sube .55s cubic-bezier(.2, .8, .2, 1) both; }
+#avance-juego > .estadisticas .estadistica:nth-child(1) { animation-delay: .10s; }
+#avance-juego > .estadisticas .estadistica:nth-child(2) { animation-delay: .17s; }
+#avance-juego > .estadisticas .estadistica:nth-child(3) { animation-delay: .24s; }
+#avance-juego > .estadisticas .estadistica:nth-child(4) { animation-delay: .31s; }
+#avance-juego > .estadisticas .estadistica:nth-child(5) { animation-delay: .38s; }
+#avance-juego > .estadisticas .estadistica:nth-child(6) { animation-delay: .45s; }
+#avance-juego > .meta { animation: sube .6s .3s cubic-bezier(.2, .8, .2, 1) both; }
+#avance-juego > .pestanas-juego { animation: sube .6s .45s cubic-bezier(.2, .8, .2, 1) both; }
+#avance-juego > .pestana-panel { animation: sube .6s .55s cubic-bezier(.2, .8, .2, 1) both; }
+#avance-juego.sin-animar *, #avance-juego.sin-animar *::before, #avance-juego.sin-animar *::after { animation-duration: .001s !important; animation-delay: 0s !important; }
+#avance-juego.sin-animar .xp__relleno::after, #avance-juego.sin-animar .logro--listo::after, #avance-juego.sin-animar .meta__valor { animation-duration: revert !important; animation-delay: revert !important; }
+
+/* ---------- Pantallas pequeñas ---------- */
+@media (max-width: 768px) {
+  .panel { padding: 18px 16px; }
+  .jugador { grid-template-columns: auto minmax(0, 1fr); gap: 16px; padding: 20px 16px; }
+  .jugador__avatar, .anillo { width: 92px; height: 92px; }
+  .jugador__avatar img { width: 66px; height: 66px; }
+  .jugador__puntos {
+    grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: center; gap: 12px;
+    min-width: 0; padding: 12px 16px; border-left: 1px solid rgba(247, 182, 26, .28); border-top: 1px solid rgba(247, 182, 26, .28);
+  }
+  .puntos__valor { font-size: 32px; }
+  .meta { grid-template-columns: 1fr; padding: 20px 18px; }
+  .meta__valor, .meta__texto, .meta__ritmo, .meta .boton-juego { grid-column: 1; grid-row: auto; }
+  .meta__valor { margin: 2px 0 4px; }
+  .pestanas-juego { justify-self: stretch; }
+  .pestana-juego { padding: 9px 14px; font-size: 12.5px; }
+  .mapa__barra { height: 140px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-pagina="avance"] main::before, body[data-pagina="avance"] main::after,
+  .jugador__avatar img, .anillo__valor, .anillo__curso, .jugador__nivel, .xp__relleno::after, .meta__valor,
+  .mapa__tramo, .mapa__col--curso .mapa__marca, .logro--listo::after, .logro--listo .logro__icono,
+  #avance-juego > *, #avance-juego .estadistica, .pestana-panel.entra { animation: none !important; }
+}
