@@ -30,7 +30,15 @@ function logroDesbloqueado(logro, avance, historia) {
   const minimo = Number(regla.minimo);
   switch (regla.tipo) {
     case 'creditos_aprobados': return avance.aprobados >= minimo;
-    case 'avance': return avance.porcentaje >= minimo;
+    case 'avance': return avance.porcentaje > minimo;
+    case 'componente_completo': {
+      const fila = historia.resumen[regla.clave];
+      return Boolean(fila) && fila.exigidos > 0 && fila.pendientes === 0;
+    }
+    case 'nota_en_grupo': {
+      const claves = TIPOLOGIAS.filter((t) => t.grupo === regla.grupo).map((t) => t.clave);
+      return historia.materias.some((m) => m.estado === 'APROBADA' && claves.includes(m.tipologia) && m.nota !== null && m.nota > minimo);
+    }
     case 'papa': return historia.papa !== null && historia.papa >= minimo;
     case 'materias_aprobadas': return avance.materiasAprobadas >= minimo;
     default: return false;

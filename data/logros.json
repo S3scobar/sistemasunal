@@ -1,1 +1,36 @@
-{ "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, regla}. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"papa\",minimo}, {tipo:\"avance\",minimo (%)}, {tipo:\"materias_aprobadas\",minimo}.", "logros": [] }
+{
+  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, regla}. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo} (>=), {tipo:\"avance\",minimo} (porcentaje, MÁS de), {tipo:\"papa\",minimo} (>=), {tipo:\"materias_aprobadas\",minimo} (>=), {tipo:\"componente_completo\",clave} (clave de tipología del SIA, p. ej. \"LIBRE ELECCIÓN\"), {tipo:\"nota_en_grupo\",grupo,minimo} (alguna materia aprobada del grupo fundamentacion|disciplinar|libre con nota MAYOR que minimo).",
+  "logros": [
+    {
+      "id": "esto-quedara-registrado",
+      "nombre": "Esto Quedará Registrado",
+      "descripcion": "Terminaste el componente de libre elección.",
+      "puntos": 100,
+      "regla": {
+        "tipo": "componente_completo",
+        "clave": "LIBRE ELECCIÓN"
+      }
+    },
+    {
+      "id": "punto-de-no-retorno",
+      "nombre": "Punto de No Retorno",
+      "descripcion": "Llevas más del 50 % de avance en la carrera.",
+      "puntos": 100,
+      "regla": {
+        "tipo": "avance",
+        "minimo": 50
+      }
+    },
+    {
+      "id": "el-lobo-entre-las-ecuaciones",
+      "nombre": "El Lobo Entre Las Ecuaciones",
+      "descripcion": "Sacaste más de 4.6 en una asignatura del componente de fundamentación.",
+      "puntos": 100,
+      "regla": {
+        "tipo": "nota_en_grupo",
+        "grupo": "fundamentacion",
+        "minimo": 4.6
+      }
+    }
+  ]
+}
