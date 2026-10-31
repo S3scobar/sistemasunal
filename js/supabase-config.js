@@ -288,8 +288,8 @@ const ServicioAuth = {
         .from('perfiles')
         .select('*', { count: 'exact', head: true });
 
-      if (errPerfiles || !totalEstudiantes || totalEstudiantes < 5) {
-        return null; // Con menos de 5 estudiantes registrados, se usan los porcentajes base de referencia
+      if (errPerfiles || !totalEstudiantes || totalEstudiantes < 2) {
+        return null; // Con menos de 2 estudiantes registrados, se usan los porcentajes base de referencia
       }
 
       const { data, error } = await clienteSupabase

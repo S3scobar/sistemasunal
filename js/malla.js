@@ -26,10 +26,295 @@ const estado = {
   pagina: 1,
 };
 
+/* ---------- Estado del Progreso del Estudiante ---------- */
+const estadoProgreso = {
+  activo: true,               // Si el sombreado de aprobadas está encendido
+  usuario: null,              // Datos de sesión activa
+  historia: null,             // Objeto historia parseado desde avance-lector.js
+  mapaProgreso: new Map(),    // Índice rápido 'cod:...' y 'nom:...' -> registro de materia
+  bolsasCumplidas: new Set(), // IDs de bolsas cumplidas en la malla ('b-semestre-pos')
+  aprobadasPlan: 0,
+  creditosAprobadosPlan: 0,
+  totalPlanAsignaturas: 0,
+  porcentajePlan: 0,
+};
+
 const buscarComponente = (id) => estado.componentes.find((c) => c.id === id);
 const buscarAgrupacion = (id) => estado.agrupaciones.find((a) => a.id === id);
 const colorDe = (asignatura) => buscarComponente(buscarAgrupacion(asignatura.agrupacion).componente).color;
 const creditosTexto = (creditos) => (creditos ?? '—');
+
+const normalizarNombre = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+const baseCodigo = (c) => String(c || '').toUpperCase().trim().replace(/-[A-Z0-9]+$/, '');
+
+/* Indexa las asignaturas aprobadas / en curso de la historia académica */
+function crearIndiceProgreso(historia) {
+  estadoProgreso.mapaProgreso.clear();
+  if (!historia || !Array.isArray(historia.materias)) return;
+
+  const prioridadEstado = {
+    'APROBADA': 4,
+    'EN CURSO': 3,
+    'CURSANDO': 3,
+    'INSCRITA': 3,
+    'REPROBADA': 2,
+    'CANCELADA': 1,
+  };
+
+  historia.materias.forEach((m) => {
+    const estadoNorm = (m.estado || '').toUpperCase().trim();
+    const registro = {
+      ...m,
+      estado: estadoNorm,
+      prioridad: prioridadEstado[estadoNorm] || 0,
+    };
+
+    const registrarEnClave = (clave) => {
+      const previo = estadoProgreso.mapaProgreso.get(clave);
+      if (!previo || registro.prioridad > previo.prioridad) {
+        estadoProgreso.mapaProgreso.set(clave, registro);
+      }
+    };
+
+    const codExacto = String(m.codigo || '').trim().toUpperCase();
+    const codBase = baseCodigo(m.codigo);
+    const nomNorm = normalizarNombre(m.nombre);
+
+    if (codExacto) registrarEnClave('cod:' + codExacto);
+    if (codBase) registrarEnClave('cod:' + codBase);
+    if (nomNorm) registrarEnClave('nom:' + nomNorm);
+  });
+
+  calcularBolsasCumplidas(historia);
+  actualizarMetricasPlan();
+}
+
+/* Consulta el estado de una asignatura en el avance del estudiante */
+function consultarProgresoMateria(codigo) {
+  if (!estadoProgreso.activo || !estadoProgreso.historia) return null;
+  const asig = estado.asignaturas.get(codigo);
+  const codExacto = String(codigo || '').trim().toUpperCase();
+  const codBase = baseCodigo(codigo);
+  const nomNorm = asig ? normalizarNombre(asig.nombre) : '';
+
+  let match = null;
+  if (codExacto && estadoProgreso.mapaProgreso.has('cod:' + codExacto)) {
+    match = estadoProgreso.mapaProgreso.get('cod:' + codExacto);
+  } else if (codBase && estadoProgreso.mapaProgreso.has('cod:' + codBase)) {
+    match = estadoProgreso.mapaProgreso.get('cod:' + codBase);
+  } else if (nomNorm && estadoProgreso.mapaProgreso.has('nom:' + nomNorm)) {
+    match = estadoProgreso.mapaProgreso.get('nom:' + nomNorm);
+  }
+  return match;
+}
+
+/* Calcula qué casillas optativas o de libre elección ya fueron satisfechas */
+function calcularBolsasCumplidas(historia) {
+  estadoProgreso.bolsasCumplidas.clear();
+  if (!historia || !Array.isArray(historia.materias)) return;
+
+  const creditosPorBolsa = {
+    'ciencias-basicas': 0,
+    'tecnologias': 0,
+    'libre-eleccion': 0,
+  };
+
+  historia.materias.forEach((m) => {
+    if ((m.estado || '').toUpperCase() !== 'APROBADA') return;
+    const tip = (m.tipologia || '').toUpperCase();
+    if (tip.includes('LIBRE')) {
+      creditosPorBolsa['libre-eleccion'] += (m.creditos || 0);
+    } else if (tip.includes('FUND. OPTATIVA')) {
+      creditosPorBolsa['ciencias-basicas'] += (m.creditos || 0);
+    } else if (tip.includes('DISCIPLINAR OPTATIVA')) {
+      creditosPorBolsa['tecnologias'] += (m.creditos || 0);
+    } else {
+      const a = estado.asignaturas.get(m.codigo) || estado.asignaturas.get(baseCodigo(m.codigo));
+      if (a && !a.obligatoria && creditosPorBolsa[a.agrupacion] !== undefined) {
+        creditosPorBolsa[a.agrupacion] += (m.creditos || 0);
+      }
+    }
+  });
+
+  if (historia.resumen) {
+    if (historia.resumen['LIBRE ELECCIÓN']?.aprobados) {
+      creditosPorBolsa['libre-eleccion'] = Math.max(creditosPorBolsa['libre-eleccion'], historia.resumen['LIBRE ELECCIÓN'].aprobados);
+    }
+    if (historia.resumen['FUND. OPTATIVA']?.aprobados) {
+      creditosPorBolsa['ciencias-basicas'] = Math.max(creditosPorBolsa['ciencias-basicas'], historia.resumen['FUND. OPTATIVA'].aprobados);
+    }
+    if (historia.resumen['DISCIPLINAR OPTATIVA']?.aprobados) {
+      creditosPorBolsa['tecnologias'] = Math.max(creditosPorBolsa['tecnologias'], historia.resumen['DISCIPLINAR OPTATIVA'].aprobados);
+    }
+  }
+
+  const disponibles = { ...creditosPorBolsa };
+
+  estado.plan.forEach((s) => {
+    s.items.forEach((item, pos) => {
+      if (item.tipo === 'bolsa') {
+        const id = `b-${s.semestre}-${pos}`;
+        const ag = item.agrupacion;
+        if (disponibles[ag] !== undefined && disponibles[ag] >= item.creditos) {
+          estadoProgreso.bolsasCumplidas.add(id);
+          disponibles[ag] -= item.creditos;
+        }
+      }
+    });
+  });
+}
+
+/* Calcula el total de asignaturas obligatorias y créditos cumplidos del plan */
+function actualizarMetricasPlan() {
+  let aprobadas = 0;
+  let creditosAprobados = 0;
+  let totalAsignaturas = 0;
+
+  estado.plan.forEach((semestre) => {
+    semestre.items.forEach((item, pos) => {
+      if (item.tipo === 'asignatura') {
+        totalAsignaturas += 1;
+        const prog = consultarProgresoMateria(item.codigo);
+        if (prog?.estado === 'APROBADA') {
+          aprobadas += 1;
+          const asig = estado.asignaturas.get(item.codigo);
+          creditosAprobados += (asig?.creditos || 0);
+        }
+      } else if (item.tipo === 'bolsa') {
+        const id = `b-${semestre.semestre}-${pos}`;
+        if (estadoProgreso.bolsasCumplidas.has(id)) {
+          creditosAprobados += (item.creditos || 0);
+        }
+      }
+    });
+  });
+
+  estadoProgreso.aprobadasPlan = aprobadas;
+  estadoProgreso.totalPlanAsignaturas = totalAsignaturas;
+  estadoProgreso.creditosAprobadosPlan = creditosAprobados;
+  estadoProgreso.porcentajePlan = Math.min(100, (creditosAprobados / 160) * 100);
+}
+
+/* Carga la sesión del usuario y procesa su historia académica */
+async function cargarProgresoUsuario() {
+  let textoHistoria = '';
+  let nombreUsuario = '';
+  let correoUsuario = '';
+
+  // 1. Intentar sesión activa en Supabase / ServicioAuth
+  if (typeof ServicioAuth !== 'undefined' && ServicioAuth.obtenerSesion) {
+    try {
+      const sesion = await ServicioAuth.obtenerSesion();
+      if (sesion && sesion.usuario) {
+        estadoProgreso.usuario = sesion.usuario;
+        nombreUsuario = sesion.usuario.nombre || '';
+        correoUsuario = sesion.usuario.correo || '';
+        textoHistoria = sesion.usuario.historiaTexto || '';
+      }
+    } catch (e) {
+      console.warn('Error leyendo sesión para la malla:', e);
+    }
+  }
+
+  // 2. Respaldo: leer de localStorage 'sistemasunal.avance.v1'
+  if (!textoHistoria) {
+    try {
+      const guardado = JSON.parse(localStorage.getItem('sistemasunal.avance.v1'));
+      if (guardado && guardado.texto) {
+        textoHistoria = guardado.texto;
+        if (!nombreUsuario && guardado.nombre) nombreUsuario = guardado.nombre;
+        if (!estadoProgreso.usuario) {
+          estadoProgreso.usuario = { nombre: guardado.nombre, correo: '' };
+        }
+      }
+    } catch (e) {
+      // Sin respaldo local
+    }
+  }
+
+  // 3. Procesar historia con leerHistoria si está disponible
+  if (textoHistoria && typeof leerHistoria === 'function') {
+    try {
+      const historia = leerHistoria(textoHistoria);
+      if (historia && (historia.materias?.length || Object.keys(historia.resumen || {}).length)) {
+        estadoProgreso.historia = historia;
+        if (!nombreUsuario && historia.nombre) {
+          nombreUsuario = historia.nombre;
+          if (estadoProgreso.usuario) estadoProgreso.usuario.nombre = nombreUsuario;
+        }
+        crearIndiceProgreso(historia);
+      }
+    } catch (e) {
+      console.warn('Error procesando historia en la malla:', e);
+    }
+  }
+
+  actualizarBannerSesion(nombreUsuario || correoUsuario);
+}
+
+/* Actualiza el panel superior de sesión o el aviso de invitación */
+function actualizarBannerSesion(nombreIdentificador) {
+  const sesionEl = $('#malla-sesion');
+  const invitadoEl = $('#malla-invitado');
+
+  if (estadoProgreso.historia && (estadoProgreso.usuario || estadoProgreso.historia.materias?.length)) {
+    if (invitadoEl) invitadoEl.hidden = true;
+    if (sesionEl) {
+      sesionEl.hidden = false;
+      const nombreEl = $('#malla-usuario-nombre');
+      const resumenEl = $('#malla-resumen-texto');
+
+      const nombreMostrar = nombreIdentificador || estadoProgreso.usuario?.nombre || estadoProgreso.historia.nombre || 'Estudiante';
+      if (nombreEl) nombreEl.textContent = nombreMostrar;
+
+      const pct = (estadoProgreso.historia.porcentajeSia !== null && estadoProgreso.historia.porcentajeSia !== undefined)
+        ? Number(estadoProgreso.historia.porcentajeSia).toFixed(1)
+        : estadoProgreso.porcentajePlan.toFixed(1);
+
+      if (resumenEl) {
+        resumenEl.textContent = `Has aprobado ${estadoProgreso.aprobadasPlan} asignaturas obligatorias (${estadoProgreso.creditosAprobadosPlan} créditos cumplidos) · ${pct} % de avance general`;
+      }
+    }
+  } else {
+    if (sesionEl) sesionEl.hidden = true;
+    if (invitadoEl) invitadoEl.hidden = false;
+  }
+}
+
+/* Control del botón switch para alternar el sombreado */
+function iniciarControlesSesion() {
+  const btnToggle = $('#btn-toggle-sombreado');
+  if (btnToggle) {
+    btnToggle.addEventListener('click', () => {
+      estadoProgreso.activo = !estadoProgreso.activo;
+      btnToggle.classList.toggle('is-activo', estadoProgreso.activo);
+      btnToggle.setAttribute('aria-pressed', String(estadoProgreso.activo));
+      const label = btnToggle.querySelector('.malla-sesion__btn-toggle-label');
+      if (label) {
+        label.textContent = estadoProgreso.activo ? 'Sombrear aprobadas' : 'Ver malla limpia';
+      }
+      pintarMalla();
+      pintarLeyenda();
+      pintarCatalogo();
+    });
+  }
+
+  // Si Supabase notifica un cambio de sesión (inicio o cierre), sincronizar
+  if (typeof clienteSupabase !== 'undefined' && clienteSupabase?.auth?.onAuthStateChange) {
+    try {
+      clienteSupabase.auth.onAuthStateChange(async (event) => {
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+          await cargarProgresoUsuario();
+          pintarLeyenda();
+          pintarMalla();
+          pintarCatalogo();
+        }
+      });
+    } catch (e) {
+      // Pasivo
+    }
+  }
+}
 
 
 /* ---------- Carga ---------- */
@@ -51,11 +336,13 @@ function prepararDatos([componentes, plan, asignaturas]) {
 }
 
 Promise.all([cargarDatos('malla/componentes'), cargarDatos('malla/plan'), cargarDatos('malla/asignaturas')])
-  .then((datos) => {
+  .then(async (datos) => {
     prepararDatos(datos);
+    await cargarProgresoUsuario();
     pintarLeyenda();
     pintarMalla();
     iniciarCatalogo();
+    iniciarControlesSesion();
     leerDireccion();
   })
   .catch((error) => mostrarErrorDeCarga($('#malla-rejilla'), error));
@@ -67,8 +354,15 @@ function pintarLeyenda() {
   const componentes = estado.componentes
     .map((c) => `<li><span class="leyenda__punto" style="--color: ${c.color}"></span>${esc(c.nombre)}</li>`)
     .join('');
+
+  const progresoLeyenda = (estadoProgreso.activo && estadoProgreso.usuario)
+    ? `<li><span class="leyenda__punto leyenda__punto--aprobada"></span>Aprobada / Cumplida</li>
+       <li><span class="leyenda__punto leyenda__punto--curso"></span>En curso</li>`
+    : '';
+
   $('#leyenda').innerHTML = `
     ${componentes}
+    ${progresoLeyenda}
     <li><span class="leyenda__aro" style="--color: var(--libre)"></span>Prerrequisito (te pide)</li>
     <li><span class="leyenda__aro" style="--color: var(--azul-brillante)"></span>Te abre (se abre después)</li>`;
 }
@@ -79,13 +373,37 @@ function pintarLeyenda() {
 function casillaAsignatura(codigo) {
   const a = estado.asignaturas.get(codigo);
   const wppIndicador = a.whatsapp ? `<span class="materia__wpp-punto" title="Grupo de WhatsApp disponible">💬</span>` : '';
+
+  let claseEstado = '';
+  let estadoAria = '';
+  let badgeHtml = '';
+
+  if (estadoProgreso.activo) {
+    const prog = consultarProgresoMateria(codigo);
+    if (prog) {
+      if (prog.estado === 'APROBADA') {
+        claseEstado = ' materia--aprobada';
+        estadoAria = ', aprobada';
+        const notaTooltip = (prog.nota !== null && prog.nota !== undefined) ? ` · Nota: ${Number(prog.nota).toFixed(1)}` : '';
+        badgeHtml = `<span class="materia__tag-aprobada" title="Asignatura aprobada${notaTooltip}">✓</span>`;
+      } else if (prog.estado === 'EN CURSO' || prog.estado === 'CURSANDO' || prog.estado === 'INSCRITA') {
+        claseEstado = ' materia--en-curso';
+        estadoAria = ', en curso';
+        badgeHtml = `<span class="materia__tag-curso" title="Matriculada este período">En curso</span>`;
+      }
+    }
+  }
+
   return `
     <li>
-      <button class="materia ${a.whatsapp ? 'materia--con-wpp' : ''}" type="button" data-codigo="${esc(codigo)}" data-agrupacion="${esc(a.agrupacion)}"
-        style="--color: ${colorDe(a)}" aria-label="${esc(a.nombre)}, ${a.creditos} créditos${a.whatsapp ? ', con grupo de WhatsApp' : ''}">
+      <button class="materia${claseEstado} ${a.whatsapp ? 'materia--con-wpp' : ''}" type="button" data-codigo="${esc(codigo)}" data-agrupacion="${esc(a.agrupacion)}"
+        style="--color: ${colorDe(a)}" aria-label="${esc(a.nombre)}, ${a.creditos} créditos${estadoAria}${a.whatsapp ? ', con grupo de WhatsApp' : ''}">
         <span class="materia__nombre">${esc(a.nombre)}</span>
         <span class="materia__cred">${a.creditos}</span>
-        <span class="materia__codigo">${esc(a.codigo)}${wppIndicador}</span>
+        <span class="materia__codigo">
+          <span class="materia__codigo-num">${esc(codigo)}${wppIndicador}</span>
+          ${badgeHtml}
+        </span>
       </button>
     </li>`;
 }
@@ -93,15 +411,30 @@ function casillaAsignatura(codigo) {
 function casillaBolsa(bolsa, semestre, posicion) {
   const agrupacion = buscarAgrupacion(bolsa.agrupacion);
   const color = buscarComponente(agrupacion.componente).color;
+  const bolsaId = `b-${semestre}-${posicion}`;
+  const estaCumplida = estadoProgreso.activo && estadoProgreso.bolsasCumplidas.has(bolsaId);
+
+  const claseCumplida = estaCumplida ? ' materia--aprobada materia--bolsa-cumplida' : '';
+  const textoBolsa = estaCumplida
+    ? 'Cumplida'
+    : (bolsa.agrupacion === 'libre-eleccion' ? 'a tu elección' : 'ver opciones');
+  const badgeHtml = estaCumplida
+    ? '<span class="materia__tag-aprobada" title="Casilla cumplida">✓</span>'
+    : '';
+
   return `
     <li>
-      <button class="materia materia--bolsa" type="button" data-bolsa="${esc(bolsa.agrupacion)}"
-        data-id="b-${semestre}-${posicion}" data-agrupacion="${esc(bolsa.agrupacion)}"
+      <button class="materia materia--bolsa${claseCumplida}" type="button" data-bolsa="${esc(bolsa.agrupacion)}"
+        data-id="${bolsaId}" data-agrupacion="${esc(bolsa.agrupacion)}"
         data-creditos="${bolsa.creditos}" data-nombre="${esc(bolsa.nombre)}"
-        style="--color: ${color}" aria-label="${esc(bolsa.nombre)}, ${bolsa.creditos} créditos">
+        ${estaCumplida ? 'data-cumplida="true"' : ''}
+        style="--color: ${color}" aria-label="${esc(bolsa.nombre)}, ${bolsa.creditos} créditos${estaCumplida ? ', cumplida' : ''}">
         <span class="materia__nombre">${esc(bolsa.nombre)}</span>
         <span class="materia__cred">${bolsa.creditos}</span>
-        <span class="materia__codigo">${bolsa.agrupacion === 'libre-eleccion' ? 'a tu elección' : 'ver opciones'}</span>
+        <span class="materia__codigo">
+          <span class="materia__codigo-num">${esc(textoBolsa)}</span>
+          ${badgeHtml}
+        </span>
       </button>
     </li>`;
 }
@@ -224,6 +557,34 @@ function seleccionar(codigo, { desplazar = false } = {}) {
   const dependientes = estado.dependientes.get(codigo) || [];
   const semestre = a.semestre ? `Semestre ${ROMANOS[a.semestre - 1]}` : 'Optativa · sin semestre fijo';
 
+  let bannerEstado = '';
+  if (estadoProgreso.activo && estadoProgreso.historia) {
+    const prog = consultarProgresoMateria(codigo);
+    if (prog) {
+      if (prog.estado === 'APROBADA') {
+        const notaStr = (prog.nota !== null && prog.nota !== undefined) ? `Calificación: <strong>${Number(prog.nota).toFixed(1)}</strong>` : 'Aprobada';
+        const periodoStr = prog.periodo ? ` · Cursada en ${prog.periodo.anio}-${prog.periodo.num}S` : '';
+        bannerEstado = `
+          <div class="detalle__estado-estudiante detalle__estado-estudiante--aprobada">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            <div>
+              <strong>¡Asignatura aprobada!</strong>
+              <div>${notaStr}${periodoStr}</div>
+            </div>
+          </div>`;
+      } else if (prog.estado === 'EN CURSO' || prog.estado === 'CURSANDO' || prog.estado === 'INSCRITA') {
+        bannerEstado = `
+          <div class="detalle__estado-estudiante detalle__estado-estudiante--curso">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <div>
+              <strong>Actualmente en curso</strong>
+              <div>Matriculada en este período académico.</div>
+            </div>
+          </div>`;
+      }
+    }
+  }
+
   const bloqueWhatsapp = a.whatsapp ? `
     <div class="detalle__bloque detalle__bloque--whatsapp">
       <h4>Comunidad de WhatsApp</h4>
@@ -236,6 +597,7 @@ function seleccionar(codigo, { desplazar = false } = {}) {
 
   pintarDetalle(`
     <div class="detalle__cabeza">
+      ${bannerEstado}
       <p class="detalle__codigo">Código ${esc(a.codigo)}</p>
       <h3>${esc(a.nombre)}</h3>
       <ul class="etiquetas">
@@ -277,15 +639,26 @@ function seleccionarBolsa(boton) {
   const agrupacion = buscarAgrupacion(boton.dataset.bolsa);
   const componente = buscarComponente(agrupacion.componente);
   const esLibre = agrupacion.id === 'libre-eleccion';
+  const esCumplida = boton.dataset.cumplida === 'true';
 
   estado.seleccion = null;
   marcarRelaciones(null);
   $$('.materia--bolsa.es-seleccion').forEach((b) => b.classList.remove('es-seleccion'));
   boton.classList.add('es-seleccion');
 
+  const bannerCumplida = esCumplida ? `
+    <div class="detalle__estado-estudiante detalle__estado-estudiante--aprobada">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      <div>
+        <strong>¡Casilla cumplida!</strong>
+        <div>Ya aprobaste los créditos requeridos para esta casilla en tu historia académica.</div>
+      </div>
+    </div>` : '';
+
   pintarDetalle(`
     <div class="detalle__cabeza">
-      <p class="detalle__codigo">Casilla de la malla</p>
+      ${bannerCumplida}
+      <p class="detalle__codigo">Casilla de la malla${esCumplida ? ' · Cumplida' : ''}</p>
       <h3>${esc(boton.dataset.nombre)}</h3>
       <ul class="etiquetas">
         <li class="etiqueta etiqueta--cred">${esc(boton.dataset.creditos)} créditos</li>
@@ -432,16 +805,26 @@ function pintarCatalogo() {
 
   $('#catalogo').innerHTML = agrupacion.id === 'libre-eleccion'
     ? `<li class="catalogo__vacio">El componente de libre elección no tiene asignaturas fijas: se cursa en las casillas «Libre elección» de la malla.</li>`
-    : visibles.map((a) => `
-        <li>
-          <button class="tarjeta" type="button" data-codigo="${esc(a.codigo)}" style="--color: ${colorDe(a)}">
-            <span class="tarjeta__nombre">${esc(a.nombre)}</span>
-            <span class="tarjeta__pie">
-              <span><span class="tarjeta__tipo">${a.obligatoria ? 'Obligatoria' : 'Optativa'}</span> · ${esc(a.codigo)}${a.whatsapp ? ' · <span class="tarjeta__wpp" title="Tiene grupo de WhatsApp">💬 WhatsApp</span>' : ''}</span>
-              <span class="tarjeta__cred" title="Créditos">${creditosTexto(a.creditos)}</span>
-            </span>
-          </button>
-        </li>`).join('');
+    : visibles.map((a) => {
+        const prog = estadoProgreso.activo ? consultarProgresoMateria(a.codigo) : null;
+        const esAprobada = prog?.estado === 'APROBADA';
+        const esEnCurso = prog?.estado === 'EN CURSO' || prog?.estado === 'CURSANDO' || prog?.estado === 'INSCRITA';
+        const claseTarjeta = esAprobada ? ' tarjeta tarjeta--aprobada' : (esEnCurso ? ' tarjeta tarjeta--en-curso' : ' tarjeta');
+        const badgeEstado = esAprobada
+          ? `<span class="tarjeta__estado-badge" style="background:#10b981; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px;">✓ APROBADA ${prog.nota !== null && prog.nota !== undefined ? Number(prog.nota).toFixed(1) : ''}</span>`
+          : (esEnCurso ? `<span class="tarjeta__estado-badge" style="background:#f59e0b; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px;">▶ EN CURSO</span>` : '');
+
+        return `
+          <li>
+            <button class="${claseTarjeta}" type="button" data-codigo="${esc(a.codigo)}" style="--color: ${colorDe(a)}">
+              <span class="tarjeta__nombre">${esc(a.nombre)}</span>
+              <span class="tarjeta__pie">
+                <span>${badgeEstado}<span class="tarjeta__tipo">${a.obligatoria ? 'Obligatoria' : 'Optativa'}</span> · ${esc(a.codigo)}${a.whatsapp ? ' · <span class="tarjeta__wpp" title="Tiene grupo de WhatsApp">💬 WhatsApp</span>' : ''}</span>
+                <span class="tarjeta__cred" title="Créditos">${creditosTexto(a.creditos)}</span>
+              </span>
+            </button>
+          </li>`;
+      }).join('');
 
   pintarPaginacion(totalPaginas, filtradas.length, inicio, visibles.length);
 }

@@ -189,6 +189,219 @@
 }
 
 
+/* ---------- 1. Barra de Sesión y Avance en la Malla ---------- */
+
+.malla-sesion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--linea);
+  border-left: 5px solid #10b981;
+  box-shadow: 0 10px 26px -12px rgba(10, 44, 82, .14), 0 2px 6px rgba(0, 0, 0, .03);
+  padding: 16px 22px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.malla-sesion__info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.malla-sesion__icono {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #ecfdf5;
+  border: 1.5px solid #a7f3d0;
+  color: #059669;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.malla-sesion__icono svg {
+  width: 22px;
+  height: 22px;
+}
+
+.malla-sesion__textos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.malla-sesion__fila-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.malla-sesion__etiqueta {
+  font-family: var(--letra-universidad);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #047857;
+  background: #d1fae5;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.malla-sesion__usuario {
+  font-family: var(--letra-texto);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--azul-marino);
+}
+
+.malla-sesion__resumen-texto {
+  font-size: 13.5px;
+  color: var(--tinta-suave);
+  margin: 0;
+}
+
+.malla-sesion__resumen-texto b {
+  color: var(--azul-marino);
+}
+
+.malla-sesion__acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.malla-sesion__btn-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1.5px solid #d1d5db;
+  background: #f9fafb;
+  color: var(--tinta-suave);
+  font-family: var(--letra-texto);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.malla-sesion__btn-toggle-switch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #9ca3af;
+  transition: background .15s ease, box-shadow .15s ease;
+}
+
+.malla-sesion__btn-toggle.is-activo {
+  background: #ecfdf5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.malla-sesion__btn-toggle.is-activo .malla-sesion__btn-toggle-switch {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+}
+
+.malla-sesion__enlace-avance {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--azul);
+  text-decoration: none;
+  padding: 7px 12px;
+  border-radius: 8px;
+  transition: background .15s ease, color .15s ease;
+}
+
+.malla-sesion__enlace-avance:hover {
+  background: #eef5fc;
+  color: var(--azul-oscuro);
+  text-decoration: underline;
+}
+
+/* Banner de invitado */
+.malla-invitado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #f8fafc;
+  border-radius: 14px;
+  border: 1px dashed #cbd5e1;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.malla-invitado__icono {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #e2e8f0;
+  color: var(--azul-marino);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.malla-invitado__icono svg {
+  width: 20px;
+  height: 20px;
+}
+
+.malla-invitado__cuerpo {
+  flex: 1;
+  min-width: 220px;
+}
+
+.malla-invitado__texto {
+  font-size: 13.5px;
+  color: var(--tinta-suave);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.malla-invitado__texto strong {
+  color: var(--azul-marino);
+}
+
+.malla-invitado__btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--azul);
+  color: #fff !important;
+  font-family: var(--letra-universidad);
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(22, 103, 194, 0.3);
+  transition: background .15s ease, transform .15s ease;
+}
+
+.malla-invitado__btn:hover {
+  background: var(--azul-oscuro);
+  transform: translateY(-1px);
+}
+
+
 /* ---------- 1. Convenciones ---------- */
 
 .leyenda {
@@ -312,18 +525,166 @@
   color: #fff;
 }
 .materia__codigo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 3px 8px;
-  background: #c3cde3;
+  background: #d8e0ec;
   font-size: 11px;
   letter-spacing: .02em;
   color: var(--tinta-suave);
   white-space: nowrap;
   overflow: hidden;
+}
+.materia__codigo-num {
+  overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
+  white-space: nowrap;
 }
 .materia--bolsa .materia__nombre { font-size: 12px; color: var(--tinta-suave); }
 .materia--bolsa .materia__codigo { background: #e7eaf0; font-style: italic; }
+
+/* ---------- Asignaturas Aprobadas (Cumplidas) ---------- */
+.materia--aprobada {
+  /* Fondo suave del color de cada componente pero muy suave tirando a blanco */
+  background: color-mix(in srgb, var(--color) 18%, #ffffff) !important;
+  border: 1.5px solid color-mix(in srgb, var(--color) 45%, #ffffff) !important;
+  box-shadow: 0 2px 7px -2px color-mix(in srgb, var(--color) 35%, transparent), 0 1px 3px rgba(10, 44, 82, 0.08) !important;
+}
+
+.materia--aprobada:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px -3px color-mix(in srgb, var(--color) 48%, transparent), 0 2px 5px rgba(10, 44, 82, 0.12) !important;
+}
+
+.materia--aprobada .materia__nombre {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.materia--aprobada .materia__codigo {
+  background: color-mix(in srgb, var(--color) 28%, #ffffff) !important;
+  color: color-mix(in srgb, var(--color) 85%, #0f172a) !important;
+  font-weight: 600;
+}
+
+.materia--bolsa.materia--aprobada .materia__codigo {
+  font-style: normal;
+}
+
+.materia__tag-aprobada {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #059669;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+/* ---------- Asignaturas En Curso ---------- */
+.materia--en-curso {
+  background: #fffdf5 !important;
+  border: 1.5px dashed #f59e0b !important;
+  box-shadow: 0 2px 7px -2px rgba(245, 158, 11, 0.25), 0 1px 3px rgba(10, 44, 82, 0.08) !important;
+}
+
+.materia--en-curso .materia__nombre {
+  color: #78350f;
+  font-weight: 600;
+}
+
+.materia--en-curso .materia__codigo {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  font-weight: 600;
+}
+
+.materia__tag-curso {
+  font-size: 10px;
+  color: #d97706;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-left: 4px;
+}
+
+/* Leyenda con progreso */
+.leyenda__punto--aprobada {
+  background: #10b981 !important;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+.leyenda__punto--curso {
+  background: #f59e0b !important;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+}
+
+/* Ficha Detalle: Banner de estado del estudiante */
+.detalle__estado-estudiante {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  margin-bottom: 14px;
+  line-height: 1.4;
+}
+
+.detalle__estado-estudiante--aprobada {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+.detalle__estado-estudiante--aprobada svg {
+  color: #059669;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+.detalle__estado-estudiante--curso {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+}
+
+.detalle__estado-estudiante--curso svg {
+  color: #d97706;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+
+/* Catálogo: Resaltado de asignaturas aprobadas */
+.tarjeta--aprobada {
+  border-left: 4px solid #10b981 !important;
+  background: linear-gradient(145deg, #f0fdf4 0%, #e6f7ed 100%) !important;
+}
+
+.tarjeta--aprobada .tarjeta__nombre {
+  color: #064e3b;
+  font-weight: 600;
+}
+
+.tarjeta--en-curso {
+  border-left: 4px solid #f59e0b !important;
+  background: linear-gradient(145deg, #fffdf5 0%, #fef9c3 100%) !important;
+}
+
+.tarjeta__estado-badge {
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.tarjeta__estado-badge--aprobada {
+  color: #059669;
+}
+
+.tarjeta__estado-badge--curso {
+  color: #d97706;
+}
 
 /* Al pasar el cursor o elegir una materia, el resto se atenúa y se marcan sus relaciones en colores */
 .rejilla.hay-seleccion .materia {
