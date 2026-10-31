@@ -1,9 +1,6 @@
 -- =========================================================================
 -- ENDURECIMIENTO DE SEGURIDAD · INGENIERÍA DE SISTEMAS E INFORMÁTICA UNAL
 -- Autor: Santiago Escobar Arias · Firma: SEA-SIS-UNAL-2026-AUTH-F45123
--- Ejecuta este script UNA VEZ en el SQL Editor de tu proyecto de Supabase.
--- (La clave "anon" del navegador es pública por diseño: lo que protege los
---  datos son estas políticas, no ocultar la clave.)
 -- =========================================================================
 
 -- 1. Los logros desbloqueados dejan de ser legibles por todo el mundo.
