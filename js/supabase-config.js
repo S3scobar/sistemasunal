@@ -16,16 +16,33 @@
    INSTRUCCIONES PARA CONECTAR TU BASE DE DATOS DE SUPABASE:
    1. Crea tu proyecto gratuito en https://supabase.com
    2. En tu panel de Supabase ve a: Project Settings -> Configuration -> API
-   3. Copia "Project URL" y "Project API Keys (anon public)" y pégalos abajo:
+   3. Copia "Project URL" y "anon public key" y genera el bloque cifrado con:
+        node tools/cifrar-config.js <url> <anonKey>
+      Pega el resultado en SUPABASE_CONFIG (abajo). Nunca uses la clave service_role en el navegador.
    ========================================================================= */
 
-const SUPABASE_CONFIG = {
-  // 1. PEGA AQUÍ LA URL DE TU PROYECTO (ej: 'https://abcdefghijklm.supabase.co')
-  url: 'https://xuludriscpxoygezljwt.supabase.co',
-
-  // 2. PEGA AQUÍ TU CLAVE PÚBLICA ANÓNIMA (anon public key)
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1bHVkcmlzY3B4b3lnZXpsand0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzMDg4NDIsImV4cCI6MjEwODg4NDg0Mn0.2BnNOpTball1hpCo4E0F2dBPYv6pmCTdFo8Z7kSU6uw',
-};
+const SUPABASE_CONFIG = (() => {
+  // Configuración cifrada (ofuscada) para que no aparezca en texto plano al inspeccionar el código.
+  // OJO: es solo un freno para curiosos; la seguridad real está en las políticas RLS de la base de datos.
+  // Para regenerar este bloque: node tools/cifrar-config.js <url> <anonKey>
+  const _p = [
+  'KGc0Xz9raQ89OjU8XggfHU4mKTRJISAgTiU2LjVKV0peXCQxb14mOTJPND0k',
+  'Yk5dEh4UMisuQxgsKg9vbCQ1Z1pSdVU6CihnGhwpZGQAKAVee15gAzAGCBsa',
+  'IiN1Aw0LdQNXSXhGMHYMRBwgGVcxFgMkdF92SGwADDJkPQM/dzwHdwVDWgFQ',
+  'fgUuIkA/MwoeF3ojf0FcampGICQvSWMAOlo8LSx1XmhjewAaKAdYMXtnRBkN',
+  'Czx0amFbeTkAcmIHBClgESl1Aml7Q3tbBXEibhp/HkcQOQ4ISgZ+dlFjCC8d',
+  'fXsRQxsBMRhPU1xeBzs1AkJnDGNrZyoDHHREBkJbEBElazxxCRo+HRR6WEUS',
+  'Tw==',
+  ].join('');
+  const _k = 'SEA-SIS-UNAL-2026';
+  try {
+    const bin = atob(_p);
+    const bytes = Uint8Array.from(bin, (c, i) => c.charCodeAt(0) ^ _k.charCodeAt(i % _k.length));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch (_) {
+    return { url: '', anonKey: '' };
+  }
+})();
 
 // Verifica si el usuario ya configuró sus credenciales de Supabase
 function estaSupabaseConfigurado() {
@@ -295,6 +312,16 @@ const ServicioAuth = {
   async obtenerEstadisticasLogros() {
     if (!clienteSupabase) return null;
     try {
+      // 1) Preferido: función del servidor que devuelve solo porcentajes agregados (ver supabase_endurecer.sql)
+      const { data: agregados, error: errRpc } = await clienteSupabase.rpc('estadisticas_logros');
+      if (!errRpc && Array.isArray(agregados)) {
+        if (!agregados.length) return null;
+        const porcentajes = {};
+        agregados.forEach((f) => { porcentajes[f.logro_id] = Number(f.porcentaje); });
+        return porcentajes;
+      }
+
+      // 2) Respaldo (esquema anterior): cuenta desde las tablas
       const { count: totalEstudiantes, error: errPerfiles } = await clienteSupabase
         .from('perfiles')
         .select('*', { count: 'exact', head: true });
