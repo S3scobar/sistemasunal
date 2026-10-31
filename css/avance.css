@@ -299,6 +299,13 @@ body[data-pagina="avance"] main {
 .zona-avance {
   display: grid;
   gap: 22px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+.zona-avance > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .etiqueta-hud { font-family: var(--mono); font-size: 11px; letter-spacing: .22em; color: var(--neon-2); }
@@ -306,14 +313,17 @@ body[data-pagina="avance"] main {
 /* Marco HUD con esquinas recortadas y líneas de escaneo */
 .panel, .entrada, .jugador, .estadistica {
   position: relative;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   border: 1px solid var(--borde);
   background:
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, .02) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .018) 0 1px, transparent 1px 3px),
     linear-gradient(160deg, var(--panel-2), var(--panel));
   box-shadow: 0 0 0 1px rgba(0, 0, 0, .6), 0 0 26px rgba(47, 168, 255, .12), inset 0 0 30px rgba(47, 168, 255, .05);
   clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
 }
-.panel { padding: 22px 24px; }
+.panel { padding: 22px 24px; overflow: hidden; }
 .panel__titulo {
   margin-bottom: 14px;
   font-family: var(--mono);
@@ -515,7 +525,14 @@ kbd { padding: 1px 7px; border: 1px solid var(--borde); border-bottom-width: 3px
 .mision__detalle b { color: #fff; }
 
 /* ---------- Mapa de niveles ---------- */
-.mapa__scroll { overflow-x: auto; padding-bottom: 8px; }
+.mapa__scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
 .mapa__lista { display: grid; grid-template-columns: repeat(var(--columnas), minmax(58px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; min-width: calc(var(--columnas) * 62px); }
 .mapa__col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
 .mapa__cr { font-family: var(--mono); font-size: 11px; color: var(--suave); }
@@ -622,7 +639,7 @@ kbd { padding: 1px 7px; border: 1px solid var(--borde); border-bottom-width: 3px
 
 .logros__rejilla {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
   margin: 0;
   padding: 0;
@@ -944,13 +961,229 @@ kbd { padding: 1px 7px; border: 1px solid var(--borde); border-bottom-width: 3px
 .historial__tabla small { color: var(--suave); font-family: var(--mono); }
 .historial__tabla tr.es-mala td { color: #ffb3be; }
 
-@media (max-width: 760px) {
-  .avance__dos { grid-template-columns: 1fr; }
-  .jugador { grid-template-columns: auto 1fr; padding: 20px 18px; }
-  .jugador__puntos { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: center; gap: 12px; padding: 12px 0 0; border-left: 0; border-top: 1px dashed var(--borde); }
-  .jugador__avatar, .jugador__avatar img { width: 72px; height: 72px; }
-  .panel { padding: 18px 16px; }
+@media (max-width: 768px) {
+  /* Contenedores y Zona Avance */
+  .avance {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .avance__contenedor {
+    width: 100%;
+    max-width: 100%;
+    padding-inline: 12px;
+    box-sizing: border-box;
+  }
+  .zona-avance {
+    gap: 16px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .zona-avance > * {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .panel {
+    padding: 18px 14px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .avance__dos {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Barra de sesión activa */
+  .barra-sesion {
+    padding: 10px 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .barra-sesion__info {
+    gap: 10px;
+    min-width: 0;
+  }
+  .barra-sesion__usuario {
+    font-size: 12px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .barra-sesion__btn-salir {
+    font-size: 11.5px;
+    padding: 5px 12px;
+  }
+
+  /* Tarjeta de autenticación */
+  .tarjeta-auth {
+    padding: 22px 16px;
+  }
+  .tarjeta-auth__titulo {
+    font-size: 20px;
+  }
+
+  /* Jugador */
+  .jugador {
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    padding: 18px 14px;
+  }
+  .jugador__avatar, .jugador__avatar img {
+    width: 64px;
+    height: 64px;
+  }
+  .jugador__nombre {
+    font-size: 19px;
+  }
+  .jugador__puntos {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0 0;
+    border-left: 0;
+    border-top: 1px dashed var(--borde);
+  }
+  .puntos__valor {
+    font-size: 34px;
+  }
+
+  /* Estadísticas (PAPA, Promedio, etc.) */
+  .estadisticas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .estadistica {
+    padding: 10px 12px;
+  }
+  .estadistica__valor {
+    font-size: 24px;
+  }
+
+  /* Logros y Desafíos */
+  .logros__cabecera {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .logros__progreso-texto {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .logros__chips-resumen {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+  .chip-rareza {
+    justify-content: center;
+    font-size: 11px;
+    padding: 5px 8px;
+    white-space: nowrap;
+  }
+
+  /* Filtros deslizables (Pill Strip) */
+  .logros__filtros {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+  .logros__filtros::-webkit-scrollbar {
+    display: none;
+  }
+  .logros__filtro {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  /* Rejilla de logros: 2 columnas en móvil y tablet */
+  .logros__rejilla {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .logro {
+    padding: 12px 10px 10px;
+    min-height: auto;
+    gap: 6px;
+  }
+  .logro__cabecera-meta {
+    gap: 4px;
+  }
+  .logro__rareza {
+    font-size: 8px;
+    padding: 1px 5px;
+    letter-spacing: .08em;
+  }
+  .logro__pct-badge {
+    font-size: 9px;
+    padding: 1px 5px;
+  }
+  .logro__icono {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .logro__icono svg {
+    width: 20px;
+    height: 20px;
+  }
+  .logro__nombre {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+  .logro__desc {
+    font-size: 10.5px;
+    line-height: 1.3;
+  }
+  .logro__meta-pie {
+    padding-top: 6px;
+  }
+  .logro__pts {
+    font-size: 10px;
+  }
+  .logro__estado-tag {
+    font-size: 8px;
+  }
+  .logro__comunidad-barra-track {
+    height: 3px;
+  }
+  .logro__comunidad-texto {
+    font-size: 9px;
+    line-height: 1.2;
+  }
 }
+
+/* Teléfonos muy pequeños (pantallas menores a 360px) */
+@media (max-width: 360px) {
+  .logros__chips-resumen {
+    grid-template-columns: 1fr;
+  }
+  .logros__rejilla {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .logro {
+    padding: 14px 12px;
+  }
+  .estadisticas {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .xp__relleno, .xp__curso, .mision__relleno, .mapa__tramo { animation: none; }
 }
