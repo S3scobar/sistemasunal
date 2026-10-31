@@ -1,3 +1,94 @@
+/* ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias
+   Representante Estudiantil de Ingeniería de Sistemas e Informática
+   Facultad de Minas — Universidad Nacional de Colombia, Sede Medellín
+   Email: saescobara@unal.edu.co | Instagram: @s_escobar__ | WhatsApp: (+57) 312 377 2091
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== */
+
+/* ---------- Huella digital y verificación de autoría ----------
+   1. Sello visible en la consola del navegador (al abrir las herramientas de desarrollador).
+   2. Datos de autoría congelados en `window` y atributos en <html> que se restauran si los quitan.
+   3. Huella SHA-256 verificable: se recalcula en el navegador y se compara con la publicada.
+   4. Marca invisible (caracteres de ancho cero) en textos visibles: sobrevive al copiar y pegar.
+   Para comprobar una copia sospechosa: `node tools/verificar-huella.js <carpeta>`. */
+const _SEA = Object.freeze({
+  autor: 'Santiago Escobar Arias',
+  rol: 'Representante Estudiantil de Sistemas e Informática',
+  facultad: 'Facultad de Minas · Universidad Nacional de Colombia, Sede Medellín',
+  email: 'saescobara@unal.edu.co',
+  instagram: '@s_escobar__',
+  wpp: '+573123772091',
+  firma: 'SEA-SIS-UNAL-2026-AUTH-F45123',
+  identidad: 'Santiago Escobar Arias|saescobara@unal.edu.co|sistemasunal|UNAL-MEDELLIN|2026',
+  sha256: 'f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c',
+  marca: 'SEA-SIS-2026',
+});
+
+// Convierte un texto en caracteres invisibles (ancho cero) para esconderlo en cadenas visibles
+function marcaInvisible(texto = _SEA.marca) {
+  const bits = [...texto].map((c) => c.charCodeAt(0).toString(2).padStart(8, '0')).join('');
+  return '‍' + [...bits].map((b) => (b === '0' ? '​' : '‌')).join('') + '‍';
+}
+
+(function registrarHuellaDigital() {
+  try {
+    Object.defineProperty(window, '__AUTOR_PLATAFORMA__', { value: _SEA, writable: false, configurable: false, enumerable: false });
+    Object.defineProperty(window, '__SEA_FINGERPRINT__', { value: 'SEA-AUTH-SANTIAGO-ESCOBAR-ARIAS-UNAL-2026', writable: false, configurable: false, enumerable: false });
+  } catch (_) { /* ya registrado */ }
+
+  const sello = () => {
+    if (typeof console === 'undefined' || !console.log) return;
+    const encabezado = 'background:#0a2c52;color:#5cc8ff;font-family:monospace;font-size:13px;font-weight:bold;padding:7px 12px;border-radius:6px 6px 0 0;border:1.5px solid #2fa8ff;border-bottom:none;';
+    const cuerpo = 'background:#eaf3fd;color:#0a2c52;font-family:sans-serif;font-size:11px;padding:10px 14px;border-radius:0 0 6px 6px;border:1.5px solid #bcdbfb;line-height:1.7;';
+    console.log(
+      '%c⌘  INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL MEDELLÍN%c\n' +
+      '✦ Arquitectura y desarrollo: ' + _SEA.autor + '\n' +
+      '✦ Cargo: ' + _SEA.rol + '\n' +
+      '✦ Contacto: ' + _SEA.email + ' · Instagram: ' + _SEA.instagram + '\n' +
+      '✦ Firma de autoría: ' + _SEA.firma + '\n' +
+      '✦ Código protegido contra plagio, distribución o uso no autorizado (ver LICENSE).',
+      encabezado, cuerpo
+    );
+  };
+  sello();
+
+  // Verificación real: SHA-256 de la identidad frente a la huella publicada
+  try {
+    const datos = new TextEncoder().encode(_SEA.identidad);
+    window.crypto.subtle.digest('SHA-256', datos).then((buf) => {
+      const hex = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+      if (hex === _SEA.sha256) console.log('%c✔ Huella de autoría verificada · ' + _SEA.sha256.slice(0, 16) + '…', 'color:#1a8f55;font-weight:bold;');
+      else console.warn('⚠ La huella de autoría no coincide: el código fue alterado. Autor original: ' + _SEA.autor + ' (' + _SEA.email + ')');
+    }).catch(() => {});
+  } catch (_) { /* sin Web Crypto (p. ej. file://) */ }
+
+  // Atributos de autoría en <html>: si alguien los borra, se restauran
+  const poner = () => {
+    const raiz = document.documentElement;
+    if (raiz.getAttribute('data-author') !== _SEA.autor) raiz.setAttribute('data-author', _SEA.autor);
+    if (raiz.getAttribute('data-developer') !== _SEA.email) raiz.setAttribute('data-developer', _SEA.email);
+    if (raiz.getAttribute('data-auth-token') !== _SEA.firma) raiz.setAttribute('data-auth-token', _SEA.firma);
+  };
+  try {
+    poner();
+    new MutationObserver(poner).observe(document.documentElement, { attributes: true, attributeFilter: ['data-author', 'data-developer', 'data-auth-token'] });
+  } catch (_) { /* sin DOM */ }
+
+  // Si abren las herramientas de desarrollador con la página ya cargada, el sello se vuelve a mostrar
+  let abiertas = false;
+  setInterval(() => {
+    const hay = (window.outerWidth - window.innerWidth > 160) || (window.outerHeight - window.innerHeight > 160);
+    if (hay && !abiertas) sello();
+    abiertas = hay;
+  }, 1200);
+})();
+
+
 /* =============================================
    FUNCIONES COMUNES A TODOS LOS MÓDULOS
    - Carga de datos (cada módulo pide solo los JSON que necesita)
@@ -180,7 +271,7 @@ function pintarPie() {
         </section>
         <section class="pie__tarjeta pie__tarjeta--web" aria-label="Creación y desarrollo web">
           <h3 class="pie__tarjeta-titulo">Creación y desarrollo web</h3>
-          <p class="pie__persona">Iniciativa y plataforma desarrollada por <strong>Santiago Escobar Arias</strong> · Representante de Sistemas</p>
+          <p class="pie__persona">Iniciativa y plataforma desarrollada por <strong>Santiago Escobar Arias</strong> · Representante de Sistemas${marcaInvisible()}</p>
           ${santiago}
         </section>
       </div>

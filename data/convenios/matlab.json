@@ -1,4 +1,12 @@
 {
+  "_firmaDigital": {
+    "autor": "Santiago Escobar Arias",
+    "rol": "Representante Estudiantil de Sistemas",
+    "unal": "saescobara@unal.edu.co",
+    "firma": "SEA-SIS-UNAL-2026-AUTH-F45123",
+    "sha256": "f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c",
+    "derechos": "© 2026 Santiago Escobar Arias. Todos los derechos reservados."
+  },
  "id": "matlab",
  "queEs": "La Universidad Nacional cuenta con licencia de MATLAB y Simulink. MathWorks tiene una página dedicada a la Universidad («MATLAB Access for Everyone») desde donde se entra al centro de licencias.",
  "quienes": [
