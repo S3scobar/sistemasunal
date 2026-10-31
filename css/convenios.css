@@ -1,0 +1,263 @@
+/* =========================================================
+   MÓDULO CONVENIOS Y BENEFICIOS — ESTILOS
+   1. Filtros
+   2. Lista desplegable
+   3. Detalle de cada convenio
+   ========================================================= */
+
+.convenios__contenedor { max-width: 920px; }
+
+
+/* ---------- 1. Filtros ---------- */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+.filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 2px solid var(--azul);
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--azul);
+  transition: background .15s, color .15s;
+}
+.filtro:hover { background: #eaf3fd; }
+.filtro[aria-pressed="true"] { background: var(--azul); color: #fff; }
+.filtro__total {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: rgba(10, 44, 82, .12);
+  font-family: var(--letra-texto);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.filtro[aria-pressed="true"] .filtro__total { background: rgba(255, 255, 255, .25); }
+.filtro:focus-visible, .item__boton:focus-visible, .boton:focus-visible {
+  outline: 3px solid var(--azul-marino);
+  outline-offset: 2px;
+}
+.filtros__nota {
+  max-width: 640px;
+  min-height: 3em;
+  margin: 14px auto 26px;
+  text-align: center;
+  font-size: 15px;
+  color: var(--tinta-suave);
+}
+
+
+/* ---------- 2. Lista desplegable ---------- */
+
+.lista { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+
+.item {
+  border-radius: 20px;
+  border-left: 10px solid var(--color);
+  background: #fff;
+  box-shadow: 0 10px 24px -18px rgba(10, 44, 82, .6);
+  overflow: hidden;
+  transition: box-shadow .2s;
+  animation: aparecer .25s ease-out both;
+}
+.item--abierto { box-shadow: 0 18px 36px -20px rgba(10, 44, 82, .7); }
+
+.item__titulo { font: inherit; }
+.item__boton {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  padding: 18px 22px 18px 18px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+.item__boton:hover { background: #f5f8fc; }
+
+.item__icono {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: var(--color);
+  color: #fff;
+}
+.item__icono svg { width: 30px; height: 30px; }
+
+.item__texto { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.item__etiquetas { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.etiqueta {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-family: var(--letra-universidad);
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.etiqueta--convenio { background: var(--azul); }
+.etiqueta--beneficio { background: #7a8794; }
+.item__categoria { font-size: 13px; color: var(--gris); }
+.item__nombre {
+  font-family: var(--letra-titulo);
+  font-size: clamp(20px, 3vw, 26px);
+  line-height: 1.15;
+  color: var(--azul-marino);
+}
+.item__resumen { font-size: 15px; color: var(--tinta-suave); }
+
+.item__flecha {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eef3f9;
+  color: var(--azul);
+  transition: transform .2s, background .2s, color .2s;
+}
+.item__flecha svg { width: 20px; height: 20px; }
+.item--abierto .item__flecha { transform: rotate(180deg); background: var(--azul); color: #fff; }
+
+
+/* ---------- 3. Detalle ---------- */
+
+.item__panel {
+  padding: 4px 26px 28px 28px;
+  border-top: 1px solid var(--linea);
+  animation: aparecer .2s ease-out both;
+}
+.item__panel .cargando { padding: 24px 0; }
+
+.detalle__que { margin-top: 18px; font-size: 17px; color: var(--tinta); }
+
+.detalle__datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.bloque {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #f2f5f9;
+}
+.item h4 {
+  margin-bottom: 8px;
+  font-family: var(--letra-universidad);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+.item .bloque ul, .item .consejos ul, .item .por-confirmar ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 15px;
+  color: var(--tinta-suave);
+}
+.item li + li { margin-top: 5px; }
+
+.pasos-bloque { margin-top: 26px; }
+.pasos-bloque h4 { color: var(--azul); font-size: 14px; }
+.pasos { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; counter-reset: paso; }
+.paso {
+  display: flex;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--azul-marino);
+  color: #fff;
+  counter-increment: paso;
+}
+.paso::before {
+  content: counter(paso);
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--azul);
+  font-family: var(--letra-titulo);
+  font-size: 18px;
+}
+.paso strong { font-size: 17px; font-weight: 600; line-height: 1.25; }
+.paso p { margin-top: 3px; font-size: 15px; color: #bcd8f5; }
+
+.enlaces { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border: 2px solid var(--azul);
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  color: var(--azul);
+  transition: background .15s;
+}
+.boton:hover { background: #eaf3fd; }
+.boton svg { width: 16px; height: 16px; flex: none; }
+.boton--principal { background: var(--azul); color: #fff; }
+.boton--principal:hover { background: var(--azul-oscuro); }
+
+.soporte { margin-top: 18px; font-size: 15px; color: var(--tinta-suave); }
+.soporte a { font-weight: 600; word-break: break-all; }
+
+.consejos { margin-top: 22px; }
+
+.por-confirmar {
+  margin-top: 22px;
+  padding: 14px 18px;
+  border: 1px solid #f1d58a;
+  border-radius: 14px;
+  background: #fff7e0;
+}
+.item .por-confirmar h4 { color: #8a6a00; }
+.item .por-confirmar ul { color: #6b5200; }
+
+.fuentes { margin-top: 20px; font-size: 13px; color: var(--gris); }
+.fuentes a { color: var(--tinta-suave); }
+
+.convenios__aviso {
+  max-width: 640px;
+  margin: 32px auto 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--gris);
+}
+
+
+@media (max-width: 640px) {
+  .item__boton { grid-template-columns: auto 1fr; gap: 14px; padding: 14px; }
+  .item__flecha { display: none; }
+  .item__icono { width: 48px; height: 48px; border-radius: 14px; }
+  .item__icono svg { width: 26px; height: 26px; }
+  .item__panel { padding: 4px 16px 22px; }
+  .paso { padding: 12px; gap: 12px; }
+  .boton { width: 100%; justify-content: space-between; }
+}

@@ -1,0 +1,52 @@
+{
+ "id": "jetbrains",
+ "queEs": "El «Free JetBrains Student Pack» da acceso a los IDE, complementos y cursos de JetBrains para tus estudios y para una futura carrera en tecnología. Es un programa de JetBrains para estudiantes, no un convenio de la UNAL.",
+ "quienes": [
+  "Estudiantes (los requisitos exactos están en la página oficial del programa)"
+ ],
+ "incluye": [
+  "Todos los IDE, complementos y cursos de JetBrains, según la página oficial",
+  "Una guía estudiantil de la UNAL de 2017 mencionaba, entre otros, IntelliJ Ultimate, PyCharm Ultimate, PhpStorm, WebStorm, CLion y Rider"
+ ],
+ "requisitos": [
+  "Consulta los requisitos de elegibilidad y el método de verificación en la página oficial del programa"
+ ],
+ "pasos": [
+  {
+   "titulo": "Entra a la página oficial del Student Pack",
+   "texto": "Usa el botón de abajo."
+  },
+  {
+   "titulo": "Solicita la licencia con tu correo universitario",
+   "texto": "La guía estudiantil de la UNAL de 2017 indicaba que bastaba crear la cuenta con el correo universitario. Confirma en la página oficial el método de verificación vigente."
+  },
+  {
+   "titulo": "Descarga el IDE que necesites e inicia sesión con tu cuenta de JetBrains",
+   "texto": "La licencia queda asociada a tu cuenta."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Free JetBrains Student Pack",
+   "url": "https://www.jetbrains.com/academy/student-pack/",
+   "principal": true
+  },
+  {
+   "texto": "Licencias educativas gratuitas (JetBrains)",
+   "url": "https://jetbrains.com/student"
+  }
+ ],
+ "porConfirmar": [
+  "No pude leer en la página oficial los requisitos de elegibilidad, el método de verificación ni la duración y renovación de la licencia. Revísalos en el enlace antes de contar con el beneficio; los pasos 2 y 3 son orientativos."
+ ],
+ "fuentes": [
+  {
+   "titulo": "JetBrains · Free JetBrains Student Pack",
+   "url": "https://www.jetbrains.com/academy/student-pack/"
+  },
+  {
+   "titulo": "Blog de la Nacho (2017)",
+   "url": "https://www.pasaralaunacional.com/2017/02/software-beneficios-gratis-convenios-unal.html"
+  }
+ ]
+}

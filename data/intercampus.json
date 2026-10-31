@@ -1,0 +1,130 @@
+{
+  "semestre": "2026-2S",
+  "vigencia": "Horarios vigentes semestre 2026-2S",
+  "conexionMetro": "Al final: rutas a las estaciones Hospital, Suramericana y Caribe",
+  "pasos": [
+    {
+      "numero": 1,
+      "titulo": "Mira desde qué campus sales",
+      "descripcion": "Cada lámina muestra el campus de salida y hacia dónde va la ruta."
+    },
+    {
+      "numero": 2,
+      "titulo": "Cada ruta te lleva al siguiente campus",
+      "descripcion": "De Río a El Volador, de El Volador a Robledo y de Robledo a El Volador."
+    },
+    {
+      "numero": 3,
+      "titulo": "Si tu destino queda lejos, combina rutas",
+      "descripcion": "Ejemplo: de Río a Robledo, toma la ruta de Río a El Volador y luego la de El Volador a Robledo."
+    },
+    {
+      "numero": 4,
+      "titulo": "Elige tu franja",
+      "descripcion": "Las salidas están agrupadas en franjas (1 a 8) a lo largo del día. Toma la hora que te sirva."
+    }
+  ],
+  "rutas": [
+    {
+      "id": "robledo-volador",
+      "origen": "Campus Robledo",
+      "destino": "Campus El Volador",
+      "titulo": "Salidas desde Robledo",
+      "subtitulo": "Hacia Campus El Volador",
+      "imagen": "img/intercampus/robledo-volador.png",
+      "franjas": [
+        { "franja": 1, "horarios": ["05:45"] },
+        { "franja": 2, "horarios": ["07:10", "07:25", "07:40", "07:45", "07:50", "08:05", "08:35"] },
+        { "franja": 3, "horarios": ["09:05", "09:10", "09:25", "09:40", "09:45", "09:50", "09:55", "10:05", "10:35"] },
+        { "franja": 4, "horarios": ["11:05", "11:10", "11:25", "11:40", "11:45", "11:50", "11:55", "12:05", "12:35"] },
+        { "franja": 5, "horarios": ["13:05", "13:10", "13:25", "13:40", "13:45", "13:50", "13:55", "14:05", "14:35"] },
+        { "franja": 6, "horarios": ["15:05", "15:10", "15:25", "15:40", "15:45", "15:50", "15:55", "16:05", "16:35"] },
+        { "franja": 7, "horarios": ["17:05", "17:10", "17:25", "17:40", "17:45", "17:50", "17:55", "18:05", "18:35"] },
+        { "franja": 8, "horarios": ["19:05", "19:50", "20:05"] }
+      ]
+    },
+    {
+      "id": "volador-robledo",
+      "origen": "Campus El Volador",
+      "destino": "Campus Robledo",
+      "titulo": "Salidas desde El Volador",
+      "subtitulo": "Hacia Campus Robledo",
+      "imagen": "img/intercampus/volador-robledo.png",
+      "franjas": [
+        { "franja": 2, "horarios": ["07:10", "07:25", "07:30", "07:35", "07:45", "07:50", "08:15", "08:50"] },
+        { "franja": 3, "horarios": ["09:10", "09:25", "09:30", "09:35", "09:40", "09:45", "09:50", "10:15", "10:50"] },
+        { "franja": 4, "horarios": ["11:10", "11:25", "11:30", "11:35", "11:40", "11:45", "11:50", "12:15", "12:50"] },
+        { "franja": 5, "horarios": ["13:10", "13:25", "13:30", "13:35", "13:40", "13:45", "13:50", "14:15", "14:50"] },
+        { "franja": 6, "horarios": ["15:10", "15:25", "15:30", "15:35", "15:40", "15:45", "15:50", "16:15", "16:50"] },
+        { "franja": 7, "horarios": ["17:10", "17:25", "17:30", "17:35", "17:40", "17:45", "17:50", "18:15", "18:50"] },
+        { "franja": 8, "horarios": ["19:35", "19:50"] }
+      ]
+    },
+    {
+      "id": "rio-volador",
+      "origen": "Campus Río",
+      "destino": "Campus El Volador",
+      "titulo": "Salidas desde Río",
+      "subtitulo": "Hacia Campus El Volador",
+      "imagen": "img/intercampus/rio-volador.png",
+      "franjas": [
+        { "franja": 1, "horarios": ["05:30"] },
+        { "franja": 2, "horarios": ["07:20", "07:30", "07:45"] },
+        { "franja": 3, "horarios": ["09:20", "09:30", "09:35", "09:45"] },
+        { "franja": 4, "horarios": ["11:20", "11:30", "11:35", "11:45"] },
+        { "franja": 5, "horarios": ["13:20", "13:30", "13:35", "13:45"] },
+        { "franja": 6, "horarios": ["15:20", "15:30", "15:35", "15:45"] },
+        { "franja": 7, "horarios": ["17:20", "17:30", "17:35", "17:45"] },
+        { "franja": 8, "horarios": ["19:30", "19:45"] }
+      ]
+    }
+  ],
+  "metro": {
+    "titulo": "Rutas a las Estaciones Metro",
+    "subtitulo": "Horarios oficiales de paso por cada parada hacia Hospital, Suramericana y Caribe",
+    "imagen": "img/intercampus/rutas-metro.png",
+    "nota": "— significa que esa ruta no pasa por esa parada",
+    "estaciones": [
+      {
+        "id": "hospital",
+        "nombre": "Estación Metro Hospital",
+        "linea": "Línea A · Metro de Medellín",
+        "color": "#1667c2",
+        "paradas": ["Hospital", "Río", "El Volador", "Robledo"],
+        "rutas": [
+          { "ruta": 1, "horarios": { "Hospital": "05:30", "Río": "—", "El Volador": "05:35", "Robledo": "05:50" } },
+          { "ruta": 2, "horarios": { "Hospital": "05:30", "Río": "05:35", "El Volador": "05:40", "Robledo": "05:55" } },
+          { "ruta": 3, "horarios": { "Hospital": "07:05", "Río": "07:10", "El Volador": "07:15", "Robledo": "07:30" } },
+          { "ruta": 4, "horarios": { "Hospital": "07:10", "Río": "07:15", "El Volador": "07:20", "Robledo": "07:35" } },
+          { "ruta": 5, "horarios": { "Hospital": "—", "Río": "—", "El Volador": "17:00", "Robledo": "—" } },
+          { "ruta": 6, "horarios": { "Hospital": "—", "Río": "—", "El Volador": "17:15", "Robledo": "—" } },
+          { "ruta": 7, "horarios": { "Hospital": "—", "Río": "—", "El Volador": "19:30", "Robledo": "—" } },
+          { "ruta": 8, "horarios": { "Hospital": "—", "Río": "—", "El Volador": "20:05", "Robledo": "—" } },
+          { "ruta": 9, "horarios": { "Hospital": "—", "Río": "—", "El Volador": "20:20", "Robledo": "—" } }
+        ]
+      },
+      {
+        "id": "suramericana",
+        "nombre": "Estación Metro Suramericana",
+        "linea": "Línea B · Metro de Medellín",
+        "color": "#d97706",
+        "paradas": ["Río", "El Volador", "Robledo"],
+        "rutas": [
+          { "ruta": 1, "horarios": { "Río": "—", "El Volador": "18:15", "Robledo": "—" } },
+          { "ruta": 2, "horarios": { "Río": "—", "El Volador": "18:20", "Robledo": "—" } },
+          { "ruta": 3, "horarios": { "Río": "20:10", "El Volador": "20:15", "Robledo": "—" } }
+        ]
+      },
+      {
+        "id": "caribe",
+        "nombre": "Estación Metro Caribe",
+        "linea": "Línea A · Terminal del Norte",
+        "color": "#15803d",
+        "paradas": ["Río", "El Volador", "Robledo"],
+        "rutas": [
+          { "ruta": 1, "horarios": { "Río": "19:05", "El Volador": "19:15", "Robledo": "—" } }
+        ]
+      }
+    ]
+  }
+}

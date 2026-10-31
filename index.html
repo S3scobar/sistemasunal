@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingeniería de Sistemas e Informática · UNAL Medellín</title>
+  <meta name="description" content="Programa de Ingeniería de Sistemas e Informática de la Facultad de Minas, Universidad Nacional de Colombia, Sede Medellín: información del programa, perfil del egresado, grupos estudiantiles y semilleros.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sistemas.css">
+  <link rel="stylesheet" href="css/inicio.css">
+</head>
+<body data-pagina="inicio">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada foto foto--entrada">
+    <div class="portada__codigo" aria-hidden="true"></div>
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="125" height="125">
+      </div>
+      <p class="portada__lugar">Facultad de Minas · Universidad Nacional de Colombia · Sede Medellín</p>
+
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Ingeniería de</span>
+        <span class="letras-varsity" data-texto="Sistemas">Sistemas</span>
+        <span class="letras-varsity letras-varsity--sub" data-texto="e Informática">e Informática</span>
+      </h1>
+
+      <ul class="portada__cifras" id="portada-cifras" aria-label="Datos clave del programa"></ul>
+      <p class="portada__prompt" aria-hidden="true"><span class="portada__prompt-ruta">~/sistemas</span> <span class="portada__prompt-signo">$</span> ./explorar<span class="cursor"></span></p>
+    </div>
+  </section>
+
+  <main>
+
+    <!-- EL PROGRAMA: se carga al abrir la página -->
+    <section class="seccion programa" id="programa" aria-labelledby="programa-titulo">
+      <div class="contenedor" id="programa-contenido">
+        <p class="cargando">Cargando programa…</p>
+      </div>
+    </section>
+
+    <!-- PERFIL DEL EGRESADO: se carga cuando la persona se acerca -->
+    <section class="seccion perfil" id="perfil" aria-labelledby="perfil-titulo" data-carga="perfil">
+      <div class="contenedor" id="perfil-contenido">
+        <p class="cargando">Cargando perfil…</p>
+      </div>
+    </section>
+
+    <!-- GRUPOS ESTUDIANTILES Y SEMILLEROS: se carga cuando la persona se acerca -->
+    <section class="grupos" id="grupos" aria-labelledby="grupos-titulo" data-carga="grupos">
+      <div class="contenedor" id="grupos-contenido">
+        <p class="cargando">Cargando grupos…</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script src="js/inicio.js"></script>
+</body>
+</html>

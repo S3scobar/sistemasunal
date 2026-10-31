@@ -1,0 +1,27 @@
+{
+  "titulo": "Perfil del ingeniero de sistemas egresado",
+  "intro": "Un profesional formado bajo el lema de la Facultad de Minas, «Trabajo y Rectitud», con una base científica sólida y una visión ética y humanística de la tecnología.",
+  "rasgos": [
+    {
+      "icono": "ciencia",
+      "titulo": "Formación científica sólida",
+      "texto": "Domina los fundamentos de la ingeniería de software, la inteligencia artificial, las telecomunicaciones, la investigación de operaciones y las bases de datos."
+    },
+    {
+      "icono": "equipo",
+      "titulo": "Investigación e interdisciplina",
+      "texto": "Puede integrarse a grupos interdisciplinarios de investigación para modelar y resolver problemas complejos."
+    },
+    {
+      "icono": "gestion",
+      "titulo": "Gestión de la información",
+      "texto": "Puede desempeñarse como analista, director o gerente en las áreas de información y sistemas de organizaciones públicas y privadas."
+    },
+    {
+      "icono": "empresa",
+      "titulo": "Emprendimiento y consultoría",
+      "texto": "Puede crear o integrar empresas de asesoría y consultoría en sistemas e informática."
+    }
+  ],
+  "fuente": "Resumen del Proyecto Educativo del Programa (PEP) de Ingeniería de Sistemas e Informática, Sede Medellín."
+}

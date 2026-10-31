@@ -1,0 +1,63 @@
+{
+ "id": "spotify",
+ "queEs": "Premium para Estudiantes es el plan con descuento de Spotify para estudiantes universitarios o de instituciones de educación superior. Es un beneficio de Spotify, no un convenio de la UNAL. La verificación se hace con SheerID.",
+ "quienes": [
+  "Estudiantes universitarios o de instituciones de educación superior que cumplan los requisitos"
+ ],
+ "incluye": [
+  "Spotify Premium con precio de estudiante, por hasta 4 años, reverificando tu condición cada 12 meses"
+ ],
+ "requisitos": [
+  "Que tu institución aparezca en el formulario de verificación de SheerID (si no aparece, Spotify indica que no cumples los requisitos en este momento)",
+  "Verificar tu condición de estudiante cada 12 meses",
+  "El país de la cuenta debe coincidir con el lugar donde estudias y el método de pago debe estar disponible allí"
+ ],
+ "pasos": [
+  {
+   "titulo": "Completa el formulario de verificación de SheerID",
+   "texto": "Empieza desde la página de Premium para Estudiantes de Spotify (botón de abajo) y selecciona tu institución."
+  },
+  {
+   "titulo": "Verifica que estudias allí",
+   "texto": "Inicia sesión en el portal de tu institución o sube un documento que acredite tu inscripción."
+  },
+  {
+   "titulo": "Espera el correo de SheerID",
+   "texto": "Te confirma tu condición de estudiante. El proceso puede tardar varios días."
+  },
+  {
+   "titulo": "Aplica el descuento a tu cuenta",
+   "texto": "Usa el enlace del correo para aplicar el descuento a una cuenta nueva o a una existente."
+  },
+  {
+   "titulo": "Suscríbete a Premium para Estudiantes",
+   "texto": "Vuelve a tu cuenta de Spotify y elige el plan. Recuerda reverificar cada 12 meses."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Spotify Colombia · Premium para Estudiantes",
+   "url": "https://www.spotify.com/co/student/",
+   "principal": true
+  },
+  {
+   "texto": "Ayuda de Spotify: Premium para Estudiantes",
+   "url": "https://support.spotify.com/cl/article/premium-student/"
+  }
+ ],
+ "consejos": [
+  "No necesitas registrar un correo académico en tu cuenta de Spotify.",
+  "No se puede pagar mediante la factura del celular ni a través de otra empresa, como un proveedor de internet o de telefonía.",
+  "Si estudias en el extranjero puedes acceder al descuento, siempre que el país de la cuenta coincida con el lugar donde estudias."
+ ],
+ "porConfirmar": [
+  "El precio en Colombia no aparece en la ayuda de Spotify que pude leer; consúltalo en la página de Spotify Colombia.",
+  "Falta confirmar que la Universidad Nacional (sede Medellín) aparece en la lista de instituciones de SheerID."
+ ],
+ "fuentes": [
+  {
+   "titulo": "Spotify · Premium para Estudiantes (centro de ayuda)",
+   "url": "https://support.spotify.com/cl/article/premium-student/"
+  }
+ ]
+}

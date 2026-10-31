@@ -1,0 +1,862 @@
+/* =========================================================
+   INGENIERÍA DE SISTEMAS · UNAL MEDELLÍN — ESTILOS COMUNES
+   Los usan todas las páginas (módulos).
+   1. Variables y base
+   2. Fondos con fotos
+   3. Barra superior y navegación
+   4. Portada
+   5. Títulos de sección y mensajes
+   6. Pie
+   ========================================================= */
+
+
+/* ---------- 1. Variables y base ---------- */
+
+:root {
+  --azul-marino: #0a2c52;
+  --azul: #1667c2;
+  --azul-oscuro: #0f4f99;
+  --azul-brillante: #2580da;
+  --papel: #e9e9e7;
+  --tinta: #26303b;
+  --tinta-suave: #4d5866;
+  --gris: #6f7a87;
+  --linea: #e2e6eb;
+
+  /* Colores de los componentes de la malla (los mismos del PDF del programa curricular) */
+  --fundamentacion: #a47bc8;
+  --disciplinar: #26a69a;
+  --libre: #f7b61a;
+
+  --letra-titulo: 'Alfa Slab One', serif;
+  --letra-universidad: 'Graduate', serif;
+  --letra-texto: 'Barlow', sans-serif;
+  --letra-estrecha: 'Barlow Condensed', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--letra-texto);
+  line-height: 1.55;
+  color: var(--tinta);
+  background: url(../img/textura.svg), var(--papel);
+}
+
+h1, h2, h3, h4, p { margin: 0; }
+svg { display: block; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: var(--azul); }
+
+.contenedor {
+  width: min(1180px, 100% - 32px);
+  margin-inline: auto;
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+
+/* ---------- 2. Fondos con fotos de la Facultad de Minas ----------
+   Uso: class="foto foto--entrada". La foto va en ::before y un velo azul en ::after. */
+
+.foto {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--azul-marino);
+}
+.foto::before,
+.foto::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+}
+.foto::before {
+  inset: -14px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(2px);
+}
+.foto::after {
+  inset: 0;
+  background: linear-gradient(rgba(10, 44, 82, .6), rgba(10, 44, 82, .8));
+}
+.foto--entrada::before { background-image: url(../img/campus-entrada.jpg); }
+.foto--edificio::before { background-image: url(../img/campus-edificio.jpg); }
+
+
+/* ---------- 3. Barra superior y navegación ---------- */
+
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--azul-marino);
+  border-bottom: 3px solid var(--azul);
+  box-shadow: 0 6px 18px -10px rgba(0, 0, 0, .6);
+}
+.barra__contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+}
+.barra__marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  text-decoration: none;
+}
+.barra__escudo { width: 44px; height: 44px; flex: none; display: flex; align-items: center; justify-content: center; }
+.barra__escudo-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, .85);
+  background: #fff;
+  display: block;
+}
+.barra__texto {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  line-height: 1.2;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.barra__texto small {
+  font-family: var(--letra-texto);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: #a9d1ff;
+}
+
+.nav { display: flex; gap: 6px; }
+.nav a {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: #cfe4fa;
+  transition: background .15s, color .15s;
+}
+.nav a:hover { background: rgba(255, 255, 255, .12); color: #fff; }
+.nav a[aria-current="page"] {
+  background: #fff;
+  color: var(--azul-marino);
+  border-color: var(--azul);
+}
+.nav a:focus-visible { outline: 3px solid #a9d1ff; outline-offset: 2px; }
+
+/* Botón menú móvil (oculto en pantallas grandes) */
+.barra__boton-menu {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-family: var(--letra-universidad);
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: background .15s, border-color .15s, color .15s, transform .1s;
+}
+.barra__boton-menu:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+}
+.barra__boton-menu:active {
+  transform: scale(0.97);
+}
+.barra__boton-menu:focus-visible {
+  outline: 3px solid #a9d1ff;
+  outline-offset: 2px;
+}
+.barra__icono {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.barra__icono svg {
+  width: 18px;
+  height: 18px;
+}
+.barra__icono--cerrar {
+  display: none;
+}
+
+/* Estado abierto en la barra */
+.barra.is-menu-abierto .barra__boton-menu {
+  background: #fff;
+  color: var(--azul-marino);
+  border-color: var(--azul);
+}
+.barra.is-menu-abierto .barra__icono--abrir {
+  display: none;
+}
+.barra.is-menu-abierto .barra__icono--cerrar {
+  display: flex;
+}
+
+
+/* ---------- 4. Portada ---------- */
+
+.portada__contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 72px 0 80px;
+}
+.portada--corta .portada__contenido { padding: 48px 0 52px; }
+
+.portada__lugar {
+  font-family: var(--letra-universidad);
+  font-size: 14px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: #a9d1ff;
+}
+.portada__titulo { margin-top: 10px; }
+.portada__antetitulo {
+  display: block;
+  font-family: var(--letra-universidad);
+  font-size: clamp(20px, 3vw, 34px);
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* Letras tipo uniforme universitario: relleno azul, borde blanco y contorno azul oscuro */
+.letras-varsity {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  font-family: var(--letra-titulo);
+  font-weight: 400;
+  font-size: clamp(48px, 9.5vw, 118px);
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--azul);
+  -webkit-text-stroke: .1em #fff;
+  paint-order: stroke fill;
+}
+.portada--corta .letras-varsity { font-size: clamp(40px, 7vw, 82px); }
+.letras-varsity--sub {
+  display: block;
+  margin-top: 10px;
+  font-size: clamp(32px, 6.2vw, 76px);
+  letter-spacing: .02em;
+}
+.letras-varsity::before {
+  content: attr(data-texto);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  -webkit-text-stroke: .2em var(--azul-oscuro);
+  paint-order: stroke fill;
+  filter: drop-shadow(0 .06em 0 rgba(0, 0, 0, .3));
+}
+
+.portada__logo-wrap {
+  margin-bottom: 22px;
+}
+.portada__logo {
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45), 0 0 0 4px rgba(22, 103, 194, .5);
+  background: #fff;
+  display: block;
+  margin: 0 auto;
+  transition: transform .25s ease;
+}
+.portada__logo:hover {
+  transform: scale(1.05);
+}
+
+.portada__subtitulo {
+  margin-top: 14px;
+  font-family: var(--letra-titulo);
+  font-size: clamp(24px, 4.2vw, 48px);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.portada__texto {
+  max-width: 620px;
+  margin-top: 14px;
+  font-size: 17px;
+  color: #d6e6f7;
+}
+
+.portada__cifras {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+  border: 2px solid rgba(255, 255, 255, .4);
+  border-radius: 24px;
+  background: rgba(10, 44, 82, .5);
+}
+.portada__cifras li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 130px;
+  padding: 12px 24px;
+  font-family: var(--letra-universidad);
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #fff;
+}
+.portada__cifras li + li { border-left: 1px solid rgba(255, 255, 255, .25); }
+.portada__cifras small {
+  margin-top: 3px;
+  font-family: var(--letra-texto);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: #a9d1ff;
+}
+
+.portada__boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  margin-top: 28px;
+  padding: 0 26px 0 30px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--azul-marino);
+  font-family: var(--letra-universidad);
+  font-size: 15px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 6px var(--azul), 0 12px 26px -10px rgba(0, 0, 0, .6);
+  transition: transform .15s;
+}
+.portada__boton:hover { transform: translateY(-2px); }
+.portada__boton svg { width: 18px; height: 18px; color: var(--azul); }
+
+.portada__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+.portada__acciones .portada__boton {
+  margin-top: 0;
+}
+.portada__boton--secundario {
+  background: rgba(10, 44, 82, .85);
+  color: #fff;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .6), 0 12px 26px -10px rgba(0, 0, 0, .5);
+}
+.portada__boton--secundario:hover {
+  background: var(--azul);
+  box-shadow: inset 0 0 0 2px #fff, 0 14px 28px -10px rgba(0, 0, 0, .6);
+}
+.portada__boton--secundario svg {
+  color: #a9d1ff;
+}
+
+
+/* ---------- 5. Títulos de sección y mensajes ---------- */
+
+.seccion { padding: 72px 0; }
+
+.seccion-titulo {
+  max-width: 680px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+.seccion-titulo__antetitulo {
+  font-family: var(--letra-universidad);
+  font-size: 13px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--azul);
+}
+.seccion-titulo h2 {
+  margin-top: 6px;
+  font-family: var(--letra-titulo);
+  font-weight: 400;
+  font-size: clamp(32px, 5vw, 50px);
+  line-height: 1.05;
+  color: var(--azul);
+  -webkit-text-stroke: 6px #fff;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0 1px var(--azul-oscuro)) drop-shadow(0 2px 0 rgba(10, 44, 82, .25));
+}
+.seccion-titulo__intro { margin-top: 12px; font-size: 17px; color: var(--tinta-suave); }
+
+.aviso {
+  max-width: 560px;
+  margin: 40px auto;
+  padding: 22px 24px;
+  border: 2px dashed var(--azul);
+  border-radius: 18px;
+  background: #fff;
+  text-align: center;
+  color: var(--tinta-suave);
+}
+.aviso strong { color: var(--azul-marino); }
+.aviso code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #eef3f9;
+  font-size: 14px;
+}
+
+.cargando {
+  padding: 48px 0;
+  text-align: center;
+  font-family: var(--letra-universidad);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--gris);
+}
+
+
+/* ---------- 6. Pie ---------- */
+
+.pie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding: 36px 16px 44px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--tinta-suave);
+  border-top: 1px solid #cfd0cd;
+}
+.pie__marca { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.pie__escudo { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; }
+.pie__escudo-img {
+  width: 56px; height: 56px; border-radius: 50%; object-fit: cover; display: block;
+  border: 2px solid rgba(255, 255, 255, .85); background: #fff; box-shadow: 0 6px 16px rgba(0, 0, 0, .18);
+}
+.pie__redes { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; }
+.pie__red {
+  display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: 999px;
+  background: rgba(10, 44, 82, .07); color: var(--tinta-suave); font-weight: 600; font-size: 14px; text-decoration: none;
+  transition: background .15s, color .15s;
+}
+.pie__red svg { width: 16px; height: 16px; }
+.pie__red:hover { background: rgba(22, 103, 194, .14); color: var(--azul); }
+.pie__red--wpp { color: #0b6b3a; background: rgba(37, 211, 102, .14); }
+.pie__red--wpp:hover { background: rgba(37, 211, 102, .26); color: #064e29; }
+.pie__redes .pie__contacto-sep { display: none; }
+.pie__facultad { max-width: 780px; font-size: 13.5px; color: var(--gris); }
+.pie__facultad strong { color: var(--azul-marino); font-weight: 600; }
+
+.pie__tarjetas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; max-width: 1040px; }
+.pie__tarjeta {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 22px 20px;
+  border-radius: 20px; border-top: 5px solid var(--azul); background: #fff;
+  box-shadow: 0 1px 2px rgba(10, 44, 82, .06), 0 14px 30px -20px rgba(10, 44, 82, .45);
+}
+.pie__tarjeta--web { border-top-color: var(--azul-marino); }
+.pie__tarjeta-titulo {
+  margin-bottom: 4px; font-family: var(--letra-universidad); font-weight: 400; font-size: 11.5px;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--gris);
+}
+.pie__bloque { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; }
+.pie__bloque + .pie__bloque { margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--linea); }
+.pie__persona { font-size: 15px; line-height: 1.45; color: var(--tinta-suave); }
+.pie__persona strong { font-weight: 700; color: var(--azul-marino); }
+.pie__contacto { display: flex; align-items: center; flex-wrap: wrap; justify-content: center; gap: 8px 14px; margin-top: 4px; font-size: 13px; }
+.pie__contacto-link { display: inline-flex; align-items: center; gap: 6px; color: var(--azul); text-decoration: none; font-weight: 500; transition: color .15s; word-break: break-all; }
+.pie__contacto-link:hover { color: var(--azul-oscuro); text-decoration: underline; }
+.pie__contacto-link--wpp { color: #0b6b3a; font-weight: 600; }
+.pie__contacto-link--wpp:hover { color: #064e29; }
+.pie__contacto-link svg { flex-shrink: 0; }
+.pie__contacto-sep { color: #adb5bd; }
+.pie a:focus-visible { outline: 3px solid var(--azul-marino); outline-offset: 2px; border-radius: 6px; }
+
+@media (max-width: 760px) { .pie__tarjetas { grid-template-columns: 1fr; } }
+
+
+/* ---------- 7. Mensaje flotante de bienvenida / Creador ---------- */
+
+.toast-autor {
+  position: fixed;
+  bottom: 22px;
+  right: 22px;
+  z-index: 999;
+  max-width: 420px;
+  width: calc(100% - 36px);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition: opacity .3s cubic-bezier(0.16, 1, 0.3, 1), transform .3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-autor.is-visible {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.toast-autor.is-hiding {
+  opacity: 0;
+  transform: translateY(16px) scale(0.95);
+}
+
+.toast-autor__tarjeta {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid rgba(10, 44, 82, 0.12);
+  border-top: 4px solid var(--azul);
+  box-shadow: 0 16px 38px -8px rgba(10, 44, 82, 0.28), 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toast-autor__cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #f0f3f6;
+  color: var(--tinta-suave);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s, color .15s, transform .1s;
+}
+
+.toast-autor__cerrar:hover {
+  background: #e2e8f0;
+  color: var(--azul-marino);
+  transform: scale(1.05);
+}
+
+.toast-autor__cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-right: 28px;
+}
+
+.toast-autor__avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid var(--azul);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(22, 103, 194, 0.25);
+}
+
+.toast-autor__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.toast-autor__titulos {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast-autor__nombre {
+  font-family: var(--letra-titulo);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--azul-marino);
+  line-height: 1.2;
+}
+
+.toast-autor__cargo {
+  font-family: var(--letra-universidad);
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--azul);
+  font-weight: 600;
+}
+
+.toast-autor__mensaje {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tinta);
+  margin: 0;
+}
+
+.toast-autor__mensaje strong {
+  color: var(--azul-marino);
+}
+
+.toast-autor__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #edf1f5;
+  flex-wrap: wrap;
+}
+
+.toast-autor__redes {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toast-autor__enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--azul);
+  text-decoration: none;
+  background: #edf5fe;
+  padding: 4px 10px;
+  border-radius: 999px;
+  transition: background .15s, color .15s;
+}
+
+.toast-autor__enlace:hover {
+  background: var(--azul);
+  color: #fff;
+}
+
+.toast-autor__enlace--wpp {
+  background: #e7f9ee;
+  color: #0b6b3a;
+  border: 1px solid #b3eccb;
+}
+
+.toast-autor__enlace--wpp:hover {
+  background: #25d366;
+  border-color: #25d366;
+  color: #fff;
+}
+
+.toast-autor__btn-ok {
+  border: none;
+  background: var(--azul-marino);
+  color: #fff;
+  font-family: var(--letra-universidad);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.toast-autor__btn-ok:hover {
+  background: var(--azul);
+}
+
+
+/* ---------- Tablet y móvil ---------- */
+
+@keyframes menuDesplegar {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* En escritorios medianos ajustamos levemente los enlaces para que quepan holgados */
+@media (min-width: 981px) and (max-width: 1320px) {
+  .nav { gap: 2px; }
+  .nav a {
+    padding: 8px 11px;
+    font-size: 11.5px;
+    letter-spacing: .08em;
+  }
+  .barra__marca { flex: none; }
+  .barra__texto { font-size: 11.5px; letter-spacing: .08em; max-width: 190px; }
+}
+@media (min-width: 981px) and (max-width: 1120px) {
+  .barra__contenido { gap: 8px; }
+  .barra__marca { gap: 8px; }
+  .barra__texto { font-size: 10.5px; letter-spacing: .04em; max-width: 150px; }
+  .nav a { padding: 8px 7px; font-size: 10.5px; letter-spacing: .03em; }
+}
+
+/* De 980px hacia abajo (tablets y móviles): Barra compacta con menú colapsable */
+@media (max-width: 980px) {
+  .barra__contenido {
+    min-height: 58px;
+    padding-block: 8px;
+  }
+  .barra__boton-menu {
+    display: inline-flex;
+    flex-shrink: 0;
+  }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--azul-marino);
+    border-bottom: 3px solid var(--azul);
+    box-shadow: 0 16px 30px -6px rgba(0, 0, 0, .65);
+    padding: 16px;
+    flex-direction: column;
+    gap: 8px;
+    max-height: calc(100vh - 65px);
+    overflow-y: auto;
+  }
+  .barra.is-menu-abierto .nav {
+    display: flex;
+    animation: menuDesplegar .2s ease-out;
+  }
+  .nav a {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .nav a:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+  }
+  .nav a[aria-current="page"] {
+    background: #fff;
+    color: var(--azul-marino);
+    border: 2px solid var(--azul);
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 720px) {
+  .portada__contenido { padding: 48px 0 56px; }
+  .portada__cifras li { min-width: 50%; }
+  .portada__cifras li:nth-child(odd) { border-left: 0; }
+  .portada__cifras li:nth-child(n + 3) { border-top: 1px solid rgba(255, 255, 255, .25); }
+  .seccion { padding: 52px 0; }
+}
+
+@media (max-width: 480px) {
+  .toast-autor {
+    bottom: 12px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-width: none;
+  }
+  .toast-autor__tarjeta {
+    padding: 16px 16px 14px;
+  }
+  .toast-autor__pie {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .toast-autor__redes {
+    justify-content: flex-start;
+  }
+  .toast-autor__btn-ok {
+    text-align: center;
+    padding: 8px 14px;
+    width: 100%;
+  }
+  .barra__escudo,
+  .barra__escudo-img {
+    width: 38px;
+    height: 38px;
+  }
+  .barra__texto {
+    font-size: 11px;
+    letter-spacing: .08em;
+  }
+  .barra__texto small {
+    font-size: 10px;
+  }
+  .barra__boton-menu {
+    padding: 7px 11px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .barra__marca {
+    gap: 8px;
+  }
+  .barra__escudo,
+  .barra__escudo-img {
+    width: 32px;
+    height: 32px;
+  }
+  .barra__texto {
+    font-size: 10px;
+  }
+  .barra__boton-texto {
+    display: none;
+  }
+  .barra__boton-menu {
+    padding: 7px 9px;
+  }
+}

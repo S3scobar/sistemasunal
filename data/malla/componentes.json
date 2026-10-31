@@ -1,0 +1,85 @@
+{
+ "componentes": [
+  {
+   "id": "fundamentacion",
+   "nombre": "Fundamentación",
+   "color": "#a47bc8",
+   "descripcion": "Ciencias básicas: matemáticas, estadística y física."
+  },
+  {
+   "id": "disciplinar",
+   "nombre": "Formación disciplinar o profesional",
+   "color": "#26a69a",
+   "descripcion": "Ciencias de la computación, ingeniería de software, sistemas, proyectos, tecnologías de aplicación y trabajo de grado."
+  },
+  {
+   "id": "libre-eleccion",
+   "nombre": "Libre elección",
+   "color": "#f7b61a",
+   "descripcion": "Créditos que el estudiante elige libremente."
+  }
+ ],
+ "agrupaciones": [
+  {
+   "id": "ciencias-basicas",
+   "componente": "fundamentacion",
+   "nombre": "Ciencias Básicas",
+   "exigidos": 43,
+   "obligatorios": 27,
+   "optativos": 16
+  },
+  {
+   "id": "ciencias-computacion",
+   "componente": "disciplinar",
+   "nombre": "Ciencias de la Computación",
+   "exigidos": 27,
+   "obligatorios": 27,
+   "optativos": 0
+  },
+  {
+   "id": "ingenieria-software",
+   "componente": "disciplinar",
+   "nombre": "Ingeniería de Software",
+   "exigidos": 9,
+   "obligatorios": 9,
+   "optativos": 0
+  },
+  {
+   "id": "sistemas",
+   "componente": "disciplinar",
+   "nombre": "Sistemas",
+   "exigidos": 11,
+   "obligatorios": 11,
+   "optativos": 0
+  },
+  {
+   "id": "proyectos",
+   "componente": "disciplinar",
+   "nombre": "Proyectos en Ingeniería",
+   "exigidos": 10,
+   "obligatorios": 10,
+   "optativos": 0
+  },
+  {
+   "id": "tecnologias",
+   "componente": "disciplinar",
+   "nombre": "Tecnologías de Aplicación y Desarrollo Profesional",
+   "exigidos": 22,
+   "obligatorios": 0,
+   "optativos": 22
+  },
+  {
+   "id": "trabajo-grado",
+   "componente": "disciplinar",
+   "nombre": "Trabajo de Grado",
+   "exigidos": 6,
+   "obligatorios": 6,
+   "optativos": 0
+  },
+  {
+   "id": "libre-eleccion",
+   "componente": "libre-eleccion",
+   "nombre": "Libre elección"
+  }
+ ]
+}

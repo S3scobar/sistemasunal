@@ -1,0 +1,40 @@
+{
+  "nombre": "Ingeniería de Sistemas e Informática",
+  "universidad": "Universidad Nacional de Colombia",
+  "sede": "Medellín",
+  "facultad": "Facultad de Minas",
+  "lema": "Trabajo y Rectitud",
+  "descripcion": [
+    "El programa forma profesionales sobre una base científica, ética y humanística, con la meta de que sean integrales en lo científico, lo tecnológico y lo social.",
+    "Sus egresados están preparados para adoptar, aplicar e innovar el conocimiento en informática y sistemas, y para resolver problemas de organizaciones públicas y privadas con herramientas de ingeniería de software, inteligencia artificial, telecomunicaciones, investigación de operaciones y bases de datos."
+  ],
+  "ficha": [
+    { "etiqueta": "Título que otorga", "valor": "Ingeniero(a) de Sistemas e Informática" },
+    { "etiqueta": "Créditos del plan", "valor": "160" },
+    { "etiqueta": "Duración del plan", "valor": "10 semestres" },
+    { "etiqueta": "Modalidad", "valor": "Presencial" },
+    { "etiqueta": "Jornada", "valor": "Diurna" },
+    { "etiqueta": "Sede y facultad", "valor": "Medellín · Facultad de Minas" },
+    { "etiqueta": "Código SNIES", "valor": "16925" },
+    { "etiqueta": "Creación", "valor": "1997 (Acuerdo 07, Acta 4 del 30 de julio de 1997)" },
+    { "etiqueta": "Inicio de actividades", "valor": "Primer semestre de 1998" }
+  ],
+  "cifras": [
+    { "valor": "160", "texto": "créditos" },
+    { "valor": "10", "texto": "semestres" },
+    { "valor": "Presencial", "texto": "jornada diurna" },
+    { "valor": "16925", "texto": "código SNIES" }
+  ],
+  "acreditacion": {
+    "estado": "Programa acreditado en alta calidad",
+    "hitos": [
+      { "anio": "2009", "texto": "Primera acreditación: Resolución 4291 del 30 de junio de 2009 del Ministerio de Educación Nacional, por 6 años." },
+      { "anio": "Renovación", "texto": "La Facultad de Minas informó la renovación de la acreditación de alta calidad por ocho (8) años." }
+    ],
+    "nota": "Para conocer la resolución y las fechas de vigencia actuales, consulta a la Vicedecanatura Académica de la Facultad de Minas."
+  },
+  "fuentes": [
+    { "titulo": "Proyecto Educativo del Programa (PEP) · Sede Medellín", "url": "https://scda.medellin.unal.edu.co/descargas/PEP/PEPIngenieriadeSistemaseInformatica.pdf" },
+    { "titulo": "Programa curricular 2026-2 · Facultad de Minas", "url": "https://minas.medellin.unal.edu.co/" }
+  ]
+}

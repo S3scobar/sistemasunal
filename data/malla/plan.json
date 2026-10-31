@@ -1,0 +1,308 @@
+[
+ {
+  "semestre": 1,
+  "creditos": 16,
+  "items": [
+   {
+    "tipo": "asignatura",
+    "codigo": "1000008-M"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3006906"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010438"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   }
+  ]
+ },
+ {
+  "semestre": 2,
+  "creditos": 16,
+  "items": [
+   {
+    "tipo": "asignatura",
+    "codigo": "1000003-M"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "1000004-M"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010435"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 2,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   }
+  ]
+ },
+ {
+  "semestre": 3,
+  "creditos": 17,
+  "items": [
+   {
+    "tipo": "asignatura",
+    "codigo": "1000019-M"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "1000005-M"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007744"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010426"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 3,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   }
+  ]
+ },
+ {
+  "semestre": 4,
+  "creditos": 15,
+  "items": [
+   {
+    "tipo": "asignatura",
+    "codigo": "3010651"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007324"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007741"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007867"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007853"
+   }
+  ]
+ },
+ {
+  "semestre": 5,
+  "creditos": 16,
+  "items": [
+   {
+    "tipo": "bolsa",
+    "agrupacion": "ciencias-basicas",
+    "creditos": 4,
+    "nombre": "Optativa de Ciencias Básicas"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007331"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007847"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007865"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3007852"
+   }
+  ]
+ },
+ {
+  "semestre": 6,
+  "creditos": 16,
+  "items": [
+   {
+    "tipo": "bolsa",
+    "agrupacion": "ciencias-basicas",
+    "creditos": 4,
+    "nombre": "Optativa de Ciencias Básicas"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010415"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010476"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3011020"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010440"
+   }
+  ]
+ },
+ {
+  "semestre": 7,
+  "creditos": 17,
+  "items": [
+   {
+    "tipo": "bolsa",
+    "agrupacion": "ciencias-basicas",
+    "creditos": 4,
+    "nombre": "Optativa de Ciencias Básicas"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "ciencias-basicas",
+    "creditos": 4,
+    "nombre": "Optativa de Ciencias Básicas"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 3,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   }
+  ]
+ },
+ {
+  "semestre": 8,
+  "creditos": 15,
+  "items": [
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 3,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 3,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010408"
+   }
+  ]
+ },
+ {
+  "semestre": 9,
+  "creditos": 15,
+  "items": [
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 3,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 3,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010407"
+   }
+  ]
+ },
+ {
+  "semestre": 10,
+  "creditos": 17,
+  "items": [
+   {
+    "tipo": "asignatura",
+    "codigo": "3007868"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "tecnologias",
+    "creditos": 2,
+    "nombre": "Optativa de Tecnologías de Aplicación y Desarrollo Profesional"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 3,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "bolsa",
+    "agrupacion": "libre-eleccion",
+    "creditos": 2,
+    "nombre": "Libre elección"
+   },
+   {
+    "tipo": "asignatura",
+    "codigo": "3010439"
+   }
+  ]
+ }
+]

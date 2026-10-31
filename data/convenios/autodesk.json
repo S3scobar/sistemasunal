@@ -1,0 +1,72 @@
+{
+ "id": "autodesk",
+ "queEs": "El plan de educación de Autodesk da acceso gratuito de un año, para un solo usuario y con fines educativos, a su software. Es renovable cada año mientras sigas siendo elegible. Es un programa de Autodesk para estudiantes de instituciones calificadas, no un convenio propio de la UNAL.",
+ "quienes": [
+  "Estudiantes inscritos en una institución educativa calificada",
+  "Docentes y contratistas de instituciones educativas calificadas"
+ ],
+ "incluye": [
+  "AutoCAD, Revit, Inventor, Fusion y Maya",
+  "3ds Max, AutoCAD LT, Navisworks y Tinkercad",
+  "Flow Studio, solo para estudiantes de educación superior de 18 años o más"
+ ],
+ "requisitos": [
+  "Estar inscrito, trabajar o ser contratista en una institución educativa calificada: acreditada por una agencia gubernamental autorizada y con la enseñanza como objetivo principal",
+  "Cumplir la edad mínima del programa",
+  "Una cuenta de Autodesk (Autodesk Account)"
+ ],
+ "pasos": [
+  {
+   "titulo": "Crea tu Autodesk Account",
+   "texto": "Entra a la página «Obtener productos» (botón de abajo) y haz clic en «Introducción» para crear tu cuenta de Autodesk."
+  },
+  {
+   "titulo": "Indica tu institución",
+   "texto": "Inicia sesión, escribe el nombre de tu institución (Universidad Nacional de Colombia) y selecciónala de la lista desplegable. Si no aparece, usa el formulario «¿No encuentras tu institución educativa?»: la validación puede tardar hasta siete días."
+  },
+  {
+   "titulo": "Revisa tus datos antes de verificar",
+   "texto": "Deben coincidir con los del registro de la institución, porque no podrás modificarlos después. Confirma también el tipo de institución seleccionado."
+  },
+  {
+   "titulo": "Pulsa «Verificar»",
+   "texto": "Autodesk comprobará tu elegibilidad."
+  },
+  {
+   "titulo": "Sube documentación si te la piden",
+   "texto": "Debe incluir tu nombre completo (igual al del registro institucional), el nombre completo de la institución y una fecha dentro del período escolar actual. Se aceptan, por ejemplo, el recibo de inscripción o matrícula, la credencial de estudiante, el expediente académico o una carta oficial de la institución. La confirmación suele tardar hasta dos días y no tendrás acceso al software hasta que se confirme."
+  },
+  {
+   "titulo": "Descarga tus productos y renueva cada año",
+   "texto": "Con la elegibilidad confirmada tienes acceso por un año. Al terminar, inicia sesión en «Obtener productos» y haz clic en «Renovar ahora» en el banner: tras confirmar tu elegibilidad, el acceso se extiende otro año."
+  }
+ ],
+ "enlaces": [
+  {
+   "texto": "Obtener productos de Autodesk (educación)",
+   "url": "https://www.autodesk.com/education/edu-software/overview",
+   "principal": true
+  },
+  {
+   "texto": "Ayuda y requisitos del plan de educación (Autodesk)",
+   "url": "https://www.autodesk.com/mx/education/support"
+  }
+ ],
+ "consejos": [
+  "Empieza el proceso con anticipación: si te piden documentos, no tendrás el software hasta que se confirme tu elegibilidad.",
+  "Si tu docente te asigna un producto mediante el plan de educación, no necesitas confirmar tu elegibilidad por tu cuenta."
+ ],
+ "porConfirmar": [
+  "No encontré un convenio específico entre la Universidad Nacional y Autodesk: lo que aparece es el plan de educación de Autodesk, abierto a estudiantes de instituciones calificadas. Si la Universidad tiene un convenio o instructivo propio, pásame el documento o el enlace y lo agrego."
+ ],
+ "fuentes": [
+  {
+   "titulo": "Autodesk · Apoyo educativo",
+   "url": "https://www.autodesk.com/mx/education/support"
+  },
+  {
+   "titulo": "Autodesk · Software educativo",
+   "url": "https://www.autodesk.com/education/edu-software/overview"
+  }
+ ]
+}

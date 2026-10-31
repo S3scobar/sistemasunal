@@ -1,0 +1,79 @@
+{
+ "tipos": [
+  {
+   "id": "convenio",
+   "nombre": "Convenios de la UNAL",
+   "descripcion": "Acuerdos de la Universidad Nacional con la empresa: se activan con tu correo institucional."
+  },
+  {
+   "id": "beneficio",
+   "nombre": "Beneficios para estudiantes",
+   "descripcion": "Programas de la empresa para estudiantes de educación superior: no son convenios de la UNAL, pero los puedes pedir con tu condición de estudiante."
+  }
+ ],
+ "convenios": [
+  {
+   "id": "coursera",
+   "nombre": "Coursera",
+   "tipo": "convenio",
+   "categoria": "Cursos en línea",
+   "icono": "birrete",
+   "color": "#1667c2",
+   "resumen": "Cursos y programas en línea para estudiantes activos, docentes y administrativos, con tu correo @unal.edu.co."
+  },
+  {
+   "id": "matlab",
+   "nombre": "MATLAB y Simulink",
+   "tipo": "convenio",
+   "categoria": "Software de cálculo",
+   "icono": "funcion",
+   "color": "#e8590c",
+   "resumen": "Licencia de MATLAB y Simulink de la Universidad, disponible a través de MathWorks."
+  },
+  {
+   "id": "microsoft-365",
+   "nombre": "Microsoft 365 (Office)",
+   "tipo": "convenio",
+   "categoria": "Ofimática y nube",
+   "icono": "documento",
+   "color": "#2b7de9",
+   "resumen": "Word, Excel, PowerPoint y más con tu correo institucional. Pasos por confirmar con la Universidad."
+  },
+  {
+   "id": "autodesk",
+   "nombre": "Autodesk",
+   "tipo": "beneficio",
+   "categoria": "Diseño e ingeniería",
+   "icono": "cubo",
+   "color": "#26303b",
+   "resumen": "Acceso educativo gratuito de un año (renovable) a AutoCAD, Revit, Inventor, Fusion y más."
+  },
+  {
+   "id": "github-education",
+   "nombre": "GitHub Student Developer Pack",
+   "tipo": "beneficio",
+   "categoria": "Desarrollo de software",
+   "icono": "codigo",
+   "color": "#6e40c9",
+   "resumen": "Herramientas de desarrollo gratuitas para estudiantes, con una cuenta de GitHub verificada."
+  },
+  {
+   "id": "jetbrains",
+   "nombre": "JetBrains Student Pack",
+   "tipo": "beneficio",
+   "categoria": "Entornos de programación",
+   "icono": "terminal",
+   "color": "#d6336c",
+   "resumen": "IDEs, complementos y cursos de JetBrains para tus estudios."
+  },
+  {
+   "id": "spotify",
+   "nombre": "Spotify Premium Estudiantes",
+   "tipo": "beneficio",
+   "categoria": "Música",
+   "icono": "nota",
+   "color": "#1a9e5c",
+   "resumen": "Descuento para estudiantes de educación superior, verificado con SheerID, hasta por 4 años."
+  }
+ ]
+}
