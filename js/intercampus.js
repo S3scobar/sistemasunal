@@ -33,6 +33,12 @@ function minutosActuales() {
   return ahora.getHours() * 60 + ahora.getMinutes();
 }
 
+// El Intercampus opera de lunes a viernes (programación oficial); sábados y domingos no hay servicio
+function haySevicioHoy() {
+  const d = new Date().getDay();
+  return d >= 1 && d <= 5;
+}
+
 // Inicia el módulo cargando los datos
 cargarDatos('intercampus')
   .then((datos) => {
@@ -114,28 +120,39 @@ function renderizarContenidoRuta() {
   const minActual = minutosActuales();
 
   // Buscar la próxima salida
-  let proxima = todasLasHoras.find((h) => horaEnMinutos(h) >= minActual);
-  let textoProxima = '';
+  const hayServicio = haySevicioHoy();
+  const esViernes = new Date().getDay() === 5;
+  let proxima = hayServicio ? todasLasHoras.find((h) => horaEnMinutos(h) >= minActual) : undefined;
   let tiempoRestante = '';
+  let resaltar = true;
 
-  if (proxima) {
+  if (!hayServicio) {
+    // Sábado o domingo: no hay rutas; se muestra la primera salida del lunes sin marcarla como "próxima"
+    proxima = todasLasHoras[0];
+    tiempoRestante = 'Sin servicio sábados ni domingos · Primera salida: lunes';
+    resaltar = false;
+  } else if (proxima) {
     const diff = horaEnMinutos(proxima) - minActual;
     tiempoRestante = diff === 0 ? '¡Saliendo ahora!' : diff === 1 ? 'Sale en 1 minuto' : `Sale en ${diff} minutos`;
   } else {
     proxima = todasLasHoras[0];
-    tiempoRestante = 'Servicio finalizado por hoy · Primera salida de mañana';
+    tiempoRestante = esViernes
+      ? 'Servicio finalizado por hoy · Primera salida: lunes'
+      : 'Servicio finalizado por hoy · Primera salida de mañana';
   }
+  const minParaChips = hayServicio ? minActual : -1;
+  const proximaChip = resaltar ? proxima : null;
 
   // Lista de franjas disponibles para filtrar
   const numerosFranjas = ruta.franjas.map((f) => f.franja);
 
   contenedor.innerHTML = `
     <!-- PANEL PRÓXIMA SALIDA -->
-    <div class="proxima-salida">
+    <div class="proxima-salida ${hayServicio ? '' : 'proxima-salida--sin-servicio'}">
       <div class="proxima-salida__meta">
         <span class="proxima-salida__etiqueta">
           <span class="proxima-salida__pulso"></span>
-          Horario en tiempo real · Semestre ${esc(datosIntercampus.semestre)}
+          ${hayServicio ? 'Horario en tiempo real' : 'Sin servicio hoy'} · Lunes a viernes · Semestre ${esc(datosIntercampus.semestre)}
         </span>
         <h3 class="proxima-salida__titulo">${esc(ruta.titulo)}</h3>
         <p class="proxima-salida__subtitulo">${esc(ruta.subtitulo)}</p>
@@ -171,7 +188,7 @@ function renderizarContenidoRuta() {
 
     <!-- GRILLA DE FRANJAS -->
     <div class="franjas-grid" id="franjas-grid">
-      ${renderizarFranjas(ruta, minActual, proxima)}
+      ${renderizarFranjas(ruta, minParaChips, proximaChip)}
     </div>
     </div>
   `;
@@ -184,7 +201,7 @@ function renderizarContenidoRuta() {
       if (!btn) return;
       franjaFiltro = btn.dataset.franja;
       $$('.intercampus__filtro-btn', contenedorFiltros).forEach((b) => b.classList.toggle('activo', b === btn));
-      $('#franjas-grid').innerHTML = renderizarFranjas(ruta, minutosActuales(), proxima);
+      $('#franjas-grid').innerHTML = renderizarFranjas(ruta, haySevicioHoy() ? minutosActuales() : -1, proximaChip);
     });
   }
 }

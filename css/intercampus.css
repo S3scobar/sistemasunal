@@ -1030,3 +1030,7 @@
     justify-content: center;
   }
 }
+
+/* Fin de semana: no hay servicio */
+.proxima-salida--sin-servicio .proxima-salida__pulso { background: #7f93ab; box-shadow: none; animation: none; }
+.proxima-salida--sin-servicio .proxima-salida__hora { opacity: .55; }
