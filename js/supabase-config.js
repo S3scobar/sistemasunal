@@ -310,49 +310,40 @@ const ServicioAuth = {
   },
 
   // Obtiene estadísticas agregadas de la comunidad (porcentaje de usuarios que desbloquearon cada logro)
-  async obtenerEstadisticasLogros() {
-    if (!clienteSupabase) return null;
+  // Última estadística real conocida (se usa si el servidor no responde, en vez de mostrar valores de referencia)
+  estadisticasEnCache() {
     try {
-      // 1) Preferido: función del servidor que devuelve solo porcentajes agregados
+      const c = JSON.parse(localStorage.getItem('sistemasunal.stats.logros.v1') || 'null');
+      return c && c.datos ? c.datos : null;
+    } catch { return null; }
+  },
+
+  async obtenerEstadisticasLogros() {
+    const guardar = (datos) => {
+      try { localStorage.setItem('sistemasunal.stats.logros.v1', JSON.stringify({ t: Date.now(), datos })); } catch { /* sin almacenamiento */ }
+      return datos;
+    };
+    if (!clienteSupabase) return this.estadisticasEnCache();
+    try {
+      // Función del servidor: devuelve solo porcentajes agregados, sin filas ni usuarios
       const { data: agregados, error: errRpc } = await clienteSupabase.rpc('estadisticas_logros');
-      if (errRpc) console.warn('[estadisticas_logros] la función del servidor falló:', errRpc.message || errRpc);
-      if (!errRpc && Array.isArray(agregados)) {
-        if (!agregados.length) return null;
+      if (errRpc) {
+        console.warn('[estadisticas_logros] la función del servidor falló:', errRpc.message || errRpc);
+        return this.estadisticasEnCache();
+      }
+      if (Array.isArray(agregados) && agregados.length) {
         const porcentajes = {};
         agregados.forEach((f) => { porcentajes[f.logro_id] = Number(f.porcentaje); });
-        return porcentajes;
+        return guardar(porcentajes);
       }
-
-      // 2) Respaldo (esquema anterior): cuenta desde las tablas
-      const { count: totalEstudiantes, error: errPerfiles } = await clienteSupabase
-        .from('perfiles')
-        .select('*', { count: 'exact', head: true });
-
-      if (errPerfiles || !totalEstudiantes || totalEstudiantes < 2) {
-        return null; // Con menos de 2 estudiantes registrados, se usan los porcentajes base de referencia
-      }
-
-      const { data, error } = await clienteSupabase
-        .from('logros_desbloqueados')
-        .select('logro_id');
-
-      if (error || !data) return null;
-
-      const conteo = {};
-      data.forEach((fila) => {
-        conteo[fila.logro_id] = (conteo[fila.logro_id] || 0) + 1;
-      });
-
-      const porcentajes = {};
-      Object.keys(conteo).forEach((id) => {
-        porcentajes[id] = Math.round((conteo[id] / totalEstudiantes) * 1000) / 10;
-      });
-
-      return porcentajes;
-    } catch {
-      return null;
+      console.warn('[estadisticas_logros] devolvió 0 filas (¿menos de 5 estudiantes o función antigua?)');
+      return this.estadisticasEnCache();
+    } catch (err) {
+      console.warn('[estadisticas_logros] error inesperado:', err);
+      return this.estadisticasEnCache();
     }
   },
+
 
   // Sincroniza los logros desbloqueados del usuario actual en Supabase
   async sincronizarLogrosDesbloqueados(userId, listaIdsDesbloqueados) {

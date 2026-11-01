@@ -227,7 +227,7 @@ function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
           <circle class="anillo__valor" cx="60" cy="60" r="54" pathLength="100" style="--pct: ${pasoXp}"></circle>
         </svg>
         <img src="img/logo-sistemas.jpg" alt="" width="88" height="88">
-        <span class="jugador__nivel"><small>NIVEL</small><b data-cuenta="${avance.nivel}">${avance.nivel}</b></span>
+        <span class="jugador__nivel${String(avance.nivel).length > 2 ? ' jugador__nivel--3' : ''}"><small>NIVEL</small><b data-cuenta="${avance.nivel}">${avance.nivel}</b></span>
       </div>
       <div class="jugador__datos">
         <p class="etiqueta-hud">ESTUDIANTE</p>
@@ -626,6 +626,8 @@ function aplicarSesion(usuario) {
 
   // Consultar estadísticas globales de la comunidad si Supabase está activo
   if (typeof ServicioAuth !== 'undefined' && ServicioAuth.obtenerEstadisticasLogros) {
+    // Primero lo último conocido (pintura inmediata con datos reales), luego se actualiza desde el servidor
+    if (ServicioAuth.estadisticasEnCache && !estado.statsLogros) estado.statsLogros = ServicioAuth.estadisticasEnCache();
     ServicioAuth.obtenerEstadisticasLogros().then((stats) => {
       if (stats) {
         estado.statsLogros = stats;

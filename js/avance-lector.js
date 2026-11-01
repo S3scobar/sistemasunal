@@ -191,7 +191,8 @@ function calcularAvance(historia, ritmoElegido) {
 
   const semestresCursados = cerrados.length;
   const porcentaje = exigidos ? Math.round((aprobados / exigidos) * 1000) / 10 : 0;
-  const nivel = Math.min(10, Math.floor(aprobados / 16) + 1);
+  // Nivel 1–100: avanza con el % de créditos aprobados (100 % de la carrera = nivel 100)
+  const nivel = Math.max(1, Math.min(100, Math.floor((exigidos ? aprobados / exigidos : 0) * 100)));
 
   return {
     aprobados, inscritos, pendientes, exigidos, porcentaje, nivel,

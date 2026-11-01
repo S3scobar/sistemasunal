@@ -1492,8 +1492,15 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
 #avance-juego > .meta { animation: sube .6s .3s cubic-bezier(.2, .8, .2, 1) both; }
 #avance-juego > .pestanas-juego { animation: sube .6s .45s cubic-bezier(.2, .8, .2, 1) both; }
 #avance-juego > .pestana-panel { animation: sube .6s .55s cubic-bezier(.2, .8, .2, 1) both; }
+/* Al recalcular (p. ej. mover el ritmo) se saltan las animaciones de ENTRADA, pero las que
+   viven en bucle (brillos, latidos) se restauran con su duración original para que no se apaguen. */
 #avance-juego.sin-animar *, #avance-juego.sin-animar *::before, #avance-juego.sin-animar *::after { animation-duration: .001s !important; animation-delay: 0s !important; }
-#avance-juego.sin-animar .xp__relleno::after, #avance-juego.sin-animar .logro--listo::after, #avance-juego.sin-animar .meta__valor { animation-duration: revert !important; animation-delay: revert !important; }
+#avance-juego.sin-animar .xp__relleno::after { animation-duration: 3.4s !important; animation-delay: 1.4s !important; }
+#avance-juego.sin-animar .logro--listo::after { animation-duration: 5s !important; }
+#avance-juego.sin-animar .meta__valor { animation-duration: 7s !important; }
+#avance-juego.sin-animar .mapa__col--curso .mapa__tramo--ok { animation-duration: .001s, 2.4s !important; animation-delay: 0s, 0s !important; }
+#avance-juego.sin-animar .mapa__col--proyectado .mapa__tramo--ok { animation-duration: .001s, 3.2s !important; animation-delay: 0s, 0s !important; }
+#avance-juego.sin-animar .mapa__col--curso .mapa__marca { animation-duration: 1.6s !important; }
 
 /* ---------- Pantallas pequeñas ---------- */
 @media (max-width: 768px) {
@@ -1520,3 +1527,7 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
   .mapa__tramo, .mapa__col--curso .mapa__marca, .logro--listo::after,
   #avance-juego > *, #avance-juego .estadistica, .pestana-panel.entra { animation: none !important; }
 }
+
+/* Nivel de tres cifras (100) */
+.jugador__nivel--3 b { font-size: 19px; }
+.jugador__nivel--3 { min-width: 0; padding: 3px 7px 4px; }
