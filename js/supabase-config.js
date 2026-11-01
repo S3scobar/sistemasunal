@@ -69,9 +69,26 @@ if (typeof window !== 'undefined' && window.supabase && estaSupabaseConfigurado(
 const CLAVE_SESION_LOCAL = 'sistemasunal.auth.sesion.v1';
 const CLAVE_USUARIOS_LOCAL = 'sistemasunal.auth.usuarios.v1';
 
+// Cierre de sesión forzado: al cambiar este valor, TODAS las personas deben iniciar sesión de nuevo
+// (se ejecuta una sola vez por navegador). Cámbialo cuando quieras volver a forzar el cierre.
+const VERSION_SESION = '2026-11-01-a';
+const CLAVE_VERSION_SESION = 'sistemasunal.auth.version';
+
+const cierreForzado = (async () => {
+  try {
+    if (localStorage.getItem(CLAVE_VERSION_SESION) === VERSION_SESION) return;
+    if (clienteSupabase) await clienteSupabase.auth.signOut({ scope: 'local' });
+    localStorage.removeItem(CLAVE_SESION_LOCAL);
+    localStorage.setItem(CLAVE_VERSION_SESION, VERSION_SESION);
+  } catch (e) {
+    console.warn('No se pudo completar el cierre de sesión forzado:', e);
+  }
+})();
+
 const ServicioAuth = {
   // Obtiene la sesión activa
   async obtenerSesion() {
+    await cierreForzado;
     if (clienteSupabase) {
       try {
         const { data: { session }, error } = await clienteSupabase.auth.getSession();
@@ -92,6 +109,13 @@ const ServicioAuth = {
       } catch (e) {
         console.warn('Error consultando sesión en Supabase:', e);
       }
+    }
+
+    // Con Supabase configurado, sin sesión real NO se usa el usuario guardado en local: sin token no podría
+    // guardar nada en la base (era la causa de logros que no se registraban).
+    if (clienteSupabase) {
+      localStorage.removeItem(CLAVE_SESION_LOCAL);
+      return null;
     }
 
     // Respaldo / modo local si no hay Supabase configurado
