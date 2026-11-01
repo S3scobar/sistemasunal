@@ -271,14 +271,14 @@
       "porcentaje": 3.2
     },
     {
-      "nombre": "Big Six",
-      "descripcion": "Obtuviste 5.0 como calificación definitiva en al menos 6 asignaturas.",
+      "nombre": "Big Seven",
+      "descripcion": "Obtuviste 5.0 como calificación definitiva en al menos 7 asignaturas.",
       "puntos": 350,
       "categoria": "platino",
       "icono": "fuego",
       "regla": {
         "tipo": "materias_con_nota",
-        "minimo": 6,
+        "minimo": 7,
         "nota": 5
       },
       "id": "big-six",
