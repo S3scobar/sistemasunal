@@ -1275,7 +1275,6 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
   width: 84px; height: 84px;
   border: 0;
   box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
-  animation: flota 6s ease-in-out infinite;
 }
 .anillo { grid-area: 1 / 1; width: 116px; height: 116px; transform: rotate(-90deg); overflow: visible; }
 .anillo circle { fill: none; stroke-width: 5; }
@@ -1293,7 +1292,6 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
 }
 @keyframes anillo { from { stroke-dasharray: 0 100; } }
 @keyframes aparece { from { opacity: 0; } }
-@keyframes flota { 50% { transform: translateY(-3px); } }
 .jugador__nivel {
   right: -2px; bottom: 2px;
   border: 0; border-radius: 12px;

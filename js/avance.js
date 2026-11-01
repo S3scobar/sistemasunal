@@ -531,7 +531,14 @@ function dibujar() {
   });
   activarPestana(juego, estado.pestana, false);
 
-  $('#nombre-jugador').addEventListener('input', (e) => { estado.nombre = e.target.value; persistir(); });
+  let relojNombre = null;
+  $('#nombre-jugador').addEventListener('input', (e) => {
+    estado.nombre = e.target.value;
+    guardado.escribir({ texto: estado.texto, nombre: estado.nombre, ritmo: estado.ritmo });
+    clearTimeout(relojNombre);
+    relojNombre = setTimeout(persistir, 700); // sincroniza con la cuenta al dejar de escribir
+  });
+  $('#nombre-jugador').addEventListener('blur', () => { clearTimeout(relojNombre); persistir(); });
   const ritmo = $('#ritmo');
   if (ritmo) {
     ritmo.addEventListener('input', (e) => { $('#ritmo-valor').textContent = e.target.value; });
@@ -561,7 +568,7 @@ function dibujar() {
 function persistir() {
   guardado.escribir({ texto: estado.texto, nombre: estado.nombre, ritmo: estado.ritmo });
   if (typeof ServicioAuth !== 'undefined' && ServicioAuth.actualizarHistoria) {
-    ServicioAuth.actualizarHistoria(estado.texto, estado.ritmo).catch((e) => {
+    ServicioAuth.actualizarHistoria(estado.texto, estado.ritmo, estado.nombre).catch((e) => {
       console.warn('Error al sincronizar con el perfil:', e);
     });
   }

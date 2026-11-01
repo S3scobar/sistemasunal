@@ -53,7 +53,7 @@ function normalizarTipologia(texto) {
   return t;
 }
 
-const FILA_MATERIA = /\((\d{6,7}(?:-[A-Z])?)\)\s+(\d{1,2})\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ.\/ ]*?)\s+(\d{4}-\d[A-Z]?)\s+([A-Za-zÁÉÍÓÚáéíóúñ]+)(?:\s+(\d(?:[.,]\d)?))?\s+(APROBADA|REPROBADA|CANCELADA|[A-ZÁÉÍÓÚ]{4,})/g;
+const FILA_MATERIA = /\((\d{6,7}(?:-[A-Z])?)\)\s+(\d{1,2})\s+([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ.\/ ]*?)\s+(\d{4}-\d[A-Z]?)\s+([A-Za-zÁÉÍÓÚáéíóúñ]+(?:\s+[A-Za-zÁÉÍÓÚáéíóúñ]+){0,3}?)(?:\s+(\d(?:[.,]\d)?))?\s+(APROBADA|REPROBADA|CANCELADA|[A-ZÁÉÍÓÚ]{4,})/g;
 
 function leerMaterias(texto) {
   const materias = [];

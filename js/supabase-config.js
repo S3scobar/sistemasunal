@@ -278,12 +278,13 @@ const ServicioAuth = {
   },
 
   // Sincronizar actualización de historia académica
-  async actualizarHistoria(historiaTexto, ritmo = null) {
+  async actualizarHistoria(historiaTexto, ritmo = null, nombreEscrito = null) {
     const sesion = await this.obtenerSesion();
     if (!sesion || !sesion.usuario) return;
 
     const historia = leerHistoria(historiaTexto);
-    const nombre = historia.nombre || sesion.usuario.nombre;
+    // El nombre que la persona escribió manda sobre el que sale del SIA
+    const nombre = (nombreEscrito !== null && nombreEscrito !== undefined) ? nombreEscrito : (historia.nombre || sesion.usuario.nombre);
 
     sesion.usuario.historiaTexto = historiaTexto;
     sesion.usuario.nombre = nombre;
