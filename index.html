@@ -47,7 +47,10 @@
       </h1>
 
       <ul class="portada__cifras" id="portada-cifras" aria-label="Datos clave del programa"></ul>
-      <p class="en-linea" id="en-linea" hidden aria-live="polite"><span class="en-linea__punto" aria-hidden="true"></span><span class="en-linea__cmd" aria-hidden="true">$ who | wc -l</span> <span class="en-linea__num">0</span> <span class="en-linea__txt">conectados</span></p>
+      <div class="en-linea" id="en-linea" hidden aria-live="polite">
+        <span class="en-linea__linea"><span class="en-linea__signo">$</span> <span class="en-linea__cmd">who | wc -l</span></span>
+        <span class="en-linea__salida"><b class="en-linea__num">0</b> <span class="en-linea__txt">conectados</span></span>
+      </div>
       <p class="portada__prompt" aria-hidden="true"><span class="portada__prompt-ruta">~/sistemas</span> <span class="portada__prompt-signo">$</span> ./explorar<span class="cursor"></span></p>
     </div>
   </section>

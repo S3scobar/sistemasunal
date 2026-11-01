@@ -261,25 +261,28 @@ body[data-pagina="malla"] .malla-drive__acceso-secundario { font-family: var(--m
 body[data-pagina="malla"] .malla-drive__nota { font-family: var(--mono); font-size: 12px; border-left-color: var(--neon); background: #eef5fb; }
 body[data-pagina="malla"] .malla-drive__nota svg { color: #0b73e0; }
 
-/* --- Contador de personas conectadas (solo inicio) --- */
+/* --- Contador de personas conectadas (solo inicio): mini terminal --- */
 .en-linea { display: none; }
 body[data-pagina="inicio"] .en-linea:not([hidden]) {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin: 22px 0 0;
-  padding: 7px 14px;
-  font-family: var(--mono); font-size: 13px; color: #cfe6ff;
-  background: rgba(47, 168, 255, .08);
-  border: 1px solid rgba(47, 168, 255, .35);
-  border-radius: 999px;
-  box-shadow: 0 0 18px rgba(47, 168, 255, .12);
+  display: block; width: max-content; max-width: 100%;
+  margin: 22px auto 0; padding: 8px 14px 9px;
+  text-align: left;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.65; color: #cfe6ff;
+  background: rgba(3, 9, 20, .72);
+  border: 1px solid rgba(47, 168, 255, .28);
+  border-radius: 5px;
 }
-.en-linea__cmd { color: var(--cian); opacity: .75; }
-.en-linea__num { color: var(--neon); font-weight: 700; font-size: 15px; text-shadow: 0 0 10px rgba(47, 168, 255, .7); }
-.en-linea__punto {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--neon); box-shadow: 0 0 0 0 rgba(47, 168, 255, .7);
-  animation: pulso-linea 2s ease-out infinite;
+.en-linea__linea, .en-linea__salida { display: block; white-space: nowrap; }
+.en-linea__signo { color: var(--neon); }
+.en-linea__cmd {
+  display: inline-block; overflow: hidden; vertical-align: bottom;
+  width: 11ch; color: var(--cian);
+  animation: en-linea-teclear .85s steps(11) both;
 }
-@keyframes pulso-linea { 70% { box-shadow: 0 0 0 9px rgba(47, 168, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(47, 168, 255, 0); } }
-@media (prefers-reduced-motion: reduce) { .en-linea__punto { animation: none; } }
-@media (max-width: 480px) { body[data-pagina="inicio"] .en-linea:not([hidden]) { font-size: 12px; } .en-linea__cmd { display: none; } }
+.en-linea__salida { animation: en-linea-salida 0s linear 1s both; }
+.en-linea__num { color: var(--neon); font-weight: 700; }
+@keyframes en-linea-teclear { from { width: 0; } to { width: 11ch; } }
+@keyframes en-linea-salida { from { visibility: hidden; } to { visibility: visible; } }
+@media (prefers-reduced-motion: reduce) {
+  .en-linea__cmd, .en-linea__salida { animation: none; }
+}
