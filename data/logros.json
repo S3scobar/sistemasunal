@@ -61,6 +61,19 @@
       "porcentaje": 68.9
     },
     {
+      "id": "el-camino-asi-es",
+      "nombre": "El camino así es",
+      "descripcion": "Aprobaste Fundamentos de programación: ahí empieza el camino.",
+      "puntos": 50,
+      "categoria": "bronce",
+      "icono": "sendero",
+      "porcentaje": 0,
+      "regla": {
+        "tipo": "materia_aprobada",
+        "patron": "FUNDAMENTOS DE PROGRAMACION"
+      }
+    },
+    {
       "id": "version-beta",
       "nombre": "Versión Beta",
       "descripcion": "Llevas más del 50 % de avance en la carrera.",
