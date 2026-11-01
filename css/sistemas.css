@@ -260,3 +260,26 @@ body[data-pagina="malla"] .malla-drive__btn-principal:hover { background: #0a2c5
 body[data-pagina="malla"] .malla-drive__acceso-secundario { font-family: var(--mono); font-size: 12.5px; }
 body[data-pagina="malla"] .malla-drive__nota { font-family: var(--mono); font-size: 12px; border-left-color: var(--neon); background: #eef5fb; }
 body[data-pagina="malla"] .malla-drive__nota svg { color: #0b73e0; }
+
+/* --- Contador de personas conectadas (solo inicio) --- */
+.en-linea { display: none; }
+body[data-pagina="inicio"] .en-linea:not([hidden]) {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 22px 0 0;
+  padding: 7px 14px;
+  font-family: var(--mono); font-size: 13px; color: #cfe6ff;
+  background: rgba(47, 168, 255, .08);
+  border: 1px solid rgba(47, 168, 255, .35);
+  border-radius: 999px;
+  box-shadow: 0 0 18px rgba(47, 168, 255, .12);
+}
+.en-linea__cmd { color: var(--cian); opacity: .75; }
+.en-linea__num { color: var(--neon); font-weight: 700; font-size: 15px; text-shadow: 0 0 10px rgba(47, 168, 255, .7); }
+.en-linea__punto {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--neon); box-shadow: 0 0 0 0 rgba(47, 168, 255, .7);
+  animation: pulso-linea 2s ease-out infinite;
+}
+@keyframes pulso-linea { 70% { box-shadow: 0 0 0 9px rgba(47, 168, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(47, 168, 255, 0); } }
+@media (prefers-reduced-motion: reduce) { .en-linea__punto { animation: none; } }
+@media (max-width: 480px) { body[data-pagina="inicio"] .en-linea:not([hidden]) { font-size: 12px; } .en-linea__cmd { display: none; } }
