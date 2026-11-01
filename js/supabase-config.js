@@ -345,21 +345,28 @@ const ServicioAuth = {
   },
 
 
-  // Sincroniza los logros desbloqueados del usuario actual en Supabase
+  // Sincroniza los logros desbloqueados del usuario actual en Supabase.
+  // Usa "ignorar duplicados" (ON CONFLICT DO NOTHING): los logros ya guardados no se tocan, así no hace falta
+  // una política de UPDATE y un logro ya existente no hace fallar el envío de los nuevos.
   async sincronizarLogrosDesbloqueados(userId, listaIdsDesbloqueados) {
-    if (!clienteSupabase || !userId || !Array.isArray(listaIdsDesbloqueados)) return;
+    if (!clienteSupabase || !userId || !Array.isArray(listaIdsDesbloqueados)) return false;
+    const filas = listaIdsDesbloqueados.map((id) => ({ usuario_id: userId, logro_id: id }));
+    if (!filas.length) return true;
     try {
-      const filas = listaIdsDesbloqueados.map((id) => ({
-        usuario_id: userId,
-        logro_id: id,
-      }));
-      if (filas.length > 0) {
-        await clienteSupabase.from('logros_desbloqueados').upsert(filas, { onConflict: 'usuario_id,logro_id' });
+      const { error } = await clienteSupabase
+        .from('logros_desbloqueados')
+        .upsert(filas, { onConflict: 'usuario_id,logro_id', ignoreDuplicates: true });
+      if (error) {
+        console.warn('[logros] no se pudieron guardar los logros:', error.message || error);
+        return false;
       }
+      return true;
     } catch (err) {
-      console.warn('No se pudo sincronizar logros desbloqueados en Supabase:', err);
+      console.warn('[logros] error inesperado al guardar logros:', err);
+      return false;
     }
   },
+
 
   // Cerrar sesión
   async cerrarSesion() {

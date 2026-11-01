@@ -23,7 +23,7 @@ const guardado = {
   borrar() { try { localStorage.removeItem(CLAVE_GUARDADO); } catch (e) { /* sin almacenamiento */ } },
 };
 
-const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, pestana: 'ruta' };
+const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, huellaLogros: null, pestana: 'ruta' };
 
 const GRUPOS_COMPONENTE = {
   fundamentacion: { nombre: 'Fundamentación', color: 'var(--fundamentacion)' },
@@ -538,10 +538,20 @@ function dibujar() {
   const desbloqueados = estado.logros.filter((l) => logroDesbloqueado(l, avance, historia));
   const puntos = desbloqueados.reduce((s, l) => s + (Number(l.puntos) || 0), 0);
 
-  // Sincronizar logros con Supabase para estadísticas globales si el usuario está autenticado
+  // Sincronizar logros con Supabase para estadísticas globales si el usuario está autenticado.
+  // Solo se envía cuando cambia el conjunto de desbloqueados; al terminar se refrescan los porcentajes una vez.
   if (typeof ServicioAuth !== 'undefined' && ServicioAuth.sincronizarLogrosDesbloqueados && estado.usuarioId) {
     const ids = desbloqueados.map((l) => l.id).filter(Boolean);
-    ServicioAuth.sincronizarLogrosDesbloqueados(estado.usuarioId, ids).catch(() => {});
+    const huella = ids.slice().sort().join('|');
+    if (huella !== estado.huellaLogros) {
+      estado.huellaLogros = huella;
+      ServicioAuth.sincronizarLogrosDesbloqueados(estado.usuarioId, ids).then((ok) => {
+        if (!ok) { estado.huellaLogros = null; return; } // se reintentará en el próximo cálculo
+        return ServicioAuth.obtenerEstadisticasLogros().then((stats) => {
+          if (stats) { estado.statsLogros = stats; dibujar(); }
+        });
+      }).catch(() => { estado.huellaLogros = null; });
+    }
   }
 
   const misiones = pintarMisiones(historia);
