@@ -159,7 +159,14 @@ function logroDesbloqueado(logro, avance, historia) {
         const nom = normalizarTexto(m.nombre);
         return /\b(4|IV)\b/.test(nom) || nom.includes('SUFICIENCIA') || nom.includes('ACREDITACION') || nom.includes('CLASIFICACION');
       });
-      return tieneNivel4 || materiasIngles.length >= 4;
+      // Acreditación de idioma: "Suficiencia en Lengua Extranjera", certificaciones, etc.
+      const acreditaIdioma = historia.materias.some((m) => {
+        if (m.estado !== 'APROBADA') return false;
+        const nom = normalizarTexto(m.nombre);
+        return nom.includes('LENGUA EXTRANJERA') || nom.includes('IDIOMA EXTRANJERO') || nom.includes('SEGUNDA LENGUA')
+          || (nom.includes('SUFICIENCIA') && (nom.includes('LENGUA') || nom.includes('IDIOMA')));
+      });
+      return acreditaIdioma || tieneNivel4 || materiasIngles.length >= 4;
     }
 
     case 'materia_especifica': {
