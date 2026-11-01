@@ -7,7 +7,7 @@
     "sha256": "f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c",
     "derechos": "© 2026 Santiago Escobar Arias. Todos los derechos reservados."
   },
-  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, categoria, icono, regla}. Categorías: bronce, plata, oro, platino. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"avance\",minimo}, {tipo:\"componente_completo\",clave}, {tipo:\"nota_en_grupo\",grupo,minimo}, {tipo:\"papa\",minimo}, {tipo:\"materias_aprobadas\",minimo}, {tipo:\"speedrun\"}, {tipo:\"materias_con_nota\",minimo,nota}, {tipo:\"sin_perder_materias\"}, {tipo:\"sin_cancelar\"}, {tipo:\"ingles_completo\"}, {tipo:\"materia_especifica\",patron}, {tipo:\"reprobada_luego_aprobada\"}, {tipo:\"avance_y_papa\",minimoAvance,minimoPapa}.",
+  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, categoria, icono, regla}. Categorías: bronce, plata, oro, platino. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"avance\",minimo}, {tipo:\"componente_completo\",clave}, {tipo:\"nota_en_grupo\",grupo,minimo}, {tipo:\"papa\",minimo}, {tipo:\"materias_aprobadas\",minimo}, {tipo:\"speedrun\"}, {tipo:\"materias_con_nota\",minimo,nota}, {tipo:\"sin_perder_materias\"}, {tipo:\"sin_cancelar\"}, {tipo:\"ingles_completo\"}, {tipo:\"materia_especifica\",patron}, {tipo:\"reprobada_luego_aprobada\"}, {tipo:\"avance_y_papa\",minimoAvance,minimoPapa}. Nuevas: {tipo:\"todas_nota_tipologia\",clave,minimo} (todas las aprobadas de esa tipología con nota > minimo y componente completo), {tipo:\"materia_con_nota\",patron,minimo} (nota >= minimo), {tipo:\"materia_aprobada\",patron}, {tipo:\"semestre_sin_perder\",creditos}. IMPORTANTE: todo id nuevo debe agregarse también a la tabla logros_catalogo en Supabase.",
   "logros": [
     {
       "id": "primer-commit",
@@ -166,6 +166,19 @@
       "porcentaje": 36.2
     },
     {
+      "id": "mision-secundaria",
+      "nombre": "Misión Secundaria",
+      "descripcion": "Hiciste una Práctica Académica Especial (PAE).",
+      "puntos": 120,
+      "categoria": "plata",
+      "icono": "brujula",
+      "porcentaje": 0,
+      "regla": {
+        "tipo": "materia_aprobada",
+        "patron": "PRACTICA ACADEMICA ESPECIAL"
+      }
+    },
+    {
       "id": "el-fin-de-la-guerra",
       "nombre": "El fin de la Guerra",
       "descripcion": "Completaste todas las asignaturas obligatorias de fundamentación.",
@@ -230,6 +243,19 @@
         "minimoPapa": 4.3
       },
       "porcentaje": 6.4
+    },
+    {
+      "id": "carga-maxima",
+      "nombre": "Carga Máxima",
+      "descripcion": "Cursaste un semestre con 20 créditos o más sin perder ninguna asignatura.",
+      "puntos": 250,
+      "categoria": "oro",
+      "icono": "capas",
+      "porcentaje": 0,
+      "regla": {
+        "tipo": "semestre_sin_perder",
+        "creditos": 20
+      }
     },
     {
       "id": "uno-en-un-millon",
@@ -306,6 +332,34 @@
         "tipo": "speedrun"
       },
       "porcentaje": 1.3
+    },
+    {
+      "id": "victoria-impecable",
+      "nombre": "Victoria Impecable",
+      "descripcion": "Completaste todas las asignaturas de fundamentación obligatoria con más de 4,5 en cada una.",
+      "puntos": 350,
+      "categoria": "platino",
+      "icono": "gema",
+      "porcentaje": 0,
+      "regla": {
+        "tipo": "todas_nota_tipologia",
+        "clave": "FUND. OBLIGATORIA",
+        "minimo": 4.5
+      }
+    },
+    {
+      "id": "complejidad-optima",
+      "nombre": "Complejidad Óptima",
+      "descripcion": "Sacaste 5,0 en Análisis y diseño de algoritmos.",
+      "puntos": 300,
+      "categoria": "platino",
+      "icono": "nodos",
+      "porcentaje": 0,
+      "regla": {
+        "tipo": "materia_con_nota",
+        "patron": "ANALISIS Y DISENO DE ALGORITMOS",
+        "minimo": 5.0
+      }
     }
   ]
 }

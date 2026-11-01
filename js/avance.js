@@ -63,6 +63,10 @@ const ICONOS_LOGRO = {
   'corazon-intacto': `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5v16"/></svg>`,
   reloj: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><path d="M22 6l-3-3"/><path d="M6 19l-2 2"/></svg>`,
   trofeo: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>`,
+  gema: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M2 9h20M9 3l3 6 3-6M12 21 9 9M12 21l3-12"/></svg>`,
+  nodos: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M11 7.3 6 16.7M13 7.3l5 9.4M7.5 19h9"/></svg>`,
+  brujula: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m16 8-2.5 5.5L8 16l2.5-5.5z"/></svg>`,
+  capas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7z"/><path d="m2 12 10 5 10-5M2 17l10 5 10-5"/></svg>`,
   candado: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
 };
 
@@ -199,6 +203,40 @@ function logroDesbloqueado(logro, avance, historia) {
         if (huboReprobada && huboAprobada) return true;
       }
       return false;
+    }
+
+    case 'todas_nota_tipologia': {
+      // Componente completo y TODAS las aprobadas de esa tipología con nota mayor al mínimo
+      const fila = historia.resumen[regla.clave];
+      const completo = Boolean(fila) && fila.exigidos > 0 && (fila.pendientes === 0 || fila.aprobados >= fila.exigidos);
+      const aprobadas = historia.materias.filter((m) => m.estado === 'APROBADA' && m.tipologia === regla.clave);
+      return completo && aprobadas.length > 0 && aprobadas.every((m) => m.nota !== null && m.nota > minimo);
+    }
+
+    case 'materia_con_nota': {
+      const patron = normalizarTexto(regla.patron);
+      return historia.materias.some((m) => m.estado === 'APROBADA' && m.nota !== null && m.nota >= minimo && normalizarTexto(m.nombre).includes(patron));
+    }
+
+    case 'materia_aprobada': {
+      const patron = normalizarTexto(regla.patron);
+      return historia.materias.some((m) => m.estado === 'APROBADA' && normalizarTexto(m.nombre).includes(patron));
+    }
+
+    case 'semestre_sin_perder': {
+      // Semestre ordinario ya cerrado con >= N créditos cursados (sin contar canceladas) y ninguna asignatura reprobada
+      const porPeriodo = new Map();
+      historia.materias.forEach((m) => {
+        if (!m.periodo || normalizarTexto(m.modalidad) !== 'ORDINARIA' || m.estado === 'CANCELADA') return;
+        const k = clavePeriodo(m.periodo);
+        const f = porPeriodo.get(k) || { creditos: 0, perdio: false, abierto: false };
+        f.creditos += m.creditos;
+        if (m.estado === 'REPROBADA') f.perdio = true;
+        if (m.estado !== 'APROBADA' && m.estado !== 'REPROBADA') f.abierto = true;
+        porPeriodo.set(k, f);
+      });
+      const meta = Number(regla.creditos || 20);
+      return [...porPeriodo.values()].some((f) => !f.abierto && !f.perdio && f.creditos >= meta);
     }
 
     case 'avance_y_papa': {
