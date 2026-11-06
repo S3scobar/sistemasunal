@@ -1,0 +1,143 @@
+/* ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Facultad de Minas — Universidad Nacional de Colombia, Sede Medellín
+   Contacto: saescobara@unal.edu.co | Instagram: @s_escobar__ | WhatsApp: (+57) 312 377 2091
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+
+/* =============================================
+   MI AVANCE · EXTRAS: progreso, detalle, celebración y compartir
+   ============================================= */
+
+/* ---------- Botones ---------- */
+.btn-juego {
+  appearance: none; cursor: pointer;
+  font-family: var(--mono, monospace); font-size: 13.5px; font-weight: 700; letter-spacing: .02em;
+  color: var(--luz, #d8ecff); background: rgba(47, 168, 255, .08);
+  border: 1px solid rgba(47, 168, 255, .45); border-radius: 8px; padding: 11px 16px;
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.btn-juego:hover { background: rgba(47, 168, 255, .18); border-color: #8fd2ff; transform: translateY(-1px); }
+.btn-juego:active { transform: translateY(0); }
+.btn-juego:focus-visible { outline: 2px solid #8fd2ff; outline-offset: 2px; }
+.btn-juego:disabled { opacity: .6; cursor: progress; transform: none; }
+.btn-juego--principal { color: #04101f; background: linear-gradient(135deg, #8fd2ff, #2fa8ff); border-color: transparent; box-shadow: 0 6px 22px rgba(47, 168, 255, .35); }
+.btn-juego--principal:hover { background: linear-gradient(135deg, #b4e1ff, #4db5ff); box-shadow: 0 8px 28px rgba(47, 168, 255, .5); }
+.btn-juego--mini { font-size: 11.5px; padding: 7px 11px; margin-top: 10px; }
+
+/* ---------- Jugador: rango, racha y siguiente nivel ---------- */
+.jugador__rango { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 2px 0 0; font-family: var(--mono, monospace); font-size: 12.5px; }
+.jugador__rango > span:first-child { color: #8fd2ff; font-weight: 700; letter-spacing: .04em; }
+.jugador__racha { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; color: #fbbf24; background: rgba(247, 182, 26, .1); border: 1px solid rgba(247, 182, 26, .35); font-size: 11px; font-weight: 700; }
+.jugador__racha svg { width: 13px; height: 13px; }
+.xp__siguiente { margin: 7px 0 0; font-family: var(--mono, monospace); font-size: 12px; color: var(--suave, #8fb3d6); }
+.xp__siguiente b { color: #8fd2ff; }
+
+/* ---------- Barra de progreso ---------- */
+.progreso-barra { display: block; height: 7px; border-radius: 999px; background: rgba(47, 168, 255, .14); overflow: hidden; }
+.progreso-barra > span {
+  display: block; height: 100%; min-width: 4px; border-radius: inherit;
+  background: linear-gradient(90deg, #2fa8ff, #8fd2ff);
+  box-shadow: 0 0 10px rgba(47, 168, 255, .55);
+  transform-origin: left; animation: barra-entra .9s cubic-bezier(.2, .8, .2, 1) both;
+}
+@keyframes barra-entra { from { transform: scaleX(0); } }
+
+/* ---------- Siguientes objetivos ---------- */
+.objetivos { margin: 16px 0 6px; padding: 14px; border: 1px dashed rgba(47, 168, 255, .4); border-radius: 12px; background: rgba(47, 168, 255, .05); }
+.objetivos__titulo { margin: 0 0 10px; font-family: var(--mono, monospace); font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8fd2ff; }
+.objetivos__titulo span { text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--suave, #8fb3d6); }
+.objetivos__lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.objetivo { width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; cursor: pointer; padding: 10px 12px; border-radius: 10px; color: var(--luz, #d8ecff);
+  background: rgba(3, 10, 21, .7); border: 1px solid rgba(47, 168, 255, .3); font: inherit; transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+.objetivo:hover { transform: translateY(-2px); border-color: #8fd2ff; box-shadow: 0 6px 20px rgba(47, 168, 255, .2); }
+.objetivo:focus-visible { outline: 2px solid #8fd2ff; outline-offset: 2px; }
+.objetivo__icono { flex: none; width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; color: #8fd2ff; border: 1.5px dashed rgba(143, 210, 255, .55); }
+.objetivo__icono svg { width: 22px; height: 22px; }
+.objetivo__cuerpo { min-width: 0; flex: 1; display: grid; gap: 5px; }
+.objetivo__nombre { font-family: var(--mono, monospace); font-size: 13.5px; font-weight: 700; color: #fff; }
+.objetivo__nombre small { margin-left: 6px; font-size: 11px; color: #8fd2ff; font-weight: 600; }
+.objetivo__texto { font-size: 12.5px; color: var(--suave, #8fb3d6); line-height: 1.3; }
+.objetivo--oro .progreso-barra > span { background: linear-gradient(90deg, #d97706, #fbbf24); box-shadow: 0 0 10px rgba(247, 182, 26, .5); }
+.objetivo--platino .progreso-barra > span { background: linear-gradient(90deg, #c084fc, #f472b6); box-shadow: 0 0 10px rgba(232, 121, 249, .5); }
+.objetivo--bronce .progreso-barra > span { background: linear-gradient(90deg, #c2410c, #fb923c); box-shadow: 0 0 10px rgba(249, 115, 22, .5); }
+
+/* ---------- Tarjetas de logro: interacción ---------- */
+.logro[data-id] { cursor: pointer; }
+.logro[data-id]:focus-visible { outline: 2px solid #8fd2ff; outline-offset: 3px; }
+.logro--listo:hover { transform: translateY(-4px) scale(1.012); }
+.logro__progreso { width: 100%; display: grid; gap: 5px; margin-top: 2px; }
+.logro__progreso-texto { font-size: 11.5px; line-height: 1.3; color: #8fd2ff; font-family: var(--mono, monospace); }
+.logro--oro .logro__progreso .progreso-barra > span { background: linear-gradient(90deg, #d97706, #fbbf24); box-shadow: 0 0 8px rgba(247, 182, 26, .5); }
+.logro--platino .logro__progreso .progreso-barra > span { background: linear-gradient(90deg, #c084fc, #f472b6); box-shadow: 0 0 8px rgba(232, 121, 249, .5); }
+.logro--bronce .logro__progreso .progreso-barra > span { background: linear-gradient(90deg, #c2410c, #fb923c); box-shadow: 0 0 8px rgba(249, 115, 22, .5); }
+.logro__compartir { margin-top: -2px; font-family: var(--mono, monospace); font-size: 11px; font-weight: 700; letter-spacing: .04em; color: #8fd2ff; opacity: .75; transition: opacity .15s ease, transform .15s ease; }
+.logro--listo:hover .logro__compartir { opacity: 1; transform: translateX(3px); }
+.logro__nuevo {
+  position: absolute; top: -9px; right: 12px; z-index: 2; padding: 2px 9px; border-radius: 999px;
+  font-family: var(--mono, monospace); font-size: 10px; font-weight: 800; letter-spacing: .12em; color: #04101f;
+  background: linear-gradient(135deg, #8fd2ff, #2fa8ff); box-shadow: 0 0 14px rgba(47, 168, 255, .8);
+  animation: nuevo-late 1.8s ease-in-out infinite;
+}
+@keyframes nuevo-late { 50% { box-shadow: 0 0 22px rgba(47, 168, 255, 1); transform: scale(1.06); } }
+
+/* ---------- Diálogo (detalle y celebración) ---------- */
+.dialogo-juego {
+  width: min(92vw, 430px); max-height: 92dvh; overflow-y: auto; padding: 26px 22px 22px; margin: auto;
+  color: var(--luz, #d8ecff); text-align: center; border: 1px solid rgba(47, 168, 255, .55); border-radius: 16px;
+  background: radial-gradient(120% 80% at 50% 0%, rgba(47, 168, 255, .16), transparent 60%), #06142a;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .6), 0 0 40px rgba(47, 168, 255, .18);
+}
+.dialogo-juego[open] { animation: dialogo-entra .38s cubic-bezier(.2, .9, .25, 1.2); }
+.dialogo-juego::backdrop { background: rgba(2, 8, 18, .78); backdrop-filter: blur(5px); }
+@keyframes dialogo-entra { from { opacity: 0; transform: translateY(18px) scale(.92); } }
+.dialogo-juego__cerrar { position: absolute; top: 8px; right: 10px; width: 34px; height: 34px; border-radius: 50%; border: 0; cursor: pointer; font-size: 22px; line-height: 1; color: var(--suave, #8fb3d6); background: transparent; }
+.dialogo-juego__cerrar:hover { color: #fff; background: rgba(47, 168, 255, .15); }
+.dialogo-juego__acciones { display: grid; gap: 8px; margin-top: 18px; }
+
+.dialogo-logro { display: grid; justify-items: center; gap: 9px; }
+.dialogo-logro__titulo { margin: 0 0 2px; font-family: var(--mono, monospace); font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: #8fd2ff; }
+.dialogo-logro__icono { width: 104px; height: 104px; border-radius: 26px; display: grid; place-items: center; margin: 4px 0 4px; color: #8fd2ff; border: 2px dashed rgba(143, 210, 255, .5); opacity: .85; }
+.dialogo-logro__icono svg { width: 54px; height: 54px; }
+.dialogo-logro.is-listo .dialogo-logro__icono { opacity: 1; border-style: solid; color: #04101f; animation: icono-pop .6s cubic-bezier(.2, 1.4, .3, 1) both; }
+@keyframes icono-pop { from { transform: scale(.4) rotate(-12deg); opacity: 0; } }
+.dialogo-logro--bronce.is-listo .dialogo-logro__icono { background: linear-gradient(135deg, #f97316, #c2410c); border-color: #fb923c; box-shadow: 0 0 34px rgba(249, 115, 22, .55); }
+.dialogo-logro--plata.is-listo .dialogo-logro__icono { background: linear-gradient(135deg, #7dd3fc, #0284c7); border-color: #7dd3fc; box-shadow: 0 0 34px rgba(56, 189, 248, .55); }
+.dialogo-logro--oro.is-listo .dialogo-logro__icono { background: linear-gradient(135deg, #fde68a, #d97706); border-color: #fbbf24; box-shadow: 0 0 34px rgba(247, 182, 26, .6); }
+.dialogo-logro--platino.is-listo .dialogo-logro__icono { background: linear-gradient(135deg, #c084fc, #f472b6); border-color: #e879f9; box-shadow: 0 0 38px rgba(232, 121, 249, .65); }
+.dialogo-logro__nombre { margin: 2px 0 0; font-family: var(--mono, monospace); font-size: 25px; line-height: 1.15; color: #fff; }
+.dialogo-logro__desc { margin: 0; font-size: 15.5px; line-height: 1.4; max-width: 34ch; }
+.dialogo-logro__puntos { margin: 2px 0 0; font-family: var(--mono, monospace); font-size: 18px; font-weight: 800; color: #8fd2ff; }
+.dialogo-logro--oro .dialogo-logro__puntos { color: #f7b61a; }
+.dialogo-logro--platino .dialogo-logro__puntos { color: #f0abfc; }
+.dialogo-logro--bronce .dialogo-logro__puntos { color: #fb923c; }
+.dialogo-logro__escasez { margin: 0; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: var(--suave, #8fb3d6); background: rgba(47, 168, 255, .08); border: 1px solid rgba(47, 168, 255, .25); }
+.dialogo-logro__escasez--ultra, .dialogo-logro__escasez--nadie { color: #f0abfc; border-color: rgba(232, 121, 249, .5); background: rgba(216, 70, 239, .1); }
+.dialogo-logro__escasez--raro { color: #fbbf24; border-color: rgba(247, 182, 26, .45); background: rgba(247, 182, 26, .08); }
+.dialogo-logro__progreso { width: 100%; display: grid; gap: 7px; margin-top: 4px; }
+.dialogo-logro__progreso p, .dialogo-logro__pista { margin: 0; font-size: 13.5px; color: #8fd2ff; font-family: var(--mono, monospace); }
+.dialogo-logro__pista { color: var(--suave, #8fb3d6); font-family: inherit; }
+.dialogo-lista { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 6px; text-align: left; }
+.dialogo-lista__item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 9px; background: rgba(47, 168, 255, .07); border: 1px solid rgba(47, 168, 255, .2); font-family: var(--mono, monospace); font-size: 13px; color: #fff; }
+.dialogo-lista__item b { margin-left: auto; color: #8fd2ff; }
+.dialogo-lista__icono { width: 26px; height: 26px; display: grid; place-items: center; color: #8fd2ff; }
+.dialogo-lista__icono svg { width: 18px; height: 18px; }
+.dialogo-lista__mas { font-size: 12.5px; text-align: center; color: var(--suave, #8fb3d6); }
+
+/* ---------- Confeti y avisos ---------- */
+.confeti { position: fixed; inset: 0; width: 100vw; height: 100dvh; pointer-events: none; z-index: 2147483000; }
+.aviso-flotante { position: fixed; left: 50%; bottom: 22px; z-index: 2147483001; max-width: min(92vw, 420px); padding: 11px 16px; border-radius: 10px; text-align: center;
+  font-family: var(--mono, monospace); font-size: 13px; color: #04101f; background: #8fd2ff; box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+  opacity: 0; transform: translate(-50%, 14px); pointer-events: none; transition: opacity .25s ease, transform .25s ease; }
+.aviso-flotante.is-visible { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 480px) {
+  .objetivos__lista { grid-template-columns: 1fr; }
+  .dialogo-logro__nombre { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .logro__nuevo, .progreso-barra > span, .dialogo-juego[open], .dialogo-logro.is-listo .dialogo-logro__icono { animation: none; }
+}

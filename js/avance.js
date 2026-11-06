@@ -23,7 +23,7 @@ const guardado = {
   borrar() { try { localStorage.removeItem(CLAVE_GUARDADO); } catch (e) { /* sin almacenamiento */ } },
 };
 
-const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, huellaLogros: null, pestana: 'ruta' };
+const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, huellaLogros: null, pestana: 'ruta', vistas: null, avance: null, puntos: 0, racha: null, nuevosIds: null, celebrando: false };
 
 const GRUPOS_COMPONENTE = {
   fundamentacion: { nombre: 'Fundamentación', color: 'var(--fundamentacion)' },
@@ -252,6 +252,60 @@ function logroDesbloqueado(logro, avance, historia) {
 }
 
 
+
+/* ---------- Vistas de logro, contexto para compartir y celebración ---------- */
+
+const ORDEN_RAREZA = { platino: 4, oro: 3, plata: 2, bronce: 1 };
+
+function vistaLogro(l, avance, historia) {
+  const ok = logroDesbloqueado(l, avance, historia);
+  // Solo hay escasez con datos reales de la comunidad (los valores de referencia no se presentan como reales)
+  const pct = estado.statsLogros ? (estado.statsLogros[l.id] !== undefined ? estado.statsLogros[l.id] : 0) : null;
+  return {
+    id: l.id, nombre: l.nombre, descripcion: l.descripcion, puntos: l.puntos, categoria: l.categoria || 'bronce',
+    iconoSvg: renderIconoLogro(l, ok), ok, pct, escasez: EXTRAS.escasez(pct),
+    progreso: ok ? null : EXTRAS.progresoLogro(l, avance, historia),
+  };
+}
+
+function contextoJugador() {
+  const vistas = [...(estado.vistas || new Map()).values()];
+  const ok = vistas.filter((v) => v.ok);
+  const raros = ok.slice().sort((a, b) => (a.pct !== null && b.pct !== null && a.pct !== b.pct)
+    ? a.pct - b.pct
+    : (ORDEN_RAREZA[b.categoria] - ORDEN_RAREZA[a.categoria]) || (b.puntos - a.puntos));
+  const av = estado.avance || { nivel: 1, porcentaje: 0 };
+  return {
+    nombre: (estado.nombre || '').trim(), nivel: av.nivel, rango: EXTRAS.rangoNivel(av.nivel), puntos: estado.puntos || 0,
+    totalDesbloqueados: ok.length, totalLogros: vistas.length, porcentaje: av.porcentaje, raros,
+  };
+}
+
+// Celebra los logros que la persona aún no había visto (o da la bienvenida la primera vez)
+function revisarCelebracion() {
+  if (estado.celebrando || !estado.vistas || !estado.vistas.size) return;
+  const ok = [...estado.vistas.values()].filter((v) => v.ok);
+  if (!ok.length) return;
+  const ordenar = (a, b) => (ORDEN_RAREZA[b.categoria] - ORDEN_RAREZA[a.categoria]) || (b.puntos - a.puntos);
+  const clave = estado.usuarioId || 'local';
+  const vistos = EXTRAS.leerVistos(clave);
+  const nuevos = vistos ? ok.filter((v) => !vistos.includes(v.id)) : ok;
+  estado.nuevosIds = new Set(vistos ? nuevos.map((v) => v.id) : []);
+  if (!nuevos.length) return;
+  estado.celebrando = true;
+  setTimeout(() => {
+    // Se vuelve a calcular por si llegaron los porcentajes de la comunidad mientras tanto
+    const lista = [...(estado.vistas || new Map()).values()].filter((v) => v.ok && nuevos.some((n) => n.id === v.id)).sort(ordenar);
+    const cerrar = () => {
+      EXTRAS.guardarVistos(clave, [...estado.vistas.values()].filter((v) => v.ok).map((v) => v.id));
+      estado.celebrando = false;
+      if (estado.pestana !== 'logros') { /* los marcadores NUEVO siguen hasta la próxima visita */ }
+    };
+    if (!lista.length) { estado.celebrando = false; return; }
+    EXTRAS.celebrar(lista, contextoJugador(), vistos ? 'nuevo' : 'bienvenida', cerrar);
+  }, 1300);
+}
+
 /* ---------- Pintura ---------- */
 
 function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
@@ -274,6 +328,7 @@ function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
           <span class="visualmente-oculto">Tu nombre</span>
           <input class="jugador__nombre" id="nombre-jugador" type="text" maxlength="40" value="${esc(estado.nombre)}" placeholder="Escribe tu nombre">
         </label>
+        <p class="jugador__rango"><span>${esc(EXTRAS.rangoNivel(avance.nivel))}</span>${estado.racha && estado.racha.dias > 1 ? `<span class="jugador__racha" title="Días seguidos entrando a Mi avance (en este dispositivo)">${ICONOS_LOGRO.fuego}Racha de ${estado.racha.dias} días</span>` : ''}</p>
         <p class="jugador__programa">Ingeniería de Sistemas e Informática · UNAL Medellín</p>
         <div class="xp" role="img" aria-label="${avance.aprobados} de ${avance.exigidos} créditos aprobados">
           <div class="xp__barra">
@@ -282,11 +337,13 @@ function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
           </div>
           <div class="xp__texto"><span><b>${avance.aprobados}</b> / ${avance.exigidos} créditos</span><span>${formatear(avance.porcentaje, 1)} %</span></div>
         </div>
+        ${EXTRAS.faltanParaSiguienteNivel(avance) ? `<p class="xp__siguiente">A <b>${EXTRAS.faltanParaSiguienteNivel(avance)}</b> ${EXTRAS.faltanParaSiguienteNivel(avance) === 1 ? 'crédito' : 'créditos'} del nivel <b>${avance.nivel + 1}</b></p>` : '<p class="xp__siguiente">Nivel máximo alcanzado</p>'}
       </div>
       <div class="jugador__puntos">
         <p class="etiqueta-hud">PUNTOS</p>
         <p class="puntos__valor" data-cuenta="${puntos}">${puntos}</p>
         <p class="puntos__logros">${desbloqueados} / ${totalLogros} logros</p>
+        <button type="button" class="btn-juego btn-juego--mini" data-compartir-jugador>Compartir tarjeta</button>
       </div>
     </section>`;
 }
@@ -411,6 +468,25 @@ function pintarLogros(avance, historia) {
     bronce: { total: lista.filter((l) => l.categoria === 'bronce').length, listos: desbloqueados.filter((l) => l.categoria === 'bronce').length },
   };
 
+  const vistas = lista.map((l) => estado.vistas.get(l.id) || vistaLogro(l, avance, historia));
+  const bloqueados = vistas.filter((v) => !v.ok && v.progreso);
+  const enProgreso = bloqueados.filter((v) => v.progreso.pct > 0).length;
+  const siguientes = bloqueados.filter((v) => v.progreso.pct < 100).sort((a, b) => b.progreso.pct - a.progreso.pct).slice(0, 3);
+  const bloqueObjetivos = siguientes.length ? `
+      <div class="objetivos" aria-label="Tus próximos logros">
+        <p class="objetivos__titulo">Siguientes objetivos <span>· los que tienes más cerca</span></p>
+        <ul class="objetivos__lista">
+          ${siguientes.map((v) => `<li><button type="button" class="objetivo objetivo--${v.categoria}" data-abrir-logro="${esc(v.id)}">
+            <span class="objetivo__icono">${v.iconoSvg}</span>
+            <span class="objetivo__cuerpo">
+              <span class="objetivo__nombre">${esc(v.nombre)} <small>+${esc(v.puntos)} pts</small></span>
+              <span class="progreso-barra"><span style="width:${v.progreso.pct}%"></span></span>
+              <span class="objetivo__texto">${esc(v.progreso.texto)}</span>
+            </span>
+          </button></li>`).join('')}
+        </ul>
+      </div>` : '';
+
   return `
     <section class="panel logros" aria-label="Logros y Desafíos">
       <div class="logros__cabecera">
@@ -426,8 +502,11 @@ function pintarLogros(avance, historia) {
         </div>
       </div>
 
+      ${bloqueObjetivos}
+
       <div class="logros__filtros" role="toolbar" aria-label="Filtrar logros">
         <button type="button" class="logros__filtro is-activo" data-filtro="todos">Todos (${lista.length})</button>
+        ${enProgreso ? `<button type="button" class="logros__filtro" data-filtro="progreso">En progreso (${enProgreso})</button>` : ''}
         <button type="button" class="logros__filtro" data-filtro="desbloqueados">Completados (${desbloqueados.length})</button>
         <button type="button" class="logros__filtro" data-filtro="platino">Platino (${conteoRareza.platino.listos}/${conteoRareza.platino.total})</button>
         <button type="button" class="logros__filtro" data-filtro="oro">Oro (${conteoRareza.oro.listos}/${conteoRareza.oro.total})</button>
@@ -436,33 +515,37 @@ function pintarLogros(avance, historia) {
       </div>
 
       <ul class="logros__rejilla">
-        ${lista.map((l) => {
-          const ok = logroDesbloqueado(l, avance, historia);
-          const cat = l.categoria || 'bronce';
+        ${vistas.map((v) => {
+          const ok = v.ok;
+          const cat = v.categoria;
+          const nuevo = estado.nuevosIds && estado.nuevosIds.has(v.id);
+          const l = estado.logros.find((x) => x.id === v.id) || {};
           // Con datos reales de la comunidad, un logro que nadie tiene vale 0 %, no el valor de referencia
-          const pct = estado.statsLogros
-            ? (estado.statsLogros[l.id] !== undefined ? estado.statsLogros[l.id] : 0)
-            : (l.porcentaje !== undefined ? l.porcentaje : 25.0);
+          const pct = v.pct !== null ? v.pct : (l.porcentaje !== undefined ? l.porcentaje : 25.0);
           const pctTexto = formatear(pct, 1) + '%';
+          const primero = v.pct === 0;
 
-          return `<li class="logro logro--${cat} ${ok ? 'logro--listo' : 'logro--bloqueado'}" data-categoria="${cat}" title="${esc(l.nombre)}: ${esc(l.descripcion)} · Desbloqueado por el ${pctTexto} de los usuarios">
+          return `<li class="logro logro--${cat} ${ok ? 'logro--listo' : 'logro--bloqueado'}" data-id="${esc(v.id)}" data-categoria="${cat}" data-progreso="${!ok && v.progreso && v.progreso.pct > 0 ? 1 : 0}" role="button" tabindex="0" aria-label="${esc(v.nombre)}: ${ok ? 'desbloqueado' : 'bloqueado'}. Ver detalle" title="${esc(v.nombre)}: ${esc(v.descripcion)}">
+            ${nuevo ? '<span class="logro__nuevo">NUEVO</span>' : ''}
             <div class="logro__cabecera-meta">
               <span class="logro__rareza logro__rareza--${cat}">${cat.toUpperCase()}</span>
-              <span class="logro__pct-badge" title="${pctTexto} de los usuarios tienen este logro">${pctTexto}</span>
+              <span class="logro__pct-badge" title="${primero ? 'Nadie lo ha desbloqueado aún' : pctTexto + ' de los usuarios tienen este logro'}">${pctTexto}</span>
             </div>
             <span class="logro__icono">${renderIconoLogro(l, ok)}</span>
-            <span class="logro__nombre">${esc(l.nombre)}</span>
-            <span class="logro__desc">${esc(l.descripcion)}</span>
+            <span class="logro__nombre">${esc(v.nombre)}</span>
+            <span class="logro__desc">${esc(v.descripcion)}</span>
+            ${!ok && v.progreso ? `<div class="logro__progreso"><div class="progreso-barra"><span style="width:${v.progreso.pct}%"></span></div><span class="logro__progreso-texto">${esc(v.progreso.texto)}</span></div>` : ''}
             <div class="logro__meta-pie">
-              <span class="logro__pts">+${esc(l.puntos)} pts</span>
+              <span class="logro__pts">+${esc(v.puntos)} pts</span>
               <span class="logro__estado-tag">${ok ? 'Desbloqueado' : 'Bloqueado'}</span>
             </div>
-            <div class="logro__comunidad" title="Desbloqueado por el ${pctTexto} de los usuarios">
+            <div class="logro__comunidad">
               <div class="logro__comunidad-barra-track" aria-hidden="true">
                 <div class="logro__comunidad-barra" style="width: ${Math.min(100, Math.max(3, pct))}%;"></div>
               </div>
-              <span class="logro__comunidad-texto">${pctTexto} de los usuarios lo tienen</span>
+              <span class="logro__comunidad-texto">${primero ? (ok ? 'Eres de los primeros en tenerlo' : '¡Nadie lo tiene aún! Sé el primero') : `${pctTexto} de los usuarios lo tienen`}</span>
             </div>
+            ${ok ? '<span class="logro__compartir" aria-hidden="true">Compartir ›</span>' : ''}
           </li>`;
         }).join('')}
       </ul>
@@ -537,6 +620,12 @@ function dibujar() {
   const avance = calcularAvance(historia, estado.ritmo);
   const desbloqueados = estado.logros.filter((l) => logroDesbloqueado(l, avance, historia));
   const puntos = desbloqueados.reduce((s, l) => s + (Number(l.puntos) || 0), 0);
+
+  // Datos compartidos con el detalle, la celebración y las tarjetas para compartir
+  estado.avance = avance;
+  estado.puntos = puntos;
+  estado.vistas = new Map(estado.logros.map((l) => [l.id, vistaLogro(l, avance, historia)]));
+  if (!estado.racha) estado.racha = EXTRAS.registrarVisita();
 
   // Sincronizar logros con Supabase para estadísticas globales si el usuario está autenticado.
   // Solo se envía cuando cambia el conjunto de desbloqueados; al terminar se refrescan los porcentajes una vez.
@@ -614,11 +703,30 @@ function dibujar() {
         let visible = true;
         if (filtro === 'desbloqueados') visible = item.classList.contains('logro--listo');
         else if (filtro === 'bloqueados') visible = item.classList.contains('logro--bloqueado');
+        else if (filtro === 'progreso') visible = item.dataset.progreso === '1';
         else if (['platino', 'oro', 'plata', 'bronce'].includes(filtro)) visible = item.dataset.categoria === filtro;
         item.hidden = !visible;
       });
     });
   });
+
+  // Detalle de un logro, compartir tarjeta (se reasignan los manejadores: este contenedor se conserva entre dibujos)
+  const abrirLogro = (id) => { const v = estado.vistas.get(id); if (v) EXTRAS.abrirDetalle(v, contextoJugador()); };
+  juego.onclick = (e) => {
+    const compartir = e.target.closest('[data-compartir-jugador]');
+    if (compartir) { EXTRAS.compartirJugador(contextoJugador(), compartir); return; }
+    const objetivo = e.target.closest('[data-abrir-logro]');
+    if (objetivo) { abrirLogro(objetivo.dataset.abrirLogro); return; }
+    const tarjeta = e.target.closest('.logro[data-id]');
+    if (tarjeta) abrirLogro(tarjeta.dataset.id);
+  };
+  juego.onkeydown = (e) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    const tarjeta = e.target.closest && e.target.closest('.logro[data-id]');
+    if (tarjeta && e.target === tarjeta) { e.preventDefault(); abrirLogro(tarjeta.dataset.id); }
+  };
+
+  revisarCelebracion();
 }
 
 function persistir() {
