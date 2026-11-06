@@ -1,0 +1,83 @@
+{
+  "_firmaDigital": {
+    "autor": "Santiago Escobar Arias",
+    "rol": "Representante Estudiantil de Sistemas",
+    "unal": "saescobara@unal.edu.co",
+    "firma": "SEA-SIS-UNAL-2026-AUTH-F45123",
+    "sha256": "f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c",
+    "derechos": "© 2026 Santiago Escobar Arias. Todos los derechos reservados."
+  },
+  "id": "kiro",
+  "queEs": "«Plan Estudiantil de Kiro» es un programa de Amazon Web Services (AWS) al que la Universidad Nacional de Colombia tiene acceso a través de la Dirección Nacional de Estrategia Digital (DNED). Kiro es un entorno y agente de inteligencia artificial enfocado en especificaciones (spec-driven development) que convierte tus ideas e instrucciones en aplicaciones y código funcional para proyectos de clase, hackatones o el MVP de tu startup.",
+  "quienes": [
+    "Estudiantes activos de pregrado y posgrado de la Universidad Nacional de Colombia",
+    "Comunidad académica y de investigación de la UNAL"
+  ],
+  "incluye": [
+    "1 año (12 meses) de acceso gratuito al Plan Estudiantil de Kiro",
+    "1.000 créditos al mes durante todo un año para asistencia y generación de código con IA",
+    "Acceso al Kiro IDE y agente autónomo para estructurar especificaciones y proyectos de software completos",
+    "100% gratuito y sin necesidad de ingresar tarjeta de crédito"
+  ],
+  "requisitos": [
+    "Correo electrónico institucional activo (@unal.edu.co)",
+    "Cuenta de AWS Builder ID o GitHub vinculada a tu correo institucional",
+    "Verificación rápida de condición de estudiante mediante SheerID"
+  ],
+  "pasos": [
+    {
+      "titulo": "Entra a Kiro for Students",
+      "texto": "Ingresa al portal oficial para estudiantes en kiro.dev/students desde tu navegador web."
+    },
+    {
+      "titulo": "Inicia sesión o crea tu cuenta",
+      "texto": "Accede con tu cuenta de AWS Builder ID o con GitHub asegurándote de usar tu correo institucional @unal.edu.co."
+    },
+    {
+      "titulo": "Verifica tu estatus estudiantil con SheerID",
+      "texto": "Haz clic en el banner de elegibilidad («Kiro Students»). Busca y selecciona «Universidad Nacional de Colombia», diligencia tus datos y confirma con tu correo universitario."
+    },
+    {
+      "titulo": "Confirma la activación de tus 1.000 créditos mensuales",
+      "texto": "Una vez aprobada la validación en segundos, tu cuenta quedará vinculada al convenio por 12 meses con 1.000 créditos renovables cada mes."
+    },
+    {
+      "titulo": "Instala Kiro y sigue el videotutorial",
+      "texto": "Descarga la aplicación de Kiro y consulta el videotutorial oficial para aprender paso a paso a crear especificaciones y generar proyectos con IA."
+    }
+  ],
+  "enlaces": [
+    {
+      "texto": "Activar Kiro for Students",
+      "url": "https://kiro.dev/students",
+      "principal": true
+    },
+    {
+      "texto": "Videotutorial oficial de activación y uso (YouTube)",
+      "url": "https://youtu.be/_CjEy_mtIjM?si=W2qTw-v7UpkoP_tz"
+    },
+    {
+      "texto": "Dirección Nacional de Estrategia Digital (DNED)",
+      "url": "https://dned.unal.edu.co"
+    }
+  ],
+  "soporte": {
+    "texto": "Para consultas institucionales sobre herramientas digitales y convenios consulta a la DNED en",
+    "correo": "dned@unal.edu.co"
+  },
+  "consejos": [
+    "Diligencia siempre tu correo @unal.edu.co para que la verificación en SheerID sea instantánea y no requiera adjuntar documentos manuales.",
+    "Tus 1.000 créditos se reinician mensualmente: utilízalos para avanzar en asignaturas de programación, estructuras de datos e ingeniería de software.",
+    "Aprovecha el desarrollo guiado por especificaciones: define bien tus casos de uso y requerimientos antes de ordenar la generación del código."
+  ],
+  "fuentes": [
+    {
+      "titulo": "Dirección Nacional de Estrategia Digital (DNED) · Universidad Nacional de Colombia",
+      "url": "https://dned.unal.edu.co"
+    },
+    {
+      "titulo": "Videotutorial Kiro UNAL (YouTube)",
+      "url": "https://youtu.be/_CjEy_mtIjM?si=W2qTw-v7UpkoP_tz"
+    }
+  ]
+}

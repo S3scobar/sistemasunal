@@ -20,6 +20,7 @@ const estado = { indice: null, filtro: 'todos', abierto: null };
 
 // Íconos propios y genéricos (no son los logos de las empresas)
 const ICONOS = {
+  fantasma: '<path d="M9 10h.01M15 10h.01M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/>',
   birrete: '<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5"/><path d="M22 9v6"/>',
   funcion: '<path d="M15 4h-2a3 3 0 0 0-3 3v10a3 3 0 0 1-3 3H6"/><path d="M6 11h8M14 14l5 5M19 14l-5 5"/>',
   documento: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',

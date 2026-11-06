@@ -1,0 +1,269 @@
+/* ==============================================================================
+   ESTILOS: AVATAR GEEK PERSONALIZABLE · SISTEMAS UNAL
+   ============================================================================== */
+
+.jugador__avatar-cara {
+  grid-area: 1 / 1;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.jugador__avatar-cara:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 22px rgba(0, 229, 255, .45);
+}
+
+.avatar-img-circulo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-svg-circulo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+/* Botón flotante para editar avatar */
+.jugador__avatar-editar {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #090e17;
+  border: 1.5px solid var(--neon-2, #2fa8ff);
+  color: var(--neon-2, #2fa8ff);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .7);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.jugador__avatar-editar:hover {
+  transform: scale(1.15);
+  background: #1e293b;
+  border-color: #8fd2ff;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(47, 168, 255, .7);
+}
+
+/* =========================================================
+   DIÁLOGO / MODAL DE PERSONALIZACIÓN COMPACTO (SIN SCROLL)
+   ========================================================= */
+.dialogo-avatar {
+  width: min(92vw, 420px);
+  max-height: 90vh;
+  text-align: left;
+  padding: 20px 22px 18px;
+}
+
+.dialogo-avatar__titulo {
+  font-family: var(--mono, monospace);
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 2px;
+  text-align: center;
+}
+
+.dialogo-avatar__subtitulo {
+  font-size: 11.5px;
+  color: var(--suave, #8fb3d6);
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+/* Preview del avatar dentro del anillo */
+.dialogo-avatar__preview-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 4px 0 10px;
+}
+
+.dialogo-avatar__preview-anillo {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, .15);
+  box-shadow: 0 0 20px var(--glow, rgba(47, 168, 255, .5));
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #020617;
+  transition: box-shadow .25s ease;
+}
+
+.dialogo-avatar__preview-anillo svg,
+.dialogo-avatar__preview-anillo img {
+  width: 82px;
+  height: 82px;
+}
+
+/* Caja de límite semanal limpia */
+.dialogo-avatar__limite {
+  display: block;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.35;
+  font-family: var(--mono, monospace);
+  margin-bottom: 12px;
+}
+
+.dialogo-avatar__limite--ok {
+  background: rgba(16, 185, 129, .1);
+  border: 1px solid rgba(16, 185, 129, .35);
+  color: #6ee7b7;
+}
+
+.dialogo-avatar__limite--bloqueado {
+  background: rgba(239, 68, 68, .12);
+  border: 1px solid rgba(239, 68, 68, .4);
+  color: #fca5a5;
+}
+
+/* Secciones del personalizador */
+.dialogo-avatar__seccion {
+  margin-bottom: 11px;
+}
+
+.dialogo-avatar__label {
+  display: block;
+  font-family: var(--mono, monospace);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #8fd2ff;
+  margin-bottom: 6px;
+}
+
+/* Grilla de Arquetipos compactos (sin descripciones largas) */
+.dialogo-avatar__grid-arquetipos {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.dialogo-avatar__btn-arquetipo {
+  appearance: none;
+  background: rgba(15, 23, 42, .85);
+  border: 1px solid rgba(47, 168, 255, .25);
+  border-radius: 7px;
+  padding: 8px 10px;
+  text-align: center;
+  font-family: var(--mono, monospace);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .15s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dialogo-avatar__btn-arquetipo:hover {
+  background: rgba(47, 168, 255, .12);
+  border-color: #8fd2ff;
+  transform: translateY(-1px);
+}
+
+.dialogo-avatar__btn-arquetipo.is-activo {
+  border-color: #00e5ff;
+  background: rgba(0, 229, 255, .18);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 229, 255, .25);
+}
+
+/* Fila de Género (Hombre / Mujer) */
+.dialogo-avatar__fila-genero {
+  display: flex;
+  gap: 8px;
+}
+
+.dialogo-avatar__btn-genero {
+  appearance: none;
+  flex: 1;
+  background: rgba(15, 23, 42, .85);
+  border: 1px solid rgba(47, 168, 255, .25);
+  border-radius: 7px;
+  padding: 7px 12px;
+  font-family: var(--mono, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: center;
+  transition: background .15s, border-color .15s, transform .15s;
+}
+
+.dialogo-avatar__btn-genero:hover {
+  background: rgba(47, 168, 255, .15);
+  border-color: #8fd2ff;
+  color: #fff;
+}
+
+.dialogo-avatar__btn-genero.is-activo {
+  background: rgba(0, 229, 255, .2);
+  border-color: #00e5ff;
+  color: #fff;
+  box-shadow: 0 0 10px rgba(0, 229, 255, .3);
+}
+
+/* Fila de Colores Neón */
+.dialogo-avatar__fila-colores {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.dialogo-avatar__btn-color {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--c);
+  border: 2px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .5);
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+
+.dialogo-avatar__btn-color:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 10px var(--c);
+}
+
+.dialogo-avatar__btn-color.is-activo {
+  border-color: #fff;
+  transform: scale(1.2);
+  box-shadow: 0 0 14px var(--c);
+}
+
+/* Botón de Guardar en el pie */
+.dialogo-avatar__pie {
+  margin-top: 14px;
+}
+
+.dialogo-avatar__btn-guardar {
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 13px;
+}

@@ -319,7 +319,7 @@ function pintarJugador(avance, historia, puntos, totalLogros, desbloqueados) {
           <circle class="anillo__curso" cx="60" cy="60" r="54" pathLength="100" style="--ini: ${pasoXp}; --len: ${pasoCurso}"></circle>
           <circle class="anillo__valor" cx="60" cy="60" r="54" pathLength="100" style="--pct: ${pasoXp}"></circle>
         </svg>
-        <img src="img/logo-sistemas.jpg" alt="" width="88" height="88">
+        ${typeof AVATAR_SISTEMAS !== "undefined" ? AVATAR_SISTEMAS.renderAvatarJugador() : '<img src="img/logo-sistemas.jpg" alt="" width="88" height="88">'}
         <span class="jugador__nivel${String(avance.nivel).length > 2 ? ' jugador__nivel--3' : ''}"><small>NIVEL</small><b data-cuenta="${avance.nivel}">${avance.nivel}</b></span>
       </div>
       <div class="jugador__datos">
@@ -713,6 +713,11 @@ function dibujar() {
   // Detalle de un logro, compartir tarjeta (se reasignan los manejadores: este contenedor se conserva entre dibujos)
   const abrirLogro = (id) => { const v = estado.vistas.get(id); if (v) EXTRAS.abrirDetalle(v, contextoJugador()); };
   juego.onclick = (e) => {
+    const avatarBtn = e.target.closest("[data-personalizar-avatar]");
+    if (avatarBtn && typeof AVATAR_SISTEMAS !== "undefined") {
+      AVATAR_SISTEMAS.abrirPersonalizador(contextoJugador(), () => { persistir(); });
+      return;
+    }
     const compartir = e.target.closest('[data-compartir-jugador]');
     if (compartir) { EXTRAS.compartirJugador(contextoJugador(), compartir); return; }
     const objetivo = e.target.closest('[data-abrir-logro]');
