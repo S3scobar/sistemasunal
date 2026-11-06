@@ -32,6 +32,7 @@
   async function obtenerCliente() {
     if (typeof clienteSupabase !== 'undefined' && clienteSupabase) return clienteSupabase;
     if (!window.supabase) await cargar(SUPABASE_JS);
+    if (!window.CONFIG_SUPABASE) { try { await cargar('js/config.js'); } catch (_) {} }
     if (typeof estaSupabaseConfigurado === 'undefined') await cargar('js/supabase-config.js');
     return (typeof clienteSupabase !== 'undefined') ? clienteSupabase : null;
   }

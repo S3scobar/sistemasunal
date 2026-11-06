@@ -15,33 +15,19 @@
    =========================================================================
    INSTRUCCIONES PARA CONECTAR TU BASE DE DATOS DE SUPABASE:
    1. Crea tu proyecto gratuito en https://supabase.com
-   2. En tu panel de Supabase ve a: Project Settings -> Configuration -> API
-   3. Copia "Project URL" y "anon public key" y genera el bloque cifrado con:
-        node tools/cifrar-config.js <url> <anonKey>
-      Pega el resultado en SUPABASE_CONFIG (abajo). Nunca uses la clave service_role en el navegador.
+   2. Configura SUPABASE_URL y SUPABASE_ANON_KEY en tu archivo .env
+   3. Genera la configuración cliente con: node tools/generar-config.js (o npm run build)
+   Nunca uses la clave service_role en el navegador.
    ========================================================================= */
 
 const SUPABASE_CONFIG = (() => {
-  // Configuración cifrada (ofuscada) para que no aparezca en texto plano al inspeccionar el código.
-  // OJO: es solo un freno para curiosos; la seguridad real está en las políticas RLS de la base de datos.
-  // Para regenerar este bloque: node tools/cifrar-config.js <url> <anonKey>
-  const _p = [
-  'KGc0Xz9raQ89OjU8XggfHU4mKTRJISAgTiU2LjVKV0peXCQxb14mOTJPND0k',
-  'Yk5dEh4UMisuQxgsKg9vbCQ1Z1pSdVU6CihnGhwpZGQAKAVee15gAzAGCBsa',
-  'IiN1Aw0LdQNXSXhGMHYMRBwgGVcxFgMkdF92SGwADDJkPQM/dzwHdwVDWgFQ',
-  'fgUuIkA/MwoeF3ojf0FcampGICQvSWMAOlo8LSx1XmhjewAaKAdYMXtnRBkN',
-  'Czx0amFbeTkAcmIHBClgESl1Aml7Q3tbBXEibhp/HkcQOQ4ISgZ+dlFjCC8d',
-  'fXsRQxsBMRhPU1xeBzs1AkJnDGNrZyoDHHREBkJbEBElazxxCRo+HRR6WEUS',
-  'Tw==',
-  ].join('');
-  const _k = 'SEA-SIS-UNAL-2026';
-  try {
-    const bin = atob(_p);
-    const bytes = Uint8Array.from(bin, (c, i) => c.charCodeAt(0) ^ _k.charCodeAt(i % _k.length));
-    return JSON.parse(new TextDecoder().decode(bytes));
-  } catch (_) {
-    return { url: '', anonKey: '' };
+  if (typeof window !== 'undefined' && window.CONFIG_SUPABASE) {
+    return {
+      url: window.CONFIG_SUPABASE.url || '',
+      anonKey: window.CONFIG_SUPABASE.anonKey || ''
+    };
   }
+  return { url: '', anonKey: '' };
 })();
 
 // Verifica si el usuario ya configuró sus credenciales de Supabase

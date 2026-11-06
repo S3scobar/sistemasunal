@@ -1,0 +1,9 @@
+{
+  "name": "sistemasunal",
+  "version": "1.0.0",
+  "description": "Portal Web Oficial · Ingeniería de Sistemas e Informática · UNAL Medellín",
+  "private": true,
+  "scripts": {
+    "build": "node tools/generar-config.js"
+  }
+}

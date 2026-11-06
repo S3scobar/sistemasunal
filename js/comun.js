@@ -142,10 +142,10 @@ function dibujarEscudo() {
 
 const PAGINAS = [
   { id: 'inicio', texto: 'Inicio', url: 'index.html' },
+  { id: 'avance', texto: 'Mi avance', url: 'avance.html' },
   { id: 'malla', texto: 'Malla curricular', url: 'malla.html' },
   { id: 'intercampus', texto: 'Rutas Intercampus', url: 'intercampus.html' },
   { id: 'convenios', texto: 'Convenios', url: 'convenios.html' },
-  { id: 'avance', texto: 'Mi avance', url: 'avance.html' },
   { id: 'info', texto: 'Información general', url: 'info.html' },
 ];
 
@@ -153,10 +153,17 @@ function pintarBarra() {
   const actual = document.body.dataset.pagina;
   $('#barra').outerHTML = `
     <header class="barra" id="encabezado-barra">
+      <div class="barra__bus-laser" aria-hidden="true"></div>
       <div class="contenedor barra__contenido">
         <a class="barra__marca" href="index.html" aria-label="Ingeniería de Sistemas e Informática, inicio">
-          <span class="barra__escudo"><img src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática" class="barra__escudo-img"></span>
-          <span class="barra__texto">Ingeniería de Sistemas e Informática<small>UNAL · Sede Medellín</small></span>
+          <span class="barra__escudo">
+            <img src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática" class="barra__escudo-img">
+            <span class="barra__nodo-led" title="Sistema online" aria-hidden="true"></span>
+          </span>
+          <span class="barra__texto">
+            <span class="barra__texto-titulo">Ingeniería de Sistemas e Informática</span>
+            <small class="barra__texto-sub"><span class="barra__prompt-sig">&gt;</span> UNAL · Sede Medellín</small>
+          </span>
         </a>
         <button class="barra__boton-menu" id="btn-menu" type="button" aria-expanded="false" aria-controls="menu-navegacion" aria-label="Abrir menú de navegación">
           <span class="barra__icono barra__icono--abrir" aria-hidden="true">
@@ -168,12 +175,214 @@ function pintarBarra() {
           <span class="barra__boton-texto">Menú</span>
         </button>
         <nav class="nav" id="menu-navegacion" aria-label="Módulos del sitio">
-          ${PAGINAS.map((p) => `<a href="${p.url}" ${p.id === actual ? 'aria-current="page"' : ''}>${p.texto}</a>`).join('')}
+          <div class="nav__bus-linea" aria-hidden="true"></div>
+          <div class="nav__glider" id="nav-glider" aria-hidden="true"></div>
+          <div class="nav__particulas" id="nav-particulas" aria-hidden="true"></div>
+          ${PAGINAS.map((p) => {
+            const esActual = p.id === actual;
+            const esAvance = p.id === 'avance';
+            return `
+              <a href="${p.url}" data-id="${p.id}" ${esActual ? 'aria-current="page"' : ''} class="nav__enlace ${esAvance ? 'nav__enlace--avance' : ''}">
+                <span class="nav__label">${p.texto}</span>
+                ${esAvance ? '<span class="nav__chip-exp" aria-hidden="true">EXP</span>' : ''}
+              </a>`;
+          }).join('')}
         </nav>
       </div>
     </header>`;
 
   configurarMenuMovil();
+  configurarNavegacionBits();
+}
+
+function configurarNavegacionBits() {
+  const nav = $('#menu-navegacion');
+  if (!nav) return;
+  const glider = $('#nav-glider');
+  const contenedorParticulas = $('#nav-particulas');
+  const enlaces = Array.from(nav.querySelectorAll('.nav__enlace'));
+  const actualBtn = nav.querySelector('[aria-current="page"]');
+
+  function posicionarGlider(enlace, suave = true) {
+    if (!glider || !enlace || window.innerWidth <= 1140) {
+      if (glider) glider.style.opacity = '0';
+      return;
+    }
+    const rectNav = nav.getBoundingClientRect();
+    const rectEl = enlace.getBoundingClientRect();
+    const x = rectEl.left - rectNav.left;
+    const w = rectEl.width;
+
+    glider.style.transition = suave
+      ? 'transform .22s cubic-bezier(0.2, 0.8, 0.2, 1), width .22s cubic-bezier(0.2, 0.8, 0.2, 1), opacity .15s ease'
+      : 'none';
+    glider.style.transform = `translateX(${x}px)`;
+    glider.style.width = `${w}px`;
+    glider.style.opacity = '1';
+  }
+
+  if (actualBtn) {
+    requestAnimationFrame(() => posicionarGlider(actualBtn, false));
+  }
+
+  window.addEventListener('resize', () => {
+    const act = nav.querySelector('[aria-current="page"]');
+    if (act) posicionarGlider(act, false);
+  }, { passive: true });
+
+  // Efecto de llegada al cargar la página si venimos de otra
+  try {
+    const raw = sessionStorage.getItem('sistemasunal.nav.transmision');
+    if (raw) {
+      const datos = JSON.parse(raw);
+      sessionStorage.removeItem('sistemasunal.nav.transmision');
+      if (Date.now() - datos.tiempo < 3500 && datos.destino === document.body.dataset.pagina && actualBtn) {
+        actualBtn.classList.add('nav__enlace--llegada');
+        crearChispasLlegada(actualBtn);
+        setTimeout(() => actualBtn.classList.remove('nav__enlace--llegada'), 600);
+      }
+    }
+  } catch (_) {}
+
+  enlaces.forEach((enlace) => {
+    enlace.addEventListener('pointerenter', () => {
+      posicionarGlider(enlace, true);
+    });
+
+    enlace.addEventListener('click', (e) => {
+      const destinoId = enlace.getAttribute('data-id');
+      const actualId = document.body.dataset.pagina;
+
+      if (destinoId === actualId) {
+        e.preventDefault();
+        actualBtn?.classList.add('nav__enlace--pulso');
+        setTimeout(() => actualBtn?.classList.remove('nav__enlace--pulso'), 350);
+        return;
+      }
+
+      // Si el usuario presiona Ctrl, Cmd, Shift o clic rueda, navegación estándar nativa
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+      e.preventDefault();
+      const urlDestino = enlace.href;
+
+      let redirigido = false;
+      const redirigir = () => {
+        if (redirigido) return;
+        redirigido = true;
+        window.location.href = urlDestino;
+      };
+
+      // SEGURO A PRUEBA DE FALLOS: NUNCA se queda trabado; pase lo que pase redirige a los 200ms
+      const fallbackTimer = setTimeout(redirigir, 200);
+
+      try {
+        sessionStorage.setItem('sistemasunal.nav.transmision', JSON.stringify({
+          origen: actualId,
+          destino: destinoId,
+          tiempo: Date.now()
+        }));
+
+        dispararTransmisionBits(actualBtn || enlace, enlace, () => {
+          clearTimeout(fallbackTimer);
+          redirigir();
+        });
+      } catch (_) {
+        clearTimeout(fallbackTimer);
+        redirigir();
+      }
+    });
+  });
+
+  nav.addEventListener('pointerleave', () => {
+    if (actualBtn) posicionarGlider(actualBtn, true);
+  });
+
+  function crearChispasLlegada(boton) {
+    if (!contenedorParticulas) return;
+    const rectNav = nav.getBoundingClientRect();
+    const rectB = boton.getBoundingClientRect();
+    const cx = rectB.left + rectB.width / 2 - rectNav.left;
+    const cy = rectNav.height - 4;
+    const bits = ['1', '0', '1', '0', '1', '0'];
+
+    bits.forEach((char, i) => {
+      const ang = (i / bits.length) * Math.PI * 2;
+      const dist = 14 + Math.random() * 8;
+      const dx = Math.cos(ang) * dist;
+      const dy = Math.sin(ang) * dist * 0.5;
+
+      const p = document.createElement('span');
+      p.className = 'bit-particula';
+      p.textContent = char;
+      p.style.left = `${cx}px`;
+      p.style.top = `${cy}px`;
+      p.style.setProperty('--cx', `${dx}px`);
+      p.style.setProperty('--cy', `${dy}px`);
+      p.style.animation = 'bitChispa 240ms ease-out forwards';
+      contenedorParticulas.appendChild(p);
+
+      setTimeout(() => p.remove(), 260);
+    });
+  }
+
+  function dispararTransmisionBits(origen, destino, onComplete) {
+    if (!contenedorParticulas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      onComplete();
+      return;
+    }
+
+    const rectNav = nav.getBoundingClientRect();
+    const rectA = origen.getBoundingClientRect();
+    const rectB = destino.getBoundingClientRect();
+
+    const x1 = rectA.left + rectA.width / 2 - rectNav.left;
+    const x2 = rectB.left + rectB.width / 2 - rectNav.left;
+    // La transmisión viaja por el riel inferior (NO corta el texto de las palabras)
+    const yRail = rectNav.height - 4;
+
+    posicionarGlider(destino, true);
+
+    // Segmento láser en el riel inferior
+    const minX = Math.min(x1, x2);
+    const maxX = Math.max(x1, x2);
+    const segmento = document.createElement('div');
+    segmento.className = 'nav__bus-segmento-activo';
+    segmento.style.left = `${minX}px`;
+    segmento.style.width = `${maxX - minX}px`;
+    segmento.style.top = `${yRail}px`;
+    contenedorParticulas.appendChild(segmento);
+
+    // Ráfaga de bits a lo largo del riel
+    const NUM_BITS = 8;
+    const chars = ['1', '0', '1', '1', '0', '1', '0', '1'];
+    const dx = x2 - x1;
+
+    for (let i = 0; i < NUM_BITS; i++) {
+      const bit = document.createElement('span');
+      bit.className = 'bit-particula';
+      bit.textContent = chars[i];
+      bit.style.left = `${x1}px`;
+      bit.style.top = `${yRail}px`;
+      bit.style.setProperty('--dx', `${dx}px`);
+      bit.style.setProperty('--dy', '0px');
+      bit.style.animation = `bitVuelo 160ms ${i * 12}ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards`;
+      contenedorParticulas.appendChild(bit);
+
+      setTimeout(() => bit.remove(), 300);
+    }
+
+    // Impacto
+    setTimeout(() => {
+      destino.classList.add('is-recibiendo-bits');
+    }, 120);
+
+    // Finalizar transición y redirigir
+    setTimeout(() => {
+      segmento.remove();
+      onComplete();
+    }, 180);
+  }
 }
 
 function configurarMenuMovil() {

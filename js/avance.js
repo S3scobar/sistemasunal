@@ -848,7 +848,7 @@ async function inicializarAutenticacion() {
     if (conectado) {
       estadoDbTexto.innerHTML = '<strong>Base de datos:</strong> Supabase conectado exitosamente.';
     } else {
-      estadoDbTexto.innerHTML = '<strong>Modo de prueba local:</strong> Para conectar tu base de datos en la nube de Supabase, agrega tus credenciales en <code>js/supabase-config.js</code>.';
+      estadoDbTexto.innerHTML = '<strong>Modo de prueba local:</strong> Para conectar tu base de datos en la nube de Supabase, configura tu archivo <code>.env</code> y ejecuta <code>npm run build</code>.';
     }
   }
 

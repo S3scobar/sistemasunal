@@ -22,11 +22,22 @@ const POR_PAGINA = 12;
 const ROMANOS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 const ICONO_WHATSAPP = `<svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.63C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.07 7.71C8.89 7.71 8.6 7.78 8.36 8.04C8.11 8.3 7.41 8.96 7.41 10.3C7.41 11.63 8.38 12.92 8.52 13.1C8.66 13.29 10.42 16 13.12 17.17C15.36 18.14 15.82 17.95 16.31 17.9C16.8 17.86 17.88 17.26 18.11 16.63C18.33 16 18.33 15.46 18.26 15.35C18.2 15.24 18.01 15.18 17.73 15.04C17.45 14.9 16.08 14.23 15.83 14.13C15.57 14.04 15.39 13.99 15.2 14.27C15.02 14.55 14.49 15.18 14.33 15.36C14.17 15.55 14.01 15.57 13.73 15.43C13.45 15.29 12.27 14.9 10.87 13.65C9.78 12.68 9.05 11.48 8.84 11.12C8.63 10.76 8.82 10.56 8.96 10.42C9.09 10.29 9.25 10.08 9.39 9.92C9.53 9.76 9.58 9.64 9.67 9.46C9.76 9.27 9.72 9.11 9.65 8.97C9.58 8.83 9.07 7.58 8.86 7.07C8.66 6.58 8.45 6.64 8.3 6.63C8.15 6.63 7.97 6.63 7.78 6.63"/></svg>`;
 
+const PRIORIDAD_ESTADO = {
+  APROBADA: 4,
+  'EN CURSO': 3,
+  CURSANDO: 3,
+  INSCRITA: 3,
+  REPROBADA: 2,
+  CANCELADA: 1,
+};
+
 let hoverCodigoActual = null;
 
 const estado = {
   componentes: [],
   agrupaciones: [],
+  componentesMap: new Map(),
+  agrupacionesMap: new Map(),
   plan: [],
   asignaturas: new Map(),   // codigo -> asignatura
   dependientes: new Map(),  // codigo -> códigos que lo piden como prerrequisito
@@ -50,9 +61,9 @@ const estadoProgreso = {
   porcentajePlan: 0,
 };
 
-const buscarComponente = (id) => estado.componentes.find((c) => c.id === id);
-const buscarAgrupacion = (id) => estado.agrupaciones.find((a) => a.id === id);
-const colorDe = (asignatura) => buscarComponente(buscarAgrupacion(asignatura.agrupacion).componente).color;
+const buscarComponente = (id) => estado.componentesMap.get(id) || estado.componentes.find((c) => c.id === id);
+const buscarAgrupacion = (id) => estado.agrupacionesMap.get(id) || estado.agrupaciones.find((a) => a.id === id);
+const colorDe = (asignatura) => buscarComponente(buscarAgrupacion(asignatura.agrupacion)?.componente)?.color || '#1667c2';
 const creditosTexto = (creditos) => (creditos ?? '—');
 
 const normalizarNombre = (s) => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -61,26 +72,17 @@ const baseCodigo = (c) => String(c || '').toUpperCase().trim().replace(/-[A-Z0-9
 /* Indexa las asignaturas aprobadas / en curso de la historia académica */
 function crearIndiceProgreso(historia) {
   estadoProgreso.mapaProgreso.clear();
-  if (!historia || !Array.isArray(historia.materias)) return;
+  if (!historia?.materias?.length) return;
 
-  const prioridadEstado = {
-    'APROBADA': 4,
-    'EN CURSO': 3,
-    'CURSANDO': 3,
-    'INSCRITA': 3,
-    'REPROBADA': 2,
-    'CANCELADA': 1,
-  };
-
-  historia.materias.forEach((m) => {
+  for (const m of historia.materias) {
     const estadoNorm = (m.estado || '').toUpperCase().trim();
     const registro = {
       ...m,
       estado: estadoNorm,
-      prioridad: prioridadEstado[estadoNorm] || 0,
+      prioridad: PRIORIDAD_ESTADO[estadoNorm] || 0,
     };
 
-    const registrarEnClave = (clave) => {
+    const registrar = (clave) => {
       const previo = estadoProgreso.mapaProgreso.get(clave);
       if (!previo || registro.prioridad > previo.prioridad) {
         estadoProgreso.mapaProgreso.set(clave, registro);
@@ -91,10 +93,10 @@ function crearIndiceProgreso(historia) {
     const codBase = baseCodigo(m.codigo);
     const nomNorm = normalizarNombre(m.nombre);
 
-    if (codExacto) registrarEnClave('cod:' + codExacto);
-    if (codBase) registrarEnClave('cod:' + codBase);
-    if (nomNorm) registrarEnClave('nom:' + nomNorm);
-  });
+    if (codExacto) registrar('cod:' + codExacto);
+    if (codBase) registrar('cod:' + codBase);
+    if (nomNorm) registrar('nom:' + nomNorm);
+  }
 
   calcularBolsasCumplidas(historia);
   actualizarMetricasPlan();
@@ -107,22 +109,18 @@ function consultarProgresoMateria(codigo) {
   const codExacto = String(codigo || '').trim().toUpperCase();
   const codBase = baseCodigo(codigo);
   const nomNorm = asig ? normalizarNombre(asig.nombre) : '';
+  const map = estadoProgreso.mapaProgreso;
 
-  let match = null;
-  if (codExacto && estadoProgreso.mapaProgreso.has('cod:' + codExacto)) {
-    match = estadoProgreso.mapaProgreso.get('cod:' + codExacto);
-  } else if (codBase && estadoProgreso.mapaProgreso.has('cod:' + codBase)) {
-    match = estadoProgreso.mapaProgreso.get('cod:' + codBase);
-  } else if (nomNorm && estadoProgreso.mapaProgreso.has('nom:' + nomNorm)) {
-    match = estadoProgreso.mapaProgreso.get('nom:' + nomNorm);
-  }
-  return match;
+  return (codExacto ? map.get('cod:' + codExacto) : null)
+    ?? (codBase ? map.get('cod:' + codBase) : null)
+    ?? (nomNorm ? map.get('nom:' + nomNorm) : null)
+    ?? null;
 }
 
 /* Calcula qué casillas optativas o de libre elección ya fueron satisfechas */
 function calcularBolsasCumplidas(historia) {
   estadoProgreso.bolsasCumplidas.clear();
-  if (!historia || !Array.isArray(historia.materias)) return;
+  if (!historia?.materias) return;
 
   const creditosPorBolsa = {
     'ciencias-basicas': 0,
@@ -130,49 +128,46 @@ function calcularBolsasCumplidas(historia) {
     'libre-eleccion': 0,
   };
 
-  historia.materias.forEach((m) => {
-    if ((m.estado || '').toUpperCase() !== 'APROBADA') return;
+  for (const m of historia.materias) {
+    if ((m.estado || '').toUpperCase() !== 'APROBADA') continue;
     const tip = (m.tipologia || '').toUpperCase();
+    const cr = m.creditos || 0;
     if (tip.includes('LIBRE')) {
-      creditosPorBolsa['libre-eleccion'] += (m.creditos || 0);
+      creditosPorBolsa['libre-eleccion'] += cr;
     } else if (tip.includes('FUND. OPTATIVA')) {
-      creditosPorBolsa['ciencias-basicas'] += (m.creditos || 0);
+      creditosPorBolsa['ciencias-basicas'] += cr;
     } else if (tip.includes('DISCIPLINAR OPTATIVA')) {
-      creditosPorBolsa['tecnologias'] += (m.creditos || 0);
+      creditosPorBolsa['tecnologias'] += cr;
     } else {
       const a = estado.asignaturas.get(m.codigo) || estado.asignaturas.get(baseCodigo(m.codigo));
       if (a && !a.obligatoria && creditosPorBolsa[a.agrupacion] !== undefined) {
-        creditosPorBolsa[a.agrupacion] += (m.creditos || 0);
+        creditosPorBolsa[a.agrupacion] += cr;
       }
     }
-  });
+  }
 
   if (historia.resumen) {
-    if (historia.resumen['LIBRE ELECCIÓN']?.aprobados) {
-      creditosPorBolsa['libre-eleccion'] = Math.max(creditosPorBolsa['libre-eleccion'], historia.resumen['LIBRE ELECCIÓN'].aprobados);
-    }
-    if (historia.resumen['FUND. OPTATIVA']?.aprobados) {
-      creditosPorBolsa['ciencias-basicas'] = Math.max(creditosPorBolsa['ciencias-basicas'], historia.resumen['FUND. OPTATIVA'].aprobados);
-    }
-    if (historia.resumen['DISCIPLINAR OPTATIVA']?.aprobados) {
-      creditosPorBolsa['tecnologias'] = Math.max(creditosPorBolsa['tecnologias'], historia.resumen['DISCIPLINAR OPTATIVA'].aprobados);
+    const tipMap = {
+      'libre-eleccion': 'LIBRE ELECCIÓN',
+      'ciencias-basicas': 'FUND. OPTATIVA',
+      'tecnologias': 'DISCIPLINAR OPTATIVA',
+    };
+    for (const [k, tag] of Object.entries(tipMap)) {
+      const aprob = historia.resumen[tag]?.aprobados;
+      if (aprob) creditosPorBolsa[k] = Math.max(creditosPorBolsa[k], aprob);
     }
   }
 
   const disponibles = { ...creditosPorBolsa };
 
-  estado.plan.forEach((s) => {
+  for (const s of estado.plan) {
     s.items.forEach((item, pos) => {
-      if (item.tipo === 'bolsa') {
-        const id = `b-${s.semestre}-${pos}`;
-        const ag = item.agrupacion;
-        if (disponibles[ag] !== undefined && disponibles[ag] >= item.creditos) {
-          estadoProgreso.bolsasCumplidas.add(id);
-          disponibles[ag] -= item.creditos;
-        }
+      if (item.tipo === 'bolsa' && disponibles[item.agrupacion] >= item.creditos) {
+        estadoProgreso.bolsasCumplidas.add(`b-${s.semestre}-${pos}`);
+        disponibles[item.agrupacion] -= item.creditos;
       }
     });
-  });
+  }
 }
 
 /* Calcula el total de asignaturas obligatorias y créditos cumplidos del plan */
@@ -181,29 +176,26 @@ function actualizarMetricasPlan() {
   let creditosAprobados = 0;
   let totalAsignaturas = 0;
 
-  estado.plan.forEach((semestre) => {
+  for (const semestre of estado.plan) {
     semestre.items.forEach((item, pos) => {
       if (item.tipo === 'asignatura') {
         totalAsignaturas += 1;
-        const prog = consultarProgresoMateria(item.codigo);
-        if (prog?.estado === 'APROBADA') {
+        if (consultarProgresoMateria(item.codigo)?.estado === 'APROBADA') {
           aprobadas += 1;
-          const asig = estado.asignaturas.get(item.codigo);
-          creditosAprobados += (asig?.creditos || 0);
+          creditosAprobados += (estado.asignaturas.get(item.codigo)?.creditos || 0);
         }
-      } else if (item.tipo === 'bolsa') {
-        const id = `b-${semestre.semestre}-${pos}`;
-        if (estadoProgreso.bolsasCumplidas.has(id)) {
-          creditosAprobados += (item.creditos || 0);
-        }
+      } else if (item.tipo === 'bolsa' && estadoProgreso.bolsasCumplidas.has(`b-${semestre.semestre}-${pos}`)) {
+        creditosAprobados += (item.creditos || 0);
       }
     });
-  });
+  }
 
-  estadoProgreso.aprobadasPlan = aprobadas;
-  estadoProgreso.totalPlanAsignaturas = totalAsignaturas;
-  estadoProgreso.creditosAprobadosPlan = creditosAprobados;
-  estadoProgreso.porcentajePlan = Math.min(100, (creditosAprobados / 160) * 100);
+  Object.assign(estadoProgreso, {
+    aprobadasPlan: aprobadas,
+    totalPlanAsignaturas: totalAsignaturas,
+    creditosAprobadosPlan: creditosAprobados,
+    porcentajePlan: Math.min(100, (creditosAprobados / 160) * 100),
+  });
 }
 
 /* Carga la sesión del usuario y procesa su historia académica */
@@ -216,7 +208,7 @@ async function cargarProgresoUsuario() {
   if (typeof ServicioAuth !== 'undefined' && ServicioAuth.obtenerSesion) {
     try {
       const sesion = await ServicioAuth.obtenerSesion();
-      if (sesion && sesion.usuario) {
+      if (sesion?.usuario) {
         estadoProgreso.usuario = sesion.usuario;
         nombreUsuario = sesion.usuario.nombre || '';
         correoUsuario = sesion.usuario.correo || '';
@@ -230,17 +222,13 @@ async function cargarProgresoUsuario() {
   // 2. Respaldo: leer de localStorage 'sistemasunal.avance.v1'
   if (!textoHistoria) {
     try {
-      const guardado = JSON.parse(localStorage.getItem('sistemasunal.avance.v1'));
-      if (guardado && guardado.texto) {
+      const guardado = JSON.parse(localStorage.getItem('sistemasunal.avance.v1') || '{}');
+      if (guardado.texto) {
         textoHistoria = guardado.texto;
-        if (!nombreUsuario && guardado.nombre) nombreUsuario = guardado.nombre;
-        if (!estadoProgreso.usuario) {
-          estadoProgreso.usuario = { nombre: guardado.nombre, correo: '' };
-        }
+        nombreUsuario ||= guardado.nombre || '';
+        estadoProgreso.usuario ||= { nombre: guardado.nombre, correo: '' };
       }
-    } catch (e) {
-      // Sin respaldo local
-    }
+    } catch {}
   }
 
   // 3. Procesar historia con leerHistoria si está disponible
@@ -267,28 +255,24 @@ async function cargarProgresoUsuario() {
 function actualizarBannerSesion(nombreIdentificador) {
   const sesionEl = $('#malla-sesion');
   const invitadoEl = $('#malla-invitado');
+  const tieneProgreso = Boolean(estadoProgreso.historia && (estadoProgreso.usuario || estadoProgreso.historia.materias?.length));
 
-  if (estadoProgreso.historia && (estadoProgreso.usuario || estadoProgreso.historia.materias?.length)) {
-    if (invitadoEl) invitadoEl.hidden = true;
-    if (sesionEl) {
-      sesionEl.hidden = false;
-      const nombreEl = $('#malla-usuario-nombre');
-      const resumenEl = $('#malla-resumen-texto');
+  if (invitadoEl) invitadoEl.hidden = tieneProgreso;
+  if (!sesionEl) return;
+  sesionEl.hidden = !tieneProgreso;
 
-      const nombreMostrar = nombreIdentificador || estadoProgreso.usuario?.nombre || estadoProgreso.historia.nombre || 'Estudiante';
-      if (nombreEl) nombreEl.textContent = nombreMostrar;
+  if (tieneProgreso) {
+    const nombreMostrar = nombreIdentificador || estadoProgreso.usuario?.nombre || estadoProgreso.historia?.nombre || 'Estudiante';
+    const nombreEl = $('#malla-usuario-nombre');
+    if (nombreEl) nombreEl.textContent = nombreMostrar;
 
-      const pct = (estadoProgreso.historia.porcentajeSia !== null && estadoProgreso.historia.porcentajeSia !== undefined)
+    const resumenEl = $('#malla-resumen-texto');
+    if (resumenEl) {
+      const pct = (estadoProgreso.historia?.porcentajeSia != null)
         ? Number(estadoProgreso.historia.porcentajeSia).toFixed(1)
         : estadoProgreso.porcentajePlan.toFixed(1);
-
-      if (resumenEl) {
-        resumenEl.textContent = `Has aprobado ${estadoProgreso.aprobadasPlan} asignaturas obligatorias (${estadoProgreso.creditosAprobadosPlan} créditos cumplidos) · ${pct} % de avance general`;
-      }
+      resumenEl.textContent = `Has aprobado ${estadoProgreso.aprobadasPlan} asignaturas obligatorias (${estadoProgreso.creditosAprobadosPlan} créditos cumplidos) · ${pct} % de avance general`;
     }
-  } else {
-    if (sesionEl) sesionEl.hidden = true;
-    if (invitadoEl) invitadoEl.hidden = false;
   }
 }
 
@@ -301,9 +285,7 @@ function iniciarControlesSesion() {
       btnToggle.classList.toggle('is-activo', estadoProgreso.activo);
       btnToggle.setAttribute('aria-pressed', String(estadoProgreso.activo));
       const label = btnToggle.querySelector('.malla-sesion__btn-toggle-label');
-      if (label) {
-        label.textContent = estadoProgreso.activo ? 'Sombrear aprobadas' : 'Ver malla limpia';
-      }
+      if (label) label.textContent = estadoProgreso.activo ? 'Sombrear aprobadas' : 'Ver malla limpia';
       pintarMalla();
       pintarLeyenda();
       pintarCatalogo();
@@ -314,25 +296,24 @@ function iniciarControlesSesion() {
   if (typeof clienteSupabase !== 'undefined' && clienteSupabase?.auth?.onAuthStateChange) {
     try {
       clienteSupabase.auth.onAuthStateChange(async (event) => {
-        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+        if (['SIGNED_IN', 'SIGNED_OUT', 'USER_UPDATED'].includes(event)) {
           await cargarProgresoUsuario();
           pintarLeyenda();
           pintarMalla();
           pintarCatalogo();
         }
       });
-    } catch (e) {
-      // Pasivo
-    }
+    } catch {}
   }
 }
-
 
 /* ---------- Carga ---------- */
 
 function prepararDatos([componentes, plan, asignaturas]) {
   estado.componentes = componentes.componentes;
   estado.agrupaciones = componentes.agrupaciones;
+  estado.componentesMap = new Map(componentes.componentes.map((c) => [c.id, c]));
+  estado.agrupacionesMap = new Map(componentes.agrupaciones.map((a) => [a.id, a]));
   estado.plan = plan;
   asignaturas.forEach((a) => estado.asignaturas.set(a.codigo, a));
 
@@ -349,6 +330,7 @@ function prepararDatos([componentes, plan, asignaturas]) {
 Promise.all([cargarDatos('malla/componentes'), cargarDatos('malla/plan'), cargarDatos('malla/asignaturas')])
   .then(async (datos) => {
     prepararDatos(datos);
+    iniciarMalla();
     await cargarProgresoUsuario();
     pintarLeyenda();
     pintarMalla();
@@ -357,7 +339,6 @@ Promise.all([cargarDatos('malla/componentes'), cargarDatos('malla/plan'), cargar
     leerDireccion();
   })
   .catch((error) => mostrarErrorDeCarga($('#malla-rejilla'), error));
-
 
 /* ---------- Convenciones ---------- */
 
@@ -378,7 +359,6 @@ function pintarLeyenda() {
     <li><span class="leyenda__aro" style="--color: var(--azul-brillante)"></span>Te abre (se abre después)</li>`;
 }
 
-
 /* ---------- Malla ---------- */
 
 function casillaAsignatura(codigo) {
@@ -395,9 +375,9 @@ function casillaAsignatura(codigo) {
       if (prog.estado === 'APROBADA') {
         claseEstado = ' materia--aprobada';
         estadoAria = ', aprobada';
-        const notaTooltip = (prog.nota !== null && prog.nota !== undefined) ? ` · Nota: ${Number(prog.nota).toFixed(1)}` : '';
+        const notaTooltip = (prog.nota != null) ? ` · Nota: ${Number(prog.nota).toFixed(1)}` : '';
         badgeHtml = `<span class="materia__tag-aprobada" title="Asignatura aprobada${notaTooltip}">✓</span>`;
-      } else if (prog.estado === 'EN CURSO' || prog.estado === 'CURSANDO' || prog.estado === 'INSCRITA') {
+      } else if (['EN CURSO', 'CURSANDO', 'INSCRITA'].includes(prog.estado)) {
         claseEstado = ' materia--en-curso';
         estadoAria = ', en curso';
         badgeHtml = `<span class="materia__tag-curso" title="Matriculada este período">En curso</span>`;
@@ -421,7 +401,7 @@ function casillaAsignatura(codigo) {
 
 function casillaBolsa(bolsa, semestre, posicion) {
   const agrupacion = buscarAgrupacion(bolsa.agrupacion);
-  const color = buscarComponente(agrupacion.componente).color;
+  const color = buscarComponente(agrupacion?.componente)?.color || '#1667c2';
   const bolsaId = `b-${semestre}-${posicion}`;
   const estaCumplida = estadoProgreso.activo && estadoProgreso.bolsasCumplidas.has(bolsaId);
 
@@ -466,18 +446,20 @@ function pintarMalla() {
           </ul>
         </section>`).join('')}
     </div>`;
+}
 
-  const rejilla = $('#rejilla');
+function iniciarMalla() {
+  const contenedor = $('#malla-rejilla');
+  if (!contenedor) return;
 
-  rejilla.addEventListener('click', (evento) => {
+  contenedor.addEventListener('click', (evento) => {
     const boton = evento.target.closest('.materia');
     if (!boton) return;
     if (boton.dataset.codigo) seleccionar(boton.dataset.codigo);
     else seleccionarBolsa(boton);
   });
 
-  // Al pasar el cursor por encima de cualquier asignatura, marca sus prerrequisitos y lo que te abre
-  rejilla.addEventListener('pointerover', (evento) => {
+  contenedor.addEventListener('pointerover', (evento) => {
     const boton = evento.target.closest('.materia[data-codigo]');
     if (!boton) return;
     const codigo = boton.dataset.codigo;
@@ -486,7 +468,7 @@ function pintarMalla() {
     marcarRelaciones(codigo);
   });
 
-  rejilla.addEventListener('pointerout', (evento) => {
+  contenedor.addEventListener('pointerout', (evento) => {
     const boton = evento.target.closest('.materia[data-codigo]');
     if (!boton) return;
     const proximoBoton = evento.relatedTarget?.closest?.('.materia[data-codigo]');
@@ -497,12 +479,11 @@ function pintarMalla() {
       }
       return;
     }
-    // Salió del botón o pasó a un espacio no interactivo
     hoverCodigoActual = null;
     marcarRelaciones(estado.seleccion);
   });
 
-  rejilla.addEventListener('pointerleave', () => {
+  contenedor.addEventListener('pointerleave', () => {
     hoverCodigoActual = null;
     marcarRelaciones(estado.seleccion);
   });
@@ -513,18 +494,18 @@ function marcarRelaciones(codigo) {
   const rejilla = $('#rejilla');
   if (!rejilla) return;
   rejilla.classList.toggle('hay-seleccion', Boolean(codigo));
-  $$('.materia', rejilla).forEach((boton) => boton.classList.remove('es-seleccion', 'es-prerreq', 'es-dependiente'));
-  if (!codigo) return;
 
-  const asignatura = estado.asignaturas.get(codigo);
-  if (!asignatura) return;
+  const asignatura = codigo ? estado.asignaturas.get(codigo) : null;
+  const prerreqs = asignatura ? new Set(asignatura.prerrequisitos) : null;
+  const deps = asignatura ? new Set(estado.dependientes.get(codigo) || []) : null;
 
-  const marcar = (cod, clase) => $$(`.materia[data-codigo="${CSS.escape(cod)}"]`, rejilla).forEach((b) => b.classList.add(clase));
-  marcar(codigo, 'es-seleccion');
-  asignatura.prerrequisitos.forEach((p) => marcar(p, 'es-prerreq'));
-  (estado.dependientes.get(codigo) || []).forEach((d) => marcar(d, 'es-dependiente'));
+  $$('.materia', rejilla).forEach((b) => {
+    const cod = b.dataset.codigo;
+    b.classList.toggle('es-seleccion', Boolean(cod && cod === codigo));
+    b.classList.toggle('es-prerreq', Boolean(cod && prerreqs?.has(cod)));
+    b.classList.toggle('es-dependiente', Boolean(cod && deps?.has(cod)));
+  });
 }
-
 
 /* ---------- Detalle ---------- */
 
@@ -564,7 +545,7 @@ function seleccionar(codigo, { desplazar = false } = {}) {
   estado.seleccion = codigo;
 
   const agrupacion = buscarAgrupacion(a.agrupacion);
-  const componente = buscarComponente(agrupacion.componente);
+  const componente = buscarComponente(agrupacion?.componente);
   const dependientes = estado.dependientes.get(codigo) || [];
   const semestre = a.semestre ? `Semestre ${ROMANOS[a.semestre - 1]}` : 'Optativa · sin semestre fijo';
 
@@ -573,7 +554,7 @@ function seleccionar(codigo, { desplazar = false } = {}) {
     const prog = consultarProgresoMateria(codigo);
     if (prog) {
       if (prog.estado === 'APROBADA') {
-        const notaStr = (prog.nota !== null && prog.nota !== undefined) ? `Calificación: <strong>${Number(prog.nota).toFixed(1)}</strong>` : 'Aprobada';
+        const notaStr = (prog.nota != null) ? `Calificación: <strong>${Number(prog.nota).toFixed(1)}</strong>` : 'Aprobada';
         const periodoStr = prog.periodo ? ` · Cursada en ${prog.periodo.anio}-${prog.periodo.num}S` : '';
         bannerEstado = `
           <div class="detalle__estado-estudiante detalle__estado-estudiante--aprobada">
@@ -583,7 +564,7 @@ function seleccionar(codigo, { desplazar = false } = {}) {
               <div>${notaStr}${periodoStr}</div>
             </div>
           </div>`;
-      } else if (prog.estado === 'EN CURSO' || prog.estado === 'CURSANDO' || prog.estado === 'INSCRITA') {
+      } else if (['EN CURSO', 'CURSANDO', 'INSCRITA'].includes(prog.estado)) {
         bannerEstado = `
           <div class="detalle__estado-estudiante detalle__estado-estudiante--curso">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -613,8 +594,8 @@ function seleccionar(codigo, { desplazar = false } = {}) {
       <h3>${esc(a.nombre)}</h3>
       <ul class="etiquetas">
         <li class="etiqueta etiqueta--cred">${creditosTexto(a.creditos)} ${a.creditos === 1 ? 'crédito' : 'créditos'}</li>
-        <li class="etiqueta etiqueta--comp">${esc(componente.nombre)}</li>
-        <li class="etiqueta">${esc(agrupacion.nombre)}</li>
+        <li class="etiqueta etiqueta--comp">${esc(componente?.nombre || '')}</li>
+        <li class="etiqueta">${esc(agrupacion?.nombre || '')}</li>
         <li class="etiqueta">${a.obligatoria ? 'Obligatoria' : 'Optativa'}</li>
         <li class="etiqueta">${esc(semestre)}</li>
         ${a.whatsapp ? `<li class="etiqueta etiqueta--wpp"><a href="${esc(a.whatsapp)}" target="_blank" rel="noopener noreferrer" title="Abrir grupo de WhatsApp">${ICONO_WHATSAPP} WhatsApp</a></li>` : ''}
@@ -648,8 +629,8 @@ function seleccionar(codigo, { desplazar = false } = {}) {
 // Casilla de "Optativa de…" o "Libre elección": explica de qué se trata y lleva a la lista de opciones
 function seleccionarBolsa(boton) {
   const agrupacion = buscarAgrupacion(boton.dataset.bolsa);
-  const componente = buscarComponente(agrupacion.componente);
-  const esLibre = agrupacion.id === 'libre-eleccion';
+  const componente = buscarComponente(agrupacion?.componente);
+  const esLibre = agrupacion?.id === 'libre-eleccion';
   const esCumplida = boton.dataset.cumplida === 'true';
 
   estado.seleccion = null;
@@ -673,16 +654,16 @@ function seleccionarBolsa(boton) {
       <h3>${esc(boton.dataset.nombre)}</h3>
       <ul class="etiquetas">
         <li class="etiqueta etiqueta--cred">${esc(boton.dataset.creditos)} créditos</li>
-        <li class="etiqueta etiqueta--comp">${esc(componente.nombre)}</li>
-        ${esLibre ? '' : `<li class="etiqueta">${esc(agrupacion.nombre)}</li>`}
+        <li class="etiqueta etiqueta--comp">${esc(componente?.nombre || '')}</li>
+        ${esLibre ? '' : `<li class="etiqueta">${esc(agrupacion?.nombre || '')}</li>`}
       </ul>
     </div>
     <div class="detalle__cuerpo">
       <p class="detalle__vacio">${esLibre
         ? 'Esta casilla corresponde al componente de libre elección: no tiene una asignatura fija en la malla.'
-        : `Aquí se cursa una optativa de la agrupación «${esc(agrupacion.nombre)}». El programa exige ${agrupacion.exigidos} créditos en total en esta agrupación; la lista con sus prerrequisitos está más abajo.`}</p>
+        : `Aquí se cursa una optativa de la agrupación «${esc(agrupacion?.nombre || '')}». El programa exige ${agrupacion?.exigidos || 0} créditos en total en esta agrupación; la lista con sus prerrequisitos está más abajo.`}</p>
       ${esLibre ? '' : '<button class="detalle__boton" type="button" data-ver-opciones>Ver las opciones</button>'}
-    </div>`, componente.color);
+    </div>`, componente?.color || '#1667c2');
 
   $('#detalle').dataset.bolsa = boton.dataset.bolsa;
   guardarDireccion();
@@ -696,10 +677,13 @@ $('#detalle').addEventListener('click', (evento) => {
 
   if (evento.target.closest('[data-ver-opciones]')) {
     const agrupacion = buscarAgrupacion($('#detalle').dataset.bolsa);
-    estado.componente = agrupacion.componente;
-    estado.agrupacion = agrupacion.id;
-    estado.tipo = 'optativas';
-    estado.pagina = 1;
+    if (!agrupacion) return;
+    Object.assign(estado, {
+      componente: agrupacion.componente,
+      agrupacion: agrupacion.id,
+      tipo: 'optativas',
+      pagina: 1,
+    });
     pintarCatalogo();
     $('#asignaturas').scrollIntoView({ behavior: 'smooth' });
     guardarDireccion();
@@ -710,42 +694,32 @@ document.addEventListener('keydown', (evento) => {
   if (evento.key === 'Escape' && !$('#detalle').hidden) cerrarDetalle();
 });
 
-
 /* ---------- Catálogo por componente (paginado) ---------- */
 
 function iniciarCatalogo() {
-  estado.componente = estado.componentes[0].id;
+  estado.componente = estado.componentes[0]?.id;
   estado.agrupacion = null;
+
+  const cambiarVista = (parche) => {
+    Object.assign(estado, parche, { pagina: parche.pagina ?? 1 });
+    pintarCatalogo();
+    guardarDireccion();
+  };
 
   $('#pestanas').setAttribute('role', 'tablist');
   $('#pestanas').addEventListener('click', (evento) => {
     const pestana = evento.target.closest('[data-componente]');
-    if (!pestana) return;
-    estado.componente = pestana.dataset.componente;
-    estado.agrupacion = null;
-    estado.tipo = 'todas';
-    estado.pagina = 1;
-    pintarCatalogo();
-    guardarDireccion();
+    if (pestana) cambiarVista({ componente: pestana.dataset.componente, agrupacion: null, tipo: 'todas' });
   });
 
   $('#agrupaciones').addEventListener('click', (evento) => {
     const pildora = evento.target.closest('[data-agrupacion]');
-    if (!pildora) return;
-    estado.agrupacion = pildora.dataset.agrupacion;
-    estado.tipo = 'todas';
-    estado.pagina = 1;
-    pintarCatalogo();
-    guardarDireccion();
+    if (pildora) cambiarVista({ agrupacion: pildora.dataset.agrupacion, tipo: 'todas' });
   });
 
   $('#resumen-agrupacion').addEventListener('click', (evento) => {
     const filtro = evento.target.closest('[data-tipo]');
-    if (!filtro) return;
-    estado.tipo = filtro.dataset.tipo;
-    estado.pagina = 1;
-    pintarCatalogo();
-    guardarDireccion();
+    if (filtro) cambiarVista({ tipo: filtro.dataset.tipo });
   });
 
   $('#catalogo').addEventListener('click', (evento) => {
@@ -780,7 +754,7 @@ function pintarCatalogo() {
 
   // Agrupaciones del componente elegido
   const delComponente = estado.agrupaciones.filter((a) => a.componente === estado.componente);
-  if (!delComponente.some((a) => a.id === estado.agrupacion)) estado.agrupacion = delComponente[0].id;
+  if (!delComponente.some((a) => a.id === estado.agrupacion)) estado.agrupacion = delComponente[0]?.id;
   $('#agrupaciones').innerHTML = delComponente.length > 1
     ? delComponente.map((a) => `
         <button class="pildora" type="button" data-agrupacion="${esc(a.id)}"
@@ -788,6 +762,8 @@ function pintarCatalogo() {
     : '';
 
   const agrupacion = buscarAgrupacion(estado.agrupacion);
+  if (!agrupacion) return;
+
   const todas = [...estado.asignaturas.values()].filter((a) => a.agrupacion === agrupacion.id).sort(ordenar);
   const hayAmbas = todas.some((a) => a.obligatoria) && todas.some((a) => !a.obligatoria);
   if (!hayAmbas) estado.tipo = 'todas';
@@ -819,10 +795,10 @@ function pintarCatalogo() {
     : visibles.map((a) => {
         const prog = estadoProgreso.activo ? consultarProgresoMateria(a.codigo) : null;
         const esAprobada = prog?.estado === 'APROBADA';
-        const esEnCurso = prog?.estado === 'EN CURSO' || prog?.estado === 'CURSANDO' || prog?.estado === 'INSCRITA';
+        const esEnCurso = ['EN CURSO', 'CURSANDO', 'INSCRITA'].includes(prog?.estado);
         const claseTarjeta = esAprobada ? ' tarjeta tarjeta--aprobada' : (esEnCurso ? ' tarjeta tarjeta--en-curso' : ' tarjeta');
         const badgeEstado = esAprobada
-          ? `<span class="tarjeta__estado-badge" style="background:#10b981; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px;">✓ APROBADA ${prog.nota !== null && prog.nota !== undefined ? Number(prog.nota).toFixed(1) : ''}</span>`
+          ? `<span class="tarjeta__estado-badge" style="background:#10b981; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px;">✓ APROBADA ${prog.nota != null ? Number(prog.nota).toFixed(1) : ''}</span>`
           : (esEnCurso ? `<span class="tarjeta__estado-badge" style="background:#f59e0b; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px; margin-right:4px;">▶ EN CURSO</span>` : '');
 
         return `
@@ -869,7 +845,6 @@ function pintarPaginacion(total, cantidad, inicio, enPagina) {
     <button class="pag__boton" type="button" data-pagina="${estado.pagina + 1}" ${estado.pagina === total ? 'disabled' : ''} aria-label="Página siguiente">›</button>
     ${info}`;
 }
-
 
 /* ---------- Dirección (para compartir el estado de la página) ---------- */
 
