@@ -17,103 +17,99 @@
   <meta name="developer" content="Santiago Escobar Arias · Representante de Sistemas · saescobara@unal.edu.co">
   <meta name="signature" content="SEA-SIS-UNAL-2026-AUTH-F45123">
   <meta name="copyright" content="Santiago Escobar Arias · Facultad de Minas · UNAL Sede Medellín · Todos los derechos reservados">
-  <title>Horario de Descanso · Ingeniería de Sistemas e Informática · UNAL Medellín</title>
-  <meta name="description" content="Plataforma en horario de descanso y mantenimiento preventivo nocturno de 12:00 a. m. a 6:00 a. m. hora Colombia.">
+  <title>SYSTEM LOCKDOWN · Horario de Descanso · Sistemas UNAL</title>
+  <meta name="description" content="Protocolo de descanso y congelamiento nocturno de base de datos de 12:00 a. m. a 6:00 a. m. hora Colombia.">
   <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/descanso.css">
 </head>
 <body class="descanso-body" data-pagina="descanso">
 
+  <!-- Filtro CRT Scanlines -->
+  <div class="descanso-scanlines" aria-hidden="true"></div>
+
   <main class="descanso-contenedor">
-    <div class="descanso-tarjeta">
+    <div class="descanso-tarjeta" role="alert" aria-live="assertive">
       
-      <!-- Icono luna / modo descanso -->
-      <div class="descanso-icono-wrap">
-        <svg class="descanso-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-          <path d="M19 3v4"></path>
-          <path d="M21 5h-4"></path>
-        </svg>
+      <!-- Barra superior de la terminal -->
+      <div class="terminal-topbar">
+        <div class="terminal-botones">
+          <span class="term-dot term-dot--rojo"></span>
+          <span class="term-dot term-dot--amarillo"></span>
+          <span class="term-dot term-dot--verde"></span>
+        </div>
+        <span class="terminal-prompt">root@sistemasunal:~/seguridad# ./curfew_lockdown.sh</span>
+        <span class="terminal-badge-curfew">MODO DESCANSO</span>
       </div>
 
-      <!-- Badge de estado -->
-      <div class="descanso-badge">
-        <span class="descanso-pulso" aria-hidden="true"></span>
-        <span>Pausa Nocturna Preventiva</span>
+      <!-- Contenido de la consola -->
+      <div class="terminal-cuerpo">
+        
+        <!-- Título con efecto Glitch de distorsión cromática -->
+        <div class="glitch-wrapper">
+          <h1 class="glitch-titulo" data-text="SYSTEM LOCKDOWN">SYSTEM LOCKDOWN</h1>
+          <p class="glitch-sub">&gt; BASE DE DATOS EN REPOSO PREVENTIVO [00:00 - 06:00 COT]</p>
+        </div>
+
+        <!-- HUD con hora Colombia y cuenta regresiva -->
+        <div class="terminal-hud">
+          <div class="terminal-hud-caja">
+            <span class="terminal-hud-label">// HORA OFICIAL COLOMBIA (COT)</span>
+            <span class="terminal-hud-val" id="reloj-colombia">--:--:--</span>
+          </div>
+          <div class="terminal-hud-caja">
+            <span class="terminal-hud-label">// DESBLOQUEO AUTOMÁTICO EN</span>
+            <span class="terminal-hud-val terminal-hud-val--cuenta" id="cuenta-regresiva">--h --m --s</span>
+          </div>
+        </div>
+
+        <!-- Consola de logs estilo hacker -->
+        <div class="terminal-logs" id="terminal-logs">
+          <p class="terminal-linea"><span class="term-tag term-tag--critico">[SEC-OPS]</span> INICIANDO PROTOCOLO DE CONGELAMIENTO NOCTURNO...</p>
+          <p class="terminal-linea"><span class="term-tag term-tag--aviso">[DATABASE]</span> CANALES DE ESCRITURA/LECTURA DESCONECTADOS PREVENTIVAMENTE [LOCKED].</p>
+          <p class="terminal-linea"><span class="term-tag term-tag--info">[INTEGRITY]</span> PROTECCIÓN DE DATOS ACTIVA: ACCESOS EXTERNOS BLOQUEADOS.</p>
+          <p class="terminal-linea"><span class="term-tag term-tag--ok">[SECURITY]</span> REGISTRO DE EVENTOS Y PURGA DE TOKENS EN CURSO.</p>
+          <p class="terminal-linea"><span class="term-tag term-tag--info">[SCHEDULE]</span> VENTANA DE DESCANSO: 12:00 A. M. &mdash; 06:00 A. M. (HORA COLOMBIA).</p>
+          <p class="terminal-linea"><span class="term-tag term-tag--ok">[SYS-RESUME]</span> SERVICIOS REANUDAN NORMALMENTE A LAS 06:00:00 COT.</p>
+          <p class="terminal-linea"><span class="term-tag term-tag--info">&gt;</span> <span id="log-dinamico">Esperando ciclo de apertura...</span><span class="term-cursor" aria-hidden="true"></span></p>
+        </div>
+
+        <!-- Mensaje descriptivo institucional -->
+        <p class="terminal-aviso-final">
+          Al igual que en la <strong>Semana de Sistemas</strong>, la plataforma suspende operaciones durante la madrugada para proteger la información académica, realizar mantenimiento a la base de datos y evitar manipulaciones inapropiadas.
+        </p>
+
       </div>
-
-      <h1 class="descanso-titulo">Servidores en Descanso</h1>
-      <p class="descanso-subtitulo">
-        Pausa programada para proteger la integridad de los datos y descanso de la plataforma.
-      </p>
-
-      <!-- HUD con hora actual y cuenta regresiva -->
-      <div class="descanso-hud">
-        <div class="descanso-hud-item">
-          <span class="descanso-hud-label">Hora en Colombia (UTC-5)</span>
-          <span class="descanso-hud-valor" id="reloj-colombia">--:--:--</span>
-        </div>
-        <div class="descanso-hud-item">
-          <span class="descanso-hud-label">Reapertura a las 6:00 a. m.</span>
-          <span class="descanso-hud-valor" id="cuenta-regresiva">--h --m --s</span>
-        </div>
-      </div>
-
-      <!-- Terminal de estado técnico -->
-      <div class="descanso-terminal" aria-label="Consola de estado del sistema">
-        <div class="descanso-terminal-cabecera">
-          <span class="descanso-led descanso-led--rojo" aria-hidden="true"></span>
-          <span class="descanso-led descanso-led--amarillo" aria-hidden="true"></span>
-          <span class="descanso-led descanso-led--verde" aria-hidden="true"></span>
-          <span class="descanso-terminal-comando">~/sistemas/estado $ ./comprobar-servicio.sh</span>
-        </div>
-        <div class="descanso-terminal-linea">
-          <span class="descanso-terminal-tag">[HORARIO]</span>
-          <span class="descanso-terminal-txt">12:00 a. m. a 6:00 a. m. (Hora oficial de Colombia)</span>
-        </div>
-        <div class="descanso-terminal-linea">
-          <span class="descanso-terminal-tag">[ESTADO]</span>
-          <span class="descanso-terminal-txt">Base de datos en reposo y servicios en mantenimiento</span>
-        </div>
-        <div class="descanso-terminal-linea">
-          <span class="descanso-terminal-tag">[PROPÓSITO]</span>
-          <span class="descanso-terminal-txt">Seguridad, descanso de datos y prevención de accesos indebidos</span>
-        </div>
-        <div class="descanso-terminal-linea">
-          <span class="descanso-terminal-tag">[RETORNO]</span>
-          <span class="descanso-terminal-txt">Acceso público habilitado hoy a las 6:00 a. m.</span>
-        </div>
-      </div>
-
-      <p class="descanso-mensaje">
-        Al igual que en la Semana de Sistemas, el portal entra en descanso durante la madrugada para asegurar que tus datos estén protegidos.
-        <strong>Te esperamos a primera hora para seguir construyendo tu camino.</strong>
-      </p>
-
-      <!-- Bypass para desarrollador / pruebas -->
-      <div class="descanso-acciones">
-        <button class="descanso-btn-bypass" id="btn-bypass" type="button" title="Acceso para mantenimiento y desarrollo">
-          Acceso de administración / desarrollo
-        </button>
-      </div>
-
     </div>
   </main>
 
   <footer class="descanso-pie">
-    <p>Ingeniería de Sistemas e Informática · Facultad de Minas · Universidad Nacional de Colombia · Sede Medellín</p>
-    <p><small>© 2026 Santiago Escobar Arias · Representante Estudiantil</small></p>
+    <p>INGENIERÍA DE SISTEMAS E INFORMÁTICA · FACULTAD DE MINAS · UNAL MEDELLÍN</p>
+    <p><small>&copy; 2026 Santiago Escobar Arias &middot; Representante Estudiantil</small></p>
   </footer>
 
   <script>
     (function() {
       const relojEl = document.getElementById('reloj-colombia');
       const cuentaEl = document.getElementById('cuenta-regresiva');
-      const btnBypass = document.getElementById('btn-bypass');
+      const logDinamico = document.getElementById('log-dinamico');
+
+      const mensajes = [
+        'Monitor de seguridad: integridad de tablas 100% verificada.',
+        'Sincronización en pausa: tráfico hacia Supabase mitigado.',
+        'Sesiones interactivas suspendidas hasta las 6:00 a. m.',
+        'Esperando ciclo de reactivación a las 06:00:00 COT...',
+        'Honeypot activo: conexiones no autorizadas descartadas.',
+        'Descanso de datos activo: servidores en bajo consumo.'
+      ];
+      let msgIdx = 0;
+      setInterval(() => {
+        msgIdx = (msgIdx + 1) % mensajes.length;
+        if (logDinamico) logDinamico.textContent = mensajes[msgIdx];
+      }, 4000);
 
       function obtenerPartesColombia() {
         const partes = new Intl.DateTimeFormat('en-US', {
@@ -136,40 +132,34 @@
       function actualizar() {
         const { h, m, s } = obtenerPartesColombia();
 
-        // 1. Reloj en formato 12h legible
+        // 1. Reloj en formato 12h
         const ampm = h >= 12 ? 'p. m.' : 'a. m.';
         const h12 = h % 12 || 12;
         const pad = (n) => String(n).padStart(2, '0');
-        relojEl.textContent = `${pad(h12)}:${pad(m)}:${pad(s)} ${ampm}`;
+        if (relojEl) relojEl.textContent = `${pad(h12)}:${pad(m)}:${pad(s)} ${ampm}`;
 
-        // 2. Si ya pasó de las 6:00 a. m. y son antes de las 12:00 a. m. (00:00), ya está abierto
+        // 2. Si ya son las 6:00 a. m. o más (y antes de medianoche), abrir portal
         if (h >= 6) {
-          cuentaEl.textContent = '¡Plataforma abierta!';
-          setTimeout(() => { window.location.replace('index.html'); }, 1200);
+          if (cuentaEl) cuentaEl.textContent = '00h 00m 00s';
+          if (logDinamico) logDinamico.textContent = '¡LOCKDOWN FINALIZADO! Redirigiendo...';
+          setTimeout(() => { window.location.replace('index.html'); }, 1000);
           return;
         }
 
-        // 3. Calcular tiempo restante hasta las 06:00:00 hoy
-        const segundosActuales = h * 3600 + m * 60 + s;
-        const segundosMeta = 6 * 3600; // 06:00:00
-        const difSegundos = Math.max(0, segundosMeta - segundosActuales);
+        // 3. Cuenta regresiva hasta 06:00:00
+        const segActuales = h * 3600 + m * 60 + s;
+        const segMeta = 6 * 3600;
+        const dif = Math.max(0, segMeta - segActuales);
 
-        const rH = Math.floor(difSegundos / 3600);
-        const rM = Math.floor((difSegundos % 3600) / 60);
-        const rS = difSegundos % 60;
+        const rH = Math.floor(dif / 3600);
+        const rM = Math.floor((dif % 3600) / 60);
+        const rS = dif % 60;
 
-        cuentaEl.textContent = `${pad(rH)}h ${pad(rM)}m ${pad(rS)}s`;
+        if (cuentaEl) cuentaEl.textContent = `${pad(rH)}h ${pad(rM)}m ${pad(rS)}s`;
       }
 
       actualizar();
       setInterval(actualizar, 1000);
-
-      if (btnBypass) {
-        btnBypass.addEventListener('click', () => {
-          sessionStorage.setItem('sistemasunal.descanso.bypass', '1');
-          window.location.replace('index.html?bypass=1');
-        });
-      }
     })();
   </script>
 </body>
