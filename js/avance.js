@@ -871,72 +871,80 @@ function configurarFormulariosAuth() {
   const formRegistro = $('#form-registro');
   const loginAlerta = $('#login-alerta');
   const registroAlerta = $('#registro-alerta');
-  const btnLogin = $('#btn-login-enviar');
-  const btnRegistro = $('#btn-registro-enviar');
+  const btnSmartkeyLogin = $('#btn-smartkey-login');
+  const btnSmartkeyRegistro = $('#btn-smartkey-registro');
 
   if (formLogin) {
-    formLogin.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      mostrarAlertaAuth(loginAlerta, '');
-      const email = $('#login-email').value.trim();
-      const password = $('#login-password').value;
+    formLogin.addEventListener('submit', (e) => e.preventDefault());
+  }
+  if (formRegistro) {
+    formRegistro.addEventListener('submit', (e) => e.preventDefault());
+  }
 
-      if (btnLogin) {
-        btnLogin.disabled = true;
-        btnLogin.textContent = 'Iniciando sesión...';
-      }
+  if (btnSmartkeyLogin) {
+    btnSmartkeyLogin.addEventListener('click', async () => {
+      mostrarAlertaAuth(loginAlerta, '');
+      const textoEl = $('#btn-smartkey-login-texto');
+      const textoOriginal = textoEl ? textoEl.textContent : '';
+      btnSmartkeyLogin.disabled = true;
+      if (textoEl) textoEl.textContent = 'Conectando con SmartKey...';
 
       try {
-        const usuario = await ServicioAuth.iniciarSesion(email, password);
-        aplicarSesion(usuario);
+        await ServicioAuth.iniciarConSmartKey();
       } catch (err) {
-        mostrarAlertaAuth(loginAlerta, err.message || 'Error al iniciar sesión.');
-      } finally {
-        if (btnLogin) {
-          btnLogin.disabled = false;
-          btnLogin.textContent = 'Iniciar Sesión';
-        }
+        mostrarAlertaAuth(loginAlerta, err.message || 'Error al conectar con SmartKey.');
+        btnSmartkeyLogin.disabled = false;
+        if (textoEl) textoEl.textContent = textoOriginal;
       }
     });
   }
 
-  if (formRegistro) {
-    formRegistro.addEventListener('submit', async (e) => {
-      e.preventDefault();
+  if (btnSmartkeyRegistro) {
+    btnSmartkeyRegistro.addEventListener('click', async () => {
       mostrarAlertaAuth(registroAlerta, '');
-      const email = $('#registro-email').value.trim();
-      const password = $('#registro-password').value;
-      const passConf = $('#registro-password-confirma').value;
-      const histTexto = $('#registro-historia').value;
+      const histTexto = ($('#registro-historia')?.value || '').trim();
 
-      if (password !== passConf) {
-        mostrarAlertaAuth(registroAlerta, 'Las contraseñas no coinciden. Por favor verifícalas.');
+      if (!histTexto) {
+        mostrarAlertaAuth(registroAlerta, 'Debes pegar tu historia académica del SIA para verificar que perteneces a Ingeniería de Sistemas e Informática antes de registrarte.');
+        $('#registro-historia')?.focus();
         return;
       }
 
-      if (btnRegistro) {
-        btnRegistro.disabled = true;
-        btnRegistro.textContent = 'Verificando y registrando...';
+      if (typeof leerHistoria !== 'function') {
+        mostrarAlertaAuth(registroAlerta, 'No se encontró el módulo lector de historia académica.');
+        return;
       }
 
+      const historia = leerHistoria(histTexto);
+      if (!historia.materias.length) {
+        mostrarAlertaAuth(registroAlerta, 'No se encontraron materias en el texto pegado. Abre Historia Académica en el SIA, presiona Ctrl + A, Ctrl + C y pega de nuevo.');
+        return;
+      }
+
+      if (!historia.esSistemas) {
+        mostrarAlertaAuth(registroAlerta, 'Acceso denegado: El registro está reservado exclusivamente para estudiantes de Ingeniería de Sistemas e Informática de la UNAL. En tu historia académica no se detectó este programa.');
+        return;
+      }
+
+      // Guardar temporalmente la historia validada para asociarla al usuario al retornar de Google
       try {
-        const res = await ServicioAuth.registrar(email, password, histTexto);
-        if (res.necesitaConfirmarEmail) {
-          mostrarAlertaAuth(
-            registroAlerta,
-            '¡Registro exitoso! Se ha enviado un correo de confirmación a tu dirección institucional. Por favor verifica tu bandeja para activar el acceso.',
-            'exito'
-          );
-        } else {
-          aplicarSesion(res.usuario);
-        }
+        localStorage.setItem('sistemasunal.registro_pendiente', JSON.stringify({
+          historiaTexto: histTexto,
+          nombre: historia.nombre || '',
+          timestamp: Date.now()
+        }));
+      } catch (_) {}
+
+      const textoEl = $('#btn-smartkey-registro-texto');
+      btnSmartkeyRegistro.disabled = true;
+      if (textoEl) textoEl.textContent = 'Conectando con SmartKey...';
+
+      try {
+        await ServicioAuth.iniciarConSmartKey();
       } catch (err) {
-        mostrarAlertaAuth(registroAlerta, err.message || 'Error en el registro.');
-      } finally {
-        if (btnRegistro) {
-          btnRegistro.disabled = false;
-          btnRegistro.textContent = 'Verificar programa y Registrarme';
-        }
+        mostrarAlertaAuth(registroAlerta, err.message || 'Error al conectar con SmartKey.');
+        btnSmartkeyRegistro.disabled = false;
+        if (textoEl) textoEl.textContent = 'Verificar programa y Registrarme con SmartKey';
       }
     });
   }
@@ -965,11 +973,41 @@ async function inicializarAutenticacion() {
     }
   }
 
+  // Limpiar parámetros OAuth de la URL sin recargar
+  if (window.location.hash.includes('access_token=') || window.location.search.includes('code=')) {
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   const sesion = await ServicioAuth.obtenerSesion();
   if (sesion && sesion.usuario) {
     aplicarSesion(sesion.usuario);
   } else {
     aplicarSinSesion();
+    if (sesion && sesion.error) {
+      if (sesion.noRegistrado) {
+        const tabRegistro = $('#tab-registro');
+        if (tabRegistro) tabRegistro.click();
+        const registroAlerta = $('#registro-alerta');
+        mostrarAlertaAuth(registroAlerta, sesion.error);
+      } else {
+        const loginAlerta = $('#login-alerta');
+        mostrarAlertaAuth(loginAlerta, sesion.error);
+      }
+    }
+  }
+
+  // Escuchar cambios de sesión OAuth en tiempo real
+  if (typeof clienteSupabase !== 'undefined' && clienteSupabase?.auth?.onAuthStateChange) {
+    clienteSupabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        const sesionActual = await ServicioAuth.obtenerSesion();
+        if (sesionActual?.usuario) {
+          aplicarSesion(sesionActual.usuario);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        aplicarSinSesion();
+      }
+    });
   }
 }
 

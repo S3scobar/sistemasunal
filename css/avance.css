@@ -1531,3 +1531,87 @@ body[data-pagina="avance"] main::after { bottom: -200px; right: -140px; backgrou
 /* Nivel de tres cifras (100) */
 .jugador__nivel--3 b { font-size: 19px; }
 .jugador__nivel--3 { min-width: 0; padding: 3px 7px 4px; }
+
+/* ---------- Botón SmartKey / Google Workspace UNAL ---------- */
+.auth-google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(47, 168, 255, 0.45);
+  background: linear-gradient(135deg, rgba(14, 42, 82, 0.95), rgba(7, 21, 43, 0.95));
+  color: #fff;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.auth-google-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--neon-2, #38bdf8);
+  box-shadow: 0 8px 24px rgba(47, 168, 255, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, rgba(20, 56, 107, 0.98), rgba(10, 30, 61, 0.98));
+}
+
+.auth-google-btn:active {
+  transform: translateY(0);
+}
+
+.auth-google-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+}
+
+.auth-google-btn__icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  padding: 2.5px;
+  box-sizing: border-box;
+  display: block;
+}
+
+.auth-smartkey-badge {
+  margin: 6px 0 0;
+  font-size: 11px;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--neon-2, #38bdf8);
+  text-align: center;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.tarjeta-auth__separador {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 16px 0 14px;
+  color: var(--apagado, #64748b);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.tarjeta-auth__separador::before,
+.tarjeta-auth__separador::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tarjeta-auth__separador span {
+  padding: 0 12px;
+}

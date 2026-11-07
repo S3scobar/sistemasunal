@@ -80,14 +80,55 @@ const ServicioAuth = {
         const { data: { session }, error } = await clienteSupabase.auth.getSession();
         if (error) throw error;
         if (session && session.user) {
-          const perfil = await this.obtenerPerfil(session.user.id);
+          const correo = String(session.user.email || '').trim().toLowerCase();
+
+          // 1. RESTRICCIÓN ESTRICTA: Solo correo institucional @unal.edu.co
+          if (!correo.endsWith('@unal.edu.co')) {
+            await clienteSupabase.auth.signOut();
+            localStorage.removeItem(CLAVE_SESION_LOCAL);
+            localStorage.removeItem('sistemasunal.registro_pendiente');
+            return {
+              error: 'Acceso denegado: Solo se permite el ingreso con correo institucional @unal.edu.co.',
+              noPermitido: true,
+            };
+          }
+
+          let perfil = await this.obtenerPerfil(session.user.id, correo);
+
+          // 2. Si hay un registro pendiente verificado desde la pestaña Registrarse
+          let registroPendiente = null;
+          try {
+            registroPendiente = JSON.parse(localStorage.getItem('sistemasunal.registro_pendiente') || 'null');
+          } catch (_) {}
+
+          if (registroPendiente && registroPendiente.historiaTexto) {
+            const nombreFinal = perfil?.nombre || registroPendiente.nombre || session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
+            await this.guardarPerfil(session.user.id, correo, {
+              nombre: nombreFinal,
+              historiaTexto: registroPendiente.historiaTexto,
+            });
+            localStorage.removeItem('sistemasunal.registro_pendiente');
+            perfil = await this.obtenerPerfil(session.user.id, correo);
+          }
+
+          // 3. RESTRICCIÓN ESTRICTA DE SISTEMAS:
+          // Si no tiene perfil registrado o no tiene historia académica guardada, NO puede acceder.
+          if (!perfil || !perfil.historia_texto) {
+            await clienteSupabase.auth.signOut();
+            localStorage.removeItem(CLAVE_SESION_LOCAL);
+            return {
+              error: 'Cuenta no registrada o sin verificar. Por favor ve a la pestaña Registrarse y pega tu historia académica del SIA para verificar que perteneces a Ingeniería de Sistemas e Informática.',
+              noRegistrado: true,
+            };
+          }
+
           return {
             usuario: {
               id: session.user.id,
-              correo: session.user.email,
-              nombre: perfil?.nombre || session.user.user_metadata?.nombre || '',
-              historiaTexto: perfil?.historia_texto || session.user.user_metadata?.historia_texto || '',
-              ritmo: perfil?.ritmo || session.user.user_metadata?.ritmo || null,
+              correo,
+              nombre: perfil.nombre || session.user.user_metadata?.full_name || session.user.user_metadata?.name || '',
+              historiaTexto: perfil.historia_texto,
+              ritmo: perfil.ritmo || null,
             },
             proveedor: 'supabase',
           };
@@ -114,16 +155,46 @@ const ServicioAuth = {
   },
 
   // Consulta el perfil en la tabla 'perfiles' de Supabase
-  async obtenerPerfil(userId) {
+  // Consulta el perfil en la tabla 'perfiles' de Supabase (por ID o por correo institucional para normalizar existentes)
+  async obtenerPerfil(userId, correo) {
     if (!clienteSupabase) return null;
     try {
-      const { data, error } = await clienteSupabase
-        .from('perfiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle();
-      if (error) return null;
-      return data;
+      // 1. Buscar por ID de usuario
+      if (userId) {
+        const { data, error } = await clienteSupabase
+          .from('perfiles')
+          .select('*')
+          .eq('id', userId)
+          .maybeSingle();
+        if (data) return data;
+      }
+
+      // 2. Si no se encuentra por ID, buscar por correo para normalizar cuentas existentes
+      if (correo) {
+        const emailLimpio = String(correo).trim().toLowerCase();
+        const { data: porCorreo, error: errCorreo } = await clienteSupabase
+          .from('perfiles')
+          .select('*')
+          .eq('correo', emailLimpio)
+          .maybeSingle();
+
+        if (porCorreo) {
+          // Normalizar el ID en Supabase para vincular el registro anterior con la sesión actual de SmartKey
+          if (userId && porCorreo.id !== userId) {
+            try {
+              await clienteSupabase
+                .from('perfiles')
+                .update({ id: userId, actualizado_en: new Date().toISOString() })
+                .eq('correo', emailLimpio);
+              porCorreo.id = userId;
+            } catch (errActualizar) {
+              console.warn('No se pudo actualizar ID en perfiles:', errActualizar);
+            }
+          }
+          return porCorreo;
+        }
+      }
+      return null;
     } catch {
       return null;
     }
@@ -133,9 +204,10 @@ const ServicioAuth = {
   async guardarPerfil(userId, correo, datos) {
     if (clienteSupabase) {
       try {
+        const emailLimpio = String(correo || '').trim().toLowerCase();
         await clienteSupabase.from('perfiles').upsert({
           id: userId,
-          correo,
+          correo: emailLimpio,
           nombre: datos.nombre || '',
           historia_texto: datos.historiaTexto || '',
           ritmo: datos.ritmo || null,
@@ -145,6 +217,26 @@ const ServicioAuth = {
         console.warn('No se pudo sincronizar la tabla perfiles en Supabase:', err);
       }
     }
+  },
+
+  // Iniciar sesión o registrarse con SmartKey (Google Workspace UNAL)
+  async iniciarConSmartKey() {
+    if (!clienteSupabase) {
+      throw new Error('El servicio de base de datos no está disponible.');
+    }
+
+    const { error } = await clienteSupabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        queryParams: {
+          hd: 'unal.edu.co',
+          prompt: 'select_account',
+        },
+        redirectTo: window.location.origin + window.location.pathname,
+      },
+    });
+
+    if (error) throw new Error(error.message);
   },
 
   // Iniciar sesión con correo UNAL y contraseña
@@ -168,6 +260,10 @@ const ServicioAuth = {
       }
 
       const perfil = await this.obtenerPerfil(data.user.id);
+      if (!perfil || !perfil.historia_texto) {
+        await clienteSupabase.auth.signOut();
+        throw new Error('Cuenta no registrada o sin verificar. Ve a la pestaña Registrarse y pega tu historia académica del SIA para verificar tu programa de Sistemas.');
+      }
       const usuario = {
         id: data.user.id,
         correo: data.user.email,
