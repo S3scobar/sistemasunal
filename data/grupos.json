@@ -32,5 +32,14 @@
     "color": "#4a4fd8",
     "logo": "img/grupo-uneural.jpg",
     "enlace": "https://www.instagram.com/uneuralgroup"
+  },
+  {
+    "id": "atarraia",
+    "nombre": "AtarraIA",
+    "tipo": "Semillero de Ciencias de la Computación",
+    "color": "#c47a00",
+    "logo": "img/grupo-atarraia.jpg",
+    "enlace": "https://chat.whatsapp.com/Dd8RnPsMGdg22x3H3s6vIa?mode=ems_copy_t",
+    "descripcion": "AtarraIA es un semillero de investigación en ciencias de la computación enfocado en inteligencia artificial, desarrollo de modelos y aplicaciones prácticas, fomentando la investigación y el aprendizaje colaborativo en la comunidad estudiantil de la UNAL Medellín."
   }
 ]
