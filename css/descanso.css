@@ -1,0 +1,303 @@
+/* ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Facultad de Minas — Universidad Nacional de Colombia, Sede Medellín
+   Contacto: saescobara@unal.edu.co | Instagram: @s_escobar__ | WhatsApp: (+57) 312 377 2091
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== */
+
+/* ---------- Página de Descanso Nocturno (12:00 a. m. a 6:00 a. m.) ---------- */
+
+.descanso-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 50% 15%, #0c1a30 0%, #060b17 50%, #030712 100%);
+  color: #e2e8f0;
+  font-family: 'Barlow', system-ui, sans-serif;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Rejilla de fondo estilo ciberpunk sutil */
+.descanso-body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(47, 168, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(47, 168, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.descanso-contenedor {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.descanso-tarjeta {
+  max-width: 680px;
+  width: 100%;
+  background: rgba(10, 20, 38, 0.78);
+  border: 1px solid rgba(47, 168, 255, 0.25);
+  border-radius: 18px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(47, 168, 255, 0.12);
+  padding: 2.5rem 2.2rem;
+  text-align: center;
+  position: relative;
+  animation: descansoEntrada 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes descansoEntrada {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Borde superior neón */
+.descanso-tarjeta::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #2fa8ff, #38bdf8, transparent);
+  box-shadow: 0 0 12px #2fa8ff;
+}
+
+/* Icono central de luna / tecnología */
+.descanso-icono-wrap {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(47, 168, 255, 0.15) 0%, rgba(2, 6, 23, 0.6) 80%);
+  border: 1px solid rgba(47, 168, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(47, 168, 255, 0.25);
+  position: relative;
+}
+
+.descanso-icono-svg {
+  width: 48px;
+  height: 48px;
+  color: #38bdf8;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+  animation: descansoFlotar 4s ease-in-out infinite;
+}
+
+@keyframes descansoFlotar {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-3deg); }
+}
+
+/* Badge de estado */
+.descanso-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.descanso-pulso {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24;
+  animation: descansoPulsar 2s infinite;
+}
+
+@keyframes descansoPulsar {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Título y textos */
+.descanso-titulo {
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.descanso-subtitulo {
+  font-size: 1.05rem;
+  color: #94a3b8;
+  margin: 0 0 1.8rem;
+  line-height: 1.5;
+}
+
+/* Reloj y Cuenta Regresiva */
+.descanso-hud {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background: rgba(4, 12, 26, 0.75);
+  border: 1px solid rgba(47, 168, 255, 0.2);
+  border-radius: 14px;
+  padding: 1.25rem 1rem;
+  margin-bottom: 1.8rem;
+}
+
+@media (max-width: 520px) {
+  .descanso-hud {
+    grid-template-columns: 1fr;
+  }
+}
+
+.descanso-hud-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.descanso-hud-label {
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.descanso-hud-valor {
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+/* Terminal de detalles */
+.descanso-terminal {
+  text-align: left;
+  background: rgba(2, 6, 18, 0.9);
+  border: 1px solid rgba(47, 168, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.descanso-terminal-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.descanso-led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.descanso-led--rojo { background: #ef4444; }
+.descanso-led--amarillo { background: #f59e0b; }
+.descanso-led--verde { background: #10b981; }
+
+.descanso-terminal-comando {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin-left: 0.5rem;
+}
+
+.descanso-terminal-linea {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.descanso-terminal-linea:last-child {
+  margin-bottom: 0;
+}
+
+.descanso-terminal-tag {
+  color: #2fa8ff;
+  font-weight: 600;
+  min-width: 90px;
+}
+
+.descanso-terminal-txt {
+  color: #cbd5e1;
+}
+
+/* Mensaje explicativo */
+.descanso-mensaje {
+  font-size: 0.92rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.descanso-mensaje strong {
+  color: #e2e8f0;
+}
+
+/* Acciones / Bypass */
+.descanso-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.descanso-btn-bypass {
+  background: transparent;
+  border: 1px dashed rgba(100, 116, 139, 0.4);
+  color: #64748b;
+  font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.descanso-btn-bypass:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.05);
+}
+
+/* Pie */
+.descanso-pie {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: #64748b;
+  font-size: 0.82rem;
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}

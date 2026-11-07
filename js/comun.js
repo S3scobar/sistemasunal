@@ -87,6 +87,41 @@ function marcaInvisible(texto = _SEA.marca) {
     abiertas = hay;
   }, 1200);
 })();
+/* ---------- Control de horario de descanso nocturno (12:00 a. m. a 6:00 a. m. Colombia) ---------- */
+(function verificarHorarioDescanso() {
+  if (typeof window === 'undefined' || typeof document === 'undefined') return;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('bypass') === '1' || params.get('dev') === '1') {
+      sessionStorage.setItem('sistemasunal.descanso.bypass', '1');
+    }
+    if (sessionStorage.getItem('sistemasunal.descanso.bypass') === '1') return;
+
+    const ruta = (window.location.pathname || '').toLowerCase();
+    const esPaginaDescanso = document.body?.dataset?.pagina === 'descanso' || ruta.endsWith('descanso.html');
+
+    // Hora exacta en Colombia (America/Bogota, UTC-5)
+    const partes = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Bogota',
+      hour: 'numeric',
+      hour12: false,
+    }).formatToParts(new Date());
+
+    let h = 0;
+    for (const p of partes) {
+      if (p.type === 'hour') h = parseInt(p.value, 10);
+    }
+    // Formato 24h: 0 a 5 corresponden a las 12:00 a. m. hasta las 5:59 a. m.
+    const enDescanso = h >= 0 && h < 6;
+
+    if (enDescanso && !esPaginaDescanso) {
+      window.location.replace('descanso.html');
+    } else if (!enDescanso && esPaginaDescanso) {
+      window.location.replace('index.html');
+    }
+  } catch (_) {}
+})();
+
 
 
 /* =============================================

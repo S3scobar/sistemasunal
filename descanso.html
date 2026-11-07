@@ -1,0 +1,176 @@
+<!doctype html>
+<!-- ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Facultad de Minas — Universidad Nacional de Colombia, Sede Medellín
+   Contacto: saescobara@unal.edu.co | Instagram: @s_escobar__ | WhatsApp: (+57) 312 377 2091
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== -->
+<html lang="es" data-author="Santiago Escobar Arias" data-developer="saescobara@unal.edu.co" data-auth-token="SEA-SIS-UNAL-2026-AUTH-F45123">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Santiago Escobar Arias">
+  <meta name="developer" content="Santiago Escobar Arias · Representante de Sistemas · saescobara@unal.edu.co">
+  <meta name="signature" content="SEA-SIS-UNAL-2026-AUTH-F45123">
+  <meta name="copyright" content="Santiago Escobar Arias · Facultad de Minas · UNAL Sede Medellín · Todos los derechos reservados">
+  <title>Horario de Descanso · Ingeniería de Sistemas e Informática · UNAL Medellín</title>
+  <meta name="description" content="Plataforma en horario de descanso y mantenimiento preventivo nocturno de 12:00 a. m. a 6:00 a. m. hora Colombia.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/descanso.css">
+</head>
+<body class="descanso-body" data-pagina="descanso">
+
+  <main class="descanso-contenedor">
+    <div class="descanso-tarjeta">
+      
+      <!-- Icono luna / modo descanso -->
+      <div class="descanso-icono-wrap">
+        <svg class="descanso-icono-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          <path d="M19 3v4"></path>
+          <path d="M21 5h-4"></path>
+        </svg>
+      </div>
+
+      <!-- Badge de estado -->
+      <div class="descanso-badge">
+        <span class="descanso-pulso" aria-hidden="true"></span>
+        <span>Pausa Nocturna Preventiva</span>
+      </div>
+
+      <h1 class="descanso-titulo">Servidores en Descanso</h1>
+      <p class="descanso-subtitulo">
+        Pausa programada para proteger la integridad de los datos y descanso de la plataforma.
+      </p>
+
+      <!-- HUD con hora actual y cuenta regresiva -->
+      <div class="descanso-hud">
+        <div class="descanso-hud-item">
+          <span class="descanso-hud-label">Hora en Colombia (UTC-5)</span>
+          <span class="descanso-hud-valor" id="reloj-colombia">--:--:--</span>
+        </div>
+        <div class="descanso-hud-item">
+          <span class="descanso-hud-label">Reapertura a las 6:00 a. m.</span>
+          <span class="descanso-hud-valor" id="cuenta-regresiva">--h --m --s</span>
+        </div>
+      </div>
+
+      <!-- Terminal de estado técnico -->
+      <div class="descanso-terminal" aria-label="Consola de estado del sistema">
+        <div class="descanso-terminal-cabecera">
+          <span class="descanso-led descanso-led--rojo" aria-hidden="true"></span>
+          <span class="descanso-led descanso-led--amarillo" aria-hidden="true"></span>
+          <span class="descanso-led descanso-led--verde" aria-hidden="true"></span>
+          <span class="descanso-terminal-comando">~/sistemas/estado $ ./comprobar-servicio.sh</span>
+        </div>
+        <div class="descanso-terminal-linea">
+          <span class="descanso-terminal-tag">[HORARIO]</span>
+          <span class="descanso-terminal-txt">12:00 a. m. a 6:00 a. m. (Hora oficial de Colombia)</span>
+        </div>
+        <div class="descanso-terminal-linea">
+          <span class="descanso-terminal-tag">[ESTADO]</span>
+          <span class="descanso-terminal-txt">Base de datos en reposo y servicios en mantenimiento</span>
+        </div>
+        <div class="descanso-terminal-linea">
+          <span class="descanso-terminal-tag">[PROPÓSITO]</span>
+          <span class="descanso-terminal-txt">Seguridad, descanso de datos y prevención de accesos indebidos</span>
+        </div>
+        <div class="descanso-terminal-linea">
+          <span class="descanso-terminal-tag">[RETORNO]</span>
+          <span class="descanso-terminal-txt">Acceso público habilitado hoy a las 6:00 a. m.</span>
+        </div>
+      </div>
+
+      <p class="descanso-mensaje">
+        Al igual que en la Semana de Sistemas, el portal entra en descanso durante la madrugada para asegurar que tus datos estén protegidos.
+        <strong>Te esperamos a primera hora para seguir construyendo tu camino.</strong>
+      </p>
+
+      <!-- Bypass para desarrollador / pruebas -->
+      <div class="descanso-acciones">
+        <button class="descanso-btn-bypass" id="btn-bypass" type="button" title="Acceso para mantenimiento y desarrollo">
+          Acceso de administración / desarrollo
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="descanso-pie">
+    <p>Ingeniería de Sistemas e Informática · Facultad de Minas · Universidad Nacional de Colombia · Sede Medellín</p>
+    <p><small>© 2026 Santiago Escobar Arias · Representante Estudiantil</small></p>
+  </footer>
+
+  <script>
+    (function() {
+      const relojEl = document.getElementById('reloj-colombia');
+      const cuentaEl = document.getElementById('cuenta-regresiva');
+      const btnBypass = document.getElementById('btn-bypass');
+
+      function obtenerPartesColombia() {
+        const partes = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/Bogota',
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          hour12: false
+        }).formatToParts(new Date());
+
+        let h = 0, m = 0, s = 0;
+        for (const p of partes) {
+          if (p.type === 'hour') h = parseInt(p.value, 10);
+          if (p.type === 'minute') m = parseInt(p.value, 10);
+          if (p.type === 'second') s = parseInt(p.value, 10);
+        }
+        return { h, m, s };
+      }
+
+      function actualizar() {
+        const { h, m, s } = obtenerPartesColombia();
+
+        // 1. Reloj en formato 12h legible
+        const ampm = h >= 12 ? 'p. m.' : 'a. m.';
+        const h12 = h % 12 || 12;
+        const pad = (n) => String(n).padStart(2, '0');
+        relojEl.textContent = `${pad(h12)}:${pad(m)}:${pad(s)} ${ampm}`;
+
+        // 2. Si ya pasó de las 6:00 a. m. y son antes de las 12:00 a. m. (00:00), ya está abierto
+        if (h >= 6) {
+          cuentaEl.textContent = '¡Plataforma abierta!';
+          setTimeout(() => { window.location.replace('index.html'); }, 1200);
+          return;
+        }
+
+        // 3. Calcular tiempo restante hasta las 06:00:00 hoy
+        const segundosActuales = h * 3600 + m * 60 + s;
+        const segundosMeta = 6 * 3600; // 06:00:00
+        const difSegundos = Math.max(0, segundosMeta - segundosActuales);
+
+        const rH = Math.floor(difSegundos / 3600);
+        const rM = Math.floor((difSegundos % 3600) / 60);
+        const rS = difSegundos % 60;
+
+        cuentaEl.textContent = `${pad(rH)}h ${pad(rM)}m ${pad(rS)}s`;
+      }
+
+      actualizar();
+      setInterval(actualizar, 1000);
+
+      if (btnBypass) {
+        btnBypass.addEventListener('click', () => {
+          sessionStorage.setItem('sistemasunal.descanso.bypass', '1');
+          window.location.replace('index.html?bypass=1');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
