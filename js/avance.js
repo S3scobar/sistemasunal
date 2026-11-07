@@ -109,6 +109,9 @@ function logroDesbloqueado(logro, avance, historia) {
   const regla = logro.regla || {};
   const minimo = Number(regla.minimo);
   switch (regla.tipo) {
+    case 'primiparo':
+      return true;
+
     case 'creditos_aprobados':
       return avance.aprobados >= minimo;
 
@@ -554,6 +557,15 @@ function pintarLogros(avance, historia) {
 
 function pintarHistorial(historia) {
   const materias = [...historia.materias].sort((a, b) => clavePeriodo(b.periodo) - clavePeriodo(a.periodo));
+  if (!materias.length) {
+    return `
+    <details class="panel historial" open>
+      <summary class="panel__titulo panel__titulo--resumen">Bitácora · Primer semestre (en curso)</summary>
+      <p style="padding: 1.5rem; text-align: center; color: var(--color-texto-suave, #94a3b8); margin: 0;">
+        Aún no tienes asignaturas finalizadas en el SIA. ¡Muchos éxitos en tu primer semestre!
+      </p>
+    </details>`;
+  }
   return `
     <details class="panel historial" open>
       <summary class="panel__titulo panel__titulo--resumen">Bitácora · ${materias.length} materias leídas</summary>
@@ -753,8 +765,9 @@ function mostrarError(mensaje) {
 
 function procesar(texto, esCargaInicial) {
   const historia = leerHistoria(texto);
-  if (!historia.materias.length) {
-    mostrarError('No encontré materias en lo que pegaste. Abre la Historia Académica en el SIA, selecciona todo (Ctrl + A), copia (Ctrl + C) y pega de nuevo.');
+  const tieneDatos = historia.materias.length > 0 || (historia.resumen && Object.keys(historia.resumen).length > 0);
+  if (!tieneDatos) {
+    mostrarError('No encontré información académica en lo que pegaste. Abre la Historia Académica en el SIA, selecciona todo (Ctrl + A), copia (Ctrl + C) y pega de nuevo.');
     return false;
   }
   mostrarError('');
@@ -916,8 +929,9 @@ function configurarFormulariosAuth() {
       }
 
       const historia = leerHistoria(histTexto);
-      if (!historia.materias.length) {
-        mostrarAlertaAuth(registroAlerta, 'No se encontraron materias en el texto pegado. Abre Historia Académica en el SIA, presiona Ctrl + A, Ctrl + C y pega de nuevo.');
+      const tieneDatos = historia.materias.length > 0 || (historia.resumen && Object.keys(historia.resumen).length > 0);
+      if (!tieneDatos) {
+        mostrarAlertaAuth(registroAlerta, 'No se encontró información académica en el texto pegado. Abre Historia Académica en el SIA, presiona Ctrl + A, Ctrl + C y pega de nuevo.');
         return;
       }
 

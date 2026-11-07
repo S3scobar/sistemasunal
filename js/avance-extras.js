@@ -36,7 +36,7 @@ const EXTRAS = (() => {
 
   /* ---------- Rangos por nivel ---------- */
   const RANGOS = [
-    [1, 'Recién llegado'], [10, 'Aprendiz de código'], [25, 'Desarrollador'], [45, 'Ingeniero en formación'],
+    [1, 'Iniciado en el gran camino'], [10, 'Aprendiz de código'], [25, 'Desarrollador'], [45, 'Ingeniero en formación'],
     [65, 'Arquitecto de software'], [85, 'Líder técnico'], [100, 'Ingeniería de Sistemas'],
   ];
   function rangoNivel(nivel) {

@@ -110,7 +110,13 @@ function leerHistoria(textoOriginal) {
   const materias = leerMaterias(texto);
   const resumen = leerResumen(texto);
 
-  const nombre = (/(?:^|\n)\s*(?:Nombre|Estudiante)\s*:?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ ]{6,60})\s*(?:\n|$)/.exec(texto) || [])[1];
+  let nombre = (/(?:^|\n)\s*(?:Nombre|Estudiante)\s*:?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ ]{6,60})\s*(?:\n|$)/.exec(texto) || [])[1];
+  if (!nombre) {
+    const usuarioSia = (/(?:Portal de Servicios Acad[ée]micos\s*\n\s*)([a-z0-9._-]+)/i.exec(texto) || [])[1];
+    if (usuarioSia && !/^(Datos|Informaci|Mi|Proceso|Buscador)/i.test(usuarioSia)) {
+      nombre = usuarioSia;
+    }
+  }
 
   return {
     materias,
@@ -118,17 +124,20 @@ function leerHistoria(textoOriginal) {
     nombre: nombre ? nombre.trim() : '',
     papa: leerCifraSuelta(texto, /(\d\.\d{1,2})\s*\(Acumulado\)\s*Pregrado\s*-\s*P\.A\.P\.A/i),
     promedio: leerCifraSuelta(texto, /(\d\.\d{1,2})\s*\(Acumulado\)\s*Pregrado\s*-\s*Promedio/i),
-    cancelados: leerCifraSuelta(texto, /Cancelados\s+en\s+los\s+Periodos\s+Cursados?\s+(\d+)/i),
-    excedentes: leerCifraSuelta(texto, /Cr[ée]ditos\s+Excedentes\s+(\d+)/i),
-    porcentajeSia: leerCifraSuelta(texto, /Porcentaje\s+de\s+Avance\s+([\d.,]+)\s*%/i),
+    cancelados: leerCifraSuelta(texto, /Cancelados\s+en\s+los\s+Periodos\s+Cursados?\s*(\d+)/i),
+    excedentes: leerCifraSuelta(texto, /Cr[ée]ditos\s+Excedentes\s*(\d+)/i),
+    porcentajeSia: leerCifraSuelta(texto, /Porcentaje\s+de\s+Avance\s*([\d.,]+)\s*%/i),
     cupo: leerCifraSuelta(texto, /Cupo\s+de\s+cr[ée]ditos\s+(\d+)/i),
-    disponibles: leerCifraSuelta(texto, /Cr[ée]ditos\s+disponibles\s+(\d+)/i),
+    disponibles: leerCifraSuelta(texto, /Cr[ée]ditos\s+disponibles\s*(-?\d+)/i),
     adicionales: leerCifraSuelta(texto, /Cr[ée]ditos\s+adicionales\s+(\d+)/i),
     esSistemas:
       /SISTEMAS\s+E\s+INFORM/i.test(quitarTildes(texto)) ||
       /INGENIERIA\s+DE\s+SISTEMAS/i.test(quitarTildes(texto)) ||
       /2879\s*-\s*INGENIERIA/i.test(quitarTildes(texto)) ||
-      /PROGRAMA:\s*2879/i.test(quitarTildes(texto)),
+      /PROGRAMA:\s*2879/i.test(quitarTildes(texto)) ||
+      /3534\s*-\s*INGENIERIA/i.test(quitarTildes(texto)) ||
+      /3534\s+INGENIERIA/i.test(quitarTildes(texto)) ||
+      /PLAN.*3534/i.test(quitarTildes(texto)),
   };
 }
 
@@ -172,8 +181,9 @@ function calcularAvance(historia, ritmoElegido) {
   const ritmoCalculado = Math.min(24, Math.max(6, Math.round(promedio)));
   const ritmo = ritmoElegido || ritmoCalculado;
 
-  const ultimo = historial.length ? historial[historial.length - 1].periodo : { anio: new Date().getFullYear(), num: 1 };
-  const periodoEnCurso = enCursoMaterias.length ? enCursoMaterias[0].periodo : siguientePeriodo(ultimo);
+  const semestreActual = (new Date().getMonth() >= 6) ? 2 : 1;
+  const ultimo = historial.length ? historial[historial.length - 1].periodo : { anio: new Date().getFullYear(), num: semestreActual };
+  const periodoEnCurso = enCursoMaterias.length ? enCursoMaterias[0].periodo : ultimo;
 
   // Proyección: el periodo actual cubre lo inscrito; el resto se reparte según el ritmo
   const proyeccion = [];

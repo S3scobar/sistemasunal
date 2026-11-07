@@ -10,6 +10,18 @@
   "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, categoria, icono, regla}. Categorías: bronce, plata, oro, platino. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"avance\",minimo}, {tipo:\"componente_completo\",clave}, {tipo:\"nota_en_grupo\",grupo,minimo}, {tipo:\"papa\",minimo}, {tipo:\"materias_aprobadas\",minimo}, {tipo:\"speedrun\"}, {tipo:\"materias_con_nota\",minimo,nota}, {tipo:\"sin_perder_materias\"}, {tipo:\"sin_cancelar\"}, {tipo:\"ingles_completo\"}, {tipo:\"materia_especifica\",patron}, {tipo:\"reprobada_luego_aprobada\"}, {tipo:\"avance_y_papa\",minimoAvance,minimoPapa}. Nuevas: {tipo:\"todas_nota_tipologia\",clave,minimo} (todas las aprobadas de esa tipología con nota > minimo y componente completo), {tipo:\"materia_con_nota\",patron,minimo} (nota >= minimo), {tipo:\"materia_aprobada\",patron}, {tipo:\"semestre_sin_perder\",creditos}. IMPORTANTE: todo id nuevo debe agregarse también a la tabla logros_catalogo en Supabase.",
   "logros": [
     {
+      "id": "primiparo",
+      "nombre": "Primíparo",
+      "descripcion": "Iniciaste tu camino en Ingeniería de Sistemas e Informática: bienvenido a la carrera.",
+      "puntos": 50,
+      "categoria": "bronce",
+      "icono": "brujula",
+      "regla": {
+        "tipo": "primiparo"
+      },
+      "porcentaje": 100
+    },
+    {
       "id": "primer-commit",
       "nombre": "Primer Commit",
       "descripcion": "Aprobaste tu primera asignatura en la universidad.",
@@ -371,7 +383,7 @@
       "regla": {
         "tipo": "materia_con_nota",
         "patron": "ANALISIS Y DISENO DE ALGORITMOS",
-        "minimo": 5.0
+        "minimo": 5
       }
     }
   ]
