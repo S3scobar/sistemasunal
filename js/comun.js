@@ -517,7 +517,12 @@ function pintarPie() {
           <h3 class="pie__tarjeta-titulo">Creación y desarrollo web</h3>
           <p class="pie__persona">Iniciativa y plataforma desarrollada por <strong>Santiago Escobar Arias</strong> · Representante de Sistemas${marcaInvisible()}</p>
           ${santiago}
-        </section>
+                </section>
+      </div>
+
+      <div class="pie__legal">
+        <p class="pie__legal-texto">Proyecto de apoyo estudiantil sin ánimo de lucro, de carácter académico e informativo para la comunidad universitaria de la Universidad Nacional de Colombia (Sede Medellín).</p>
+        <p class="pie__copyright">© 2026 · Todos los derechos reservados.</p>
       </div>
     </footer>`;
 }
