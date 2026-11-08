@@ -1348,6 +1348,21 @@ a { color: var(--azul); }
   opacity: 0.88;
 }
 
+.pie__legal-aviso {
+  font-family: var(--letra-texto, sans-serif);
+  font-size: 11px;
+  color: var(--tinta-suave, #666666);
+  line-height: 1.55;
+  margin: 0;
+  opacity: 0.8;
+  text-align: justify;
+  text-align-last: center;
+}
+
+.pie__legal-aviso strong {
+  color: var(--tinta, #222222);
+}
+
 .pie__copyright {
   font-family: var(--letra-texto, sans-serif);
   font-size: 11.5px;
