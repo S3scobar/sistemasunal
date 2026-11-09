@@ -105,10 +105,24 @@ function renderIconoLogro(logro, ok) {
   return ICONOS_LOGRO.trofeo;
 }
 
+// Logros que pide un logro "mítico" (sin anidar míticos entre sí para evitar ciclos)
+function requisitosDeLogro(logro, avance, historia) {
+  const ids = Array.isArray(logro.regla && logro.regla.ids) ? logro.regla.ids : [];
+  return ids.map((id) => {
+    const req = (estado.logros || []).find((x) => x.id === id);
+    if (!req || (req.regla && req.regla.tipo === 'logros_requeridos')) return { id, nombre: id, ok: false };
+    return { id, nombre: req.nombre, ok: logroDesbloqueado(req, avance, historia) };
+  });
+}
+
 function logroDesbloqueado(logro, avance, historia) {
   const regla = logro.regla || {};
   const minimo = Number(regla.minimo);
   switch (regla.tipo) {
+    case 'logros_requeridos': {
+      const reqs = requisitosDeLogro(logro, avance, historia);
+      return reqs.length > 0 && reqs.every((r) => r.ok);
+    }
     case 'primiparo':
       return true;
 
@@ -258,7 +272,16 @@ function logroDesbloqueado(logro, avance, historia) {
 
 /* ---------- Vistas de logro, contexto para compartir y celebración ---------- */
 
-const ORDEN_RAREZA = { platino: 4, oro: 3, plata: 2, bronce: 1 };
+const ORDEN_RAREZA = { mitico: 5, platino: 4, oro: 3, plata: 2, bronce: 1 };
+
+function progresoDeLogro(l, avance, historia) {
+  if (l.regla && l.regla.tipo === 'logros_requeridos') {
+    const reqs = requisitosDeLogro(l, avance, historia);
+    const hechos = reqs.filter((r) => r.ok).length;
+    return { pct: reqs.length ? (hechos / reqs.length) * 100 : 0, texto: `${hechos} de ${reqs.length} logros requeridos` };
+  }
+  return EXTRAS.progresoLogro(l, avance, historia);
+}
 
 function vistaLogro(l, avance, historia) {
   const ok = logroDesbloqueado(l, avance, historia);
@@ -267,7 +290,8 @@ function vistaLogro(l, avance, historia) {
   return {
     id: l.id, nombre: l.nombre, descripcion: l.descripcion, puntos: l.puntos, categoria: l.categoria || 'bronce',
     iconoSvg: renderIconoLogro(l, ok), ok, pct, escasez: EXTRAS.escasez(pct),
-    progreso: ok ? null : EXTRAS.progresoLogro(l, avance, historia),
+    progreso: ok ? null : progresoDeLogro(l, avance, historia),
+    requisitos: l.regla && l.regla.tipo === 'logros_requeridos' ? requisitosDeLogro(l, avance, historia) : null,
   };
 }
 
@@ -465,6 +489,7 @@ function pintarLogros(avance, historia) {
   const puntosLogros = desbloqueados.reduce((s, l) => s + (Number(l.puntos) || 0), 0);
 
   const conteoRareza = {
+    mitico: { total: lista.filter((l) => l.categoria === 'mitico').length, listos: desbloqueados.filter((l) => l.categoria === 'mitico').length },
     platino: { total: lista.filter((l) => l.categoria === 'platino').length, listos: desbloqueados.filter((l) => l.categoria === 'platino').length },
     oro: { total: lista.filter((l) => l.categoria === 'oro').length, listos: desbloqueados.filter((l) => l.categoria === 'oro').length },
     plata: { total: lista.filter((l) => l.categoria === 'plata').length, listos: desbloqueados.filter((l) => l.categoria === 'plata').length },
@@ -498,6 +523,7 @@ function pintarLogros(avance, historia) {
           <p class="logros__progreso-texto"><b>${desbloqueados.length}</b> de <b>${lista.length}</b> desbloqueados <span class="separador-punto">·</span> <b>${puntosLogros}</b> puntos acumulados</p>
         </div>
         <div class="logros__chips-resumen">
+          ${conteoRareza.mitico.total ? `<span class="chip-rareza chip-rareza--mitico" title="Logro Mítico">Mítico: ${conteoRareza.mitico.listos}/${conteoRareza.mitico.total}</span>` : ''}
           <span class="chip-rareza chip-rareza--platino" title="Logros Platino">Platino: ${conteoRareza.platino.listos}/${conteoRareza.platino.total}</span>
           <span class="chip-rareza chip-rareza--oro" title="Logros Oro">Oro: ${conteoRareza.oro.listos}/${conteoRareza.oro.total}</span>
           <span class="chip-rareza chip-rareza--plata" title="Logros Plata">Plata: ${conteoRareza.plata.listos}/${conteoRareza.plata.total}</span>
@@ -511,6 +537,7 @@ function pintarLogros(avance, historia) {
         <button type="button" class="logros__filtro is-activo" data-filtro="todos">Todos (${lista.length})</button>
         ${enProgreso ? `<button type="button" class="logros__filtro" data-filtro="progreso">En progreso (${enProgreso})</button>` : ''}
         <button type="button" class="logros__filtro" data-filtro="desbloqueados">Completados (${desbloqueados.length})</button>
+        ${conteoRareza.mitico.total ? `<button type="button" class="logros__filtro" data-filtro="mitico">Mítico (${conteoRareza.mitico.listos}/${conteoRareza.mitico.total})</button>` : ''}
         <button type="button" class="logros__filtro" data-filtro="platino">Platino (${conteoRareza.platino.listos}/${conteoRareza.platino.total})</button>
         <button type="button" class="logros__filtro" data-filtro="oro">Oro (${conteoRareza.oro.listos}/${conteoRareza.oro.total})</button>
         <button type="button" class="logros__filtro" data-filtro="plata">Plata (${conteoRareza.plata.listos}/${conteoRareza.plata.total})</button>
@@ -716,7 +743,7 @@ function dibujar() {
         if (filtro === 'desbloqueados') visible = item.classList.contains('logro--listo');
         else if (filtro === 'bloqueados') visible = item.classList.contains('logro--bloqueado');
         else if (filtro === 'progreso') visible = item.dataset.progreso === '1';
-        else if (['platino', 'oro', 'plata', 'bronce'].includes(filtro)) visible = item.dataset.categoria === filtro;
+        else if (['mitico', 'platino', 'oro', 'plata', 'bronce'].includes(filtro)) visible = item.dataset.categoria === filtro;
         item.hidden = !visible;
       });
     });
@@ -940,11 +967,18 @@ function configurarFormulariosAuth() {
         return;
       }
 
+      if (!$('#registro-acepta')?.checked) {
+        mostrarAlertaAuth(registroAlerta, 'Para registrarte debes autorizar el tratamiento de tus datos personales marcando la casilla. Puedes leer antes la Política de tratamiento de datos.');
+        $('#registro-acepta')?.focus();
+        return;
+      }
+
       // Guardar temporalmente la historia validada para asociarla al usuario al retornar de Google
       try {
         localStorage.setItem('sistemasunal.registro_pendiente', JSON.stringify({
           historiaTexto: histTexto,
           nombre: historia.nombre || '',
+          aceptaPolitica: true,
           timestamp: Date.now()
         }));
       } catch (_) {}
@@ -973,6 +1007,70 @@ function configurarFormulariosAuth() {
   }
 }
 
+/* ---------- Autorización de tratamiento de datos (Ley 1581 de 2012) ---------- */
+
+const TEXTO_AUTORIZACION = 'Autorizo de manera previa, expresa e informada al responsable del portal (Santiago Escobar Arias, representación estudiantil de Ingeniería de Sistemas e Informática, UNAL Sede Medellín) para recolectar, almacenar, usar y transmitir mis datos personales (correo institucional, nombre, historia académica pegada desde el SIA, ritmo de créditos y logros) con las finalidades descritas en la Política de Tratamiento de Datos, entre ellas verificar mi programa, calcular mi avance y logros y generar estadísticas agregadas. Entiendo que mis datos serán almacenados en servidores de proveedores ubicados en el exterior, que no serán vendidos ni cedidos, que la entrega de mi historia académica es voluntaria y que puedo conocerlos, actualizarlos, rectificarlos, suprimirlos o revocar esta autorización en cualquier momento escribiendo a saescobara@unal.edu.co.';
+
+// Muestra la autorización y espera la respuesta (true = acepta). No se puede cerrar sin responder.
+function pedirAutorizacion() {
+  return new Promise((resolve) => {
+    const d = document.createElement('dialog');
+    d.className = 'dialogo-juego dialogo-datos';
+    d.setAttribute('aria-labelledby', 'dialogo-datos-titulo');
+    d.innerHTML = `
+      <p class="dialogo-datos__etiqueta">~/privacidad $ cat autorizacion.txt</p>
+      <h3 class="dialogo-datos__titulo" id="dialogo-datos-titulo">Autorización de tratamiento de datos personales</h3>
+      <ul class="dialogo-datos__resumen">
+        <li>Guardamos tu <b>correo, nombre, historia académica y logros</b> para calcular tu avance.</li>
+        <li><b>No</b> los vendemos ni los cedemos. Otros estudiantes no ven tus notas.</li>
+        <li>Se almacenan en servidores en el <b>exterior</b> (Supabase, Vercel).</li>
+        <li>Puedes consultarlos, corregirlos o pedir que los borremos cuando quieras.</li>
+      </ul>
+      <div class="dialogo-datos__texto" tabindex="0" role="region" aria-label="Texto de la autorización">${esc(TEXTO_AUTORIZACION)}</div>
+      <p class="dialogo-datos__enlace"><a href="politica-datos.html" target="_blank" rel="noopener">Leer la política completa</a></p>
+      <label class="campo__acepto" for="dialogo-datos-acepto">
+        <input type="checkbox" id="dialogo-datos-acepto">
+        <span>He leído y <b>autorizo</b> el tratamiento de mis datos personales en los términos indicados.</span>
+      </label>
+      <div class="dialogo-juego__acciones">
+        <button type="button" class="btn-juego btn-juego--principal" id="dialogo-datos-si" disabled>Autorizo y continuar</button>
+        <button type="button" class="btn-juego" id="dialogo-datos-no">No autorizo (cerrar sesión)</button>
+      </div>`;
+    document.body.appendChild(d);
+    const cerrar = (respuesta) => { d.close(); d.remove(); resolve(respuesta); };
+    const chk = d.querySelector('#dialogo-datos-acepto');
+    const si = d.querySelector('#dialogo-datos-si');
+    chk.addEventListener('change', () => { si.disabled = !chk.checked; });
+    si.addEventListener('click', () => { if (chk.checked) cerrar(true); });
+    d.querySelector('#dialogo-datos-no').addEventListener('click', () => cerrar(false));
+    d.addEventListener('cancel', (e) => e.preventDefault());
+    if (d.showModal) d.showModal(); else d.setAttribute('open', '');
+  });
+}
+
+let autorizacionEnCurso = null;
+
+// Entra a Mi avance solo si la persona ya autorizó la versión vigente de la política
+// (aceptoPolitica === false: es su primera vez o aún no la había aceptado).
+function entrarConAutorizacion(usuario) {
+  if (usuario.aceptoPolitica !== false) { aplicarSesion(usuario); return Promise.resolve(); }
+  if (autorizacionEnCurso) return autorizacionEnCurso;
+  autorizacionEnCurso = (async () => {
+    const acepto = await pedirAutorizacion();
+    if (acepto) {
+      await ServicioAuth.registrarAutorizacion(usuario.id);
+      usuario.aceptoPolitica = true;
+      aplicarSesion(usuario);
+      return;
+    }
+    await ServicioAuth.cerrarSesion();
+    guardado.borrar();
+    aplicarSinSesion();
+    mostrarAlertaAuth($('#login-alerta'), 'Para usar Mi avance necesitamos tu autorización para tratar tus datos. Si cambias de opinión, vuelve a iniciar sesión y acéptala.');
+  })().finally(() => { autorizacionEnCurso = null; });
+  return autorizacionEnCurso;
+}
+
 async function inicializarAutenticacion() {
   configurarTabsAuth();
   configurarFormulariosAuth();
@@ -994,7 +1092,7 @@ async function inicializarAutenticacion() {
 
   const sesion = await ServicioAuth.obtenerSesion();
   if (sesion && sesion.usuario) {
-    aplicarSesion(sesion.usuario);
+    await entrarConAutorizacion(sesion.usuario);
   } else {
     aplicarSinSesion();
     if (sesion && sesion.error) {
@@ -1016,7 +1114,7 @@ async function inicializarAutenticacion() {
       if (event === 'SIGNED_IN' && session?.user) {
         const sesionActual = await ServicioAuth.obtenerSesion();
         if (sesionActual?.usuario) {
-          aplicarSesion(sesionActual.usuario);
+          await entrarConAutorizacion(sesionActual.usuario);
         }
       } else if (event === 'SIGNED_OUT') {
         aplicarSinSesion();

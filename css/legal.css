@@ -1,0 +1,76 @@
+/* =========================================================
+   Política de tratamiento de datos · estilo terminal (azul fosforescente)
+   ========================================================= */
+body[data-pagina="legal"] {
+  --fondo: #050f1f;
+  --panel: #081a33;
+  --borde: #1b4a86;
+  --neon-2: #2fa8ff;
+  --cian: #8fd2ff;
+  --luz: #d8ecff;
+  --suave: #8fb3d6;
+}
+body[data-pagina="legal"] main {
+  background:
+    linear-gradient(rgba(47, 168, 255, .05) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgba(47, 168, 255, .05) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(ellipse at 50% 0%, rgba(47, 168, 255, .14), transparent 60%),
+    var(--fondo);
+  color: var(--luz);
+}
+.legal { padding: 40px 0 72px; }
+.legal__contenedor { max-width: 860px; display: grid; gap: 22px; }
+.legal__contenedor > * { min-width: 0; }
+
+.legal__version { margin: 0; font-family: var(--mono); font-size: 12.5px; color: var(--suave); letter-spacing: .04em; }
+.legal__version b { color: var(--cian); }
+
+.legal__indice {
+  padding: 18px 22px; border: 1px solid var(--borde); border-radius: 12px;
+  background: rgba(8, 26, 51, .75);
+}
+.legal__indice-titulo { margin: 0 0 10px; font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: #9fcfff; }
+.legal__indice ol { margin: 0; padding-left: 22px; columns: 2 260px; column-gap: 28px; font-size: 14.5px; line-height: 1.9; }
+.legal__indice a { color: var(--luz); text-decoration: none; border-bottom: 1px dashed rgba(143, 210, 255, .35); }
+.legal__indice a:hover, .legal__indice a:focus-visible { color: #fff; border-bottom-color: var(--cian); }
+
+.legal__articulo {
+  padding: 8px 28px 28px; border: 1px solid var(--borde); border-radius: 14px;
+  background: rgba(8, 26, 51, .85); box-shadow: 0 24px 60px -30px rgba(0, 0, 0, .8);
+}
+.legal__articulo section { padding-top: 22px; scroll-margin-top: 84px; }
+.legal__articulo section + section { border-top: 1px dashed rgba(143, 179, 214, .22); margin-top: 22px; }
+.legal__articulo h2 {
+  display: flex; align-items: baseline; gap: 12px; margin: 0 0 12px;
+  font-family: var(--mono); font-size: 17px; font-weight: 700; letter-spacing: .02em; color: #fff;
+}
+.legal__articulo h2 span { color: var(--neon-2); font-size: 13px; letter-spacing: .12em; }
+.legal__articulo p, .legal__articulo li { font-size: 15.5px; line-height: 1.65; color: var(--luz); }
+.legal__articulo p { margin: 0 0 12px; }
+.legal__articulo ul, .legal__articulo ol { margin: 0 0 12px; padding-left: 22px; display: grid; gap: 6px; }
+.legal__articulo strong { color: #fff; }
+.legal__articulo em { color: var(--cian); font-style: normal; }
+.legal__articulo a { color: var(--cian); text-underline-offset: 3px; }
+.legal__articulo a:hover { color: #fff; }
+.legal__articulo code { padding: 1px 6px; border-radius: 5px; background: rgba(47, 168, 255, .14); font-family: var(--mono); font-size: .92em; color: var(--cian); }
+
+.legal__ficha { margin: 14px 0 0; display: grid; gap: 8px; }
+.legal__ficha div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; padding: 10px 14px; border-radius: 8px; background: rgba(3, 10, 21, .55); border: 1px solid rgba(47, 168, 255, .18); }
+.legal__ficha dt { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
+.legal__ficha dd { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+
+.legal__autorizacion {
+  margin: 4px 0 14px; padding: 16px 18px; border-left: 3px solid var(--neon-2);
+  background: rgba(47, 168, 255, .08); border-radius: 0 10px 10px 0;
+}
+.legal__autorizacion p { margin: 0; font-size: 14.5px; }
+.legal__nota { font-size: 13.5px !important; color: var(--suave) !important; }
+.legal__volver { margin: 0; font-family: var(--mono); font-size: 14px; }
+.legal__volver a { color: var(--cian); text-decoration: none; }
+.legal__volver a:hover { color: #fff; }
+
+@media (max-width: 640px) {
+  .legal__articulo { padding: 4px 18px 22px; }
+  .legal__ficha div { grid-template-columns: 1fr; gap: 2px; }
+  .legal__indice ol { columns: 1; }
+}

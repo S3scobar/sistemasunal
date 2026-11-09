@@ -523,6 +523,7 @@ function pintarPie() {
       <div class="pie__legal">
         <p class="pie__legal-texto">Proyecto estudiantil sin ánimo de lucro · Iniciativa académica e informativa para la comunidad universitaria de la Universidad Nacional de Colombia — Sede Medellín.</p>
         <p class="pie__legal-aviso"><strong>Aviso de Propiedad Intelectual y Seguridad:</strong> El diseño, arquitectura de software, código fuente, experiencia de usuario (UX/UI), herramientas interactivas e imágenes de vista previa están protegidos por la Ley 23 de 1982, Decisión Andina 351 y Arts. 270 y 271 del Código Penal Colombiano. Queda prohibida la reproducción parcial o total, plagio, copia de funcionalidades o ingeniería inversa sin autorización previa y por escrito del autor. Los logotipos e identidad visual son obra de la representación estudiantil y su uso requiere autorización expresa de la misma. Cualquier intento de vulneración o alteración informática será sancionado conforme a la Ley 1273 de 2009 (Delitos Informáticos).</p>
+        <p class="pie__legal-enlaces"><a href="politica-datos.html">Política de tratamiento de datos personales</a></p>
         <p class="pie__copyright">© 2026 · Todos los derechos reservados.</p>
       </div>
     </footer>`;

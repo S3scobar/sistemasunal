@@ -60,6 +60,10 @@ const CLAVE_USUARIOS_LOCAL = 'sistemasunal.auth.usuarios.v1';
 const VERSION_SESION = '2026-11-01-a';
 const CLAVE_VERSION_SESION = 'sistemasunal.auth.version';
 
+// Política de tratamiento de datos: si cambia el texto, se sube esta versión y se vuelve a pedir la autorización
+const VERSION_POLITICA = '2026-11-09';
+const CLAVE_POLITICA_LOCAL = 'sistemasunal.datos.autorizacion:';
+
 const cierreForzado = (async () => {
   try {
     if (localStorage.getItem(CLAVE_VERSION_SESION) === VERSION_SESION) return;
@@ -107,6 +111,10 @@ const ServicioAuth = {
               nombre: nombreFinal,
               historiaTexto: registroPendiente.historiaTexto,
             });
+            // La autorización se marcó en el formulario de registro (casilla obligatoria): se deja constancia
+            if (registroPendiente.aceptaPolitica) {
+              await this.registrarAutorizacion(session.user.id);
+            }
             localStorage.removeItem('sistemasunal.registro_pendiente');
             perfil = await this.obtenerPerfil(session.user.id, correo);
           }
@@ -129,6 +137,7 @@ const ServicioAuth = {
               nombre: perfil.nombre || session.user.user_metadata?.full_name || session.user.user_metadata?.name || '',
               historiaTexto: perfil.historia_texto,
               ritmo: perfil.ritmo || null,
+              aceptoPolitica: this.politicaAceptada(session.user.id, perfil),
             },
             proveedor: 'supabase',
           };
@@ -197,6 +206,29 @@ const ServicioAuth = {
       return null;
     } catch {
       return null;
+    }
+  },
+
+  // ¿Esta persona ya autorizó la versión vigente de la política de datos?
+  // Vale la constancia guardada en la base (perfiles.acepto_datos_version) o, mientras esa columna no exista, la local.
+  politicaAceptada(userId, perfil) {
+    if (perfil && perfil.acepto_datos_version === VERSION_POLITICA) return true;
+    try { return localStorage.getItem(CLAVE_POLITICA_LOCAL + userId) === VERSION_POLITICA; } catch (_) { return false; }
+  },
+
+  // Deja constancia de la autorización (versión y fecha). Devuelve true si quedó guardada en la base.
+  async registrarAutorizacion(userId) {
+    try { localStorage.setItem(CLAVE_POLITICA_LOCAL + userId, VERSION_POLITICA); } catch (_) {}
+    if (!clienteSupabase || !userId) return false;
+    try {
+      const { error } = await clienteSupabase.from('perfiles')
+        .update({ acepto_datos_version: VERSION_POLITICA, acepto_datos_en: new Date().toISOString() })
+        .eq('id', userId);
+      if (error) { console.warn('No se pudo guardar la autorización de datos en la base:', error.message); return false; }
+      return true;
+    } catch (err) {
+      console.warn('No se pudo guardar la autorización de datos:', err);
+      return false;
     }
   },
 

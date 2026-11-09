@@ -1359,6 +1359,9 @@ a { color: var(--azul); }
   text-align-last: center;
 }
 
+.pie__legal-enlaces { margin: 12px 0 0; font-size: 13px; }
+.pie__legal-enlaces a { color: inherit; text-decoration: underline; text-underline-offset: 3px; opacity: .85; }
+.pie__legal-enlaces a:hover, .pie__legal-enlaces a:focus-visible { opacity: 1; }
 .pie__legal-aviso strong {
   color: var(--tinta, #222222);
 }

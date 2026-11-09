@@ -7,7 +7,7 @@
     "sha256": "f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c",
     "derechos": "© 2026 Santiago Escobar Arias. Todos los derechos reservados."
   },
-  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, categoria, icono, regla}. Categorías: bronce, plata, oro, platino. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"avance\",minimo}, {tipo:\"componente_completo\",clave}, {tipo:\"nota_en_grupo\",grupo,minimo}, {tipo:\"papa\",minimo}, {tipo:\"materias_aprobadas\",minimo}, {tipo:\"speedrun\"}, {tipo:\"materias_con_nota\",minimo,nota}, {tipo:\"sin_perder_materias\"}, {tipo:\"sin_cancelar\"}, {tipo:\"ingles_completo\"}, {tipo:\"materia_especifica\",patron}, {tipo:\"reprobada_luego_aprobada\"}, {tipo:\"avance_y_papa\",minimoAvance,minimoPapa}. Nuevas: {tipo:\"todas_nota_tipologia\",clave,minimo} (todas las aprobadas de esa tipología con nota > minimo y componente completo), {tipo:\"materia_con_nota\",patron,minimo} (nota >= minimo), {tipo:\"materia_aprobada\",patron}, {tipo:\"semestre_sin_perder\",creditos}. IMPORTANTE: todo id nuevo debe agregarse también a la tabla logros_catalogo en Supabase.",
+  "_ayuda": "Cada logro: {id, nombre, descripcion, puntos, categoria, icono, regla}. Categorías: bronce, plata, oro, platino, mitico. Reglas disponibles: {tipo:\"creditos_aprobados\",minimo}, {tipo:\"avance\",minimo}, {tipo:\"componente_completo\",clave}, {tipo:\"nota_en_grupo\",grupo,minimo}, {tipo:\"papa\",minimo}, {tipo:\"materias_aprobadas\",minimo}, {tipo:\"speedrun\"}, {tipo:\"materias_con_nota\",minimo,nota}, {tipo:\"sin_perder_materias\"}, {tipo:\"sin_cancelar\"}, {tipo:\"ingles_completo\"}, {tipo:\"materia_especifica\",patron}, {tipo:\"reprobada_luego_aprobada\"}, {tipo:\"avance_y_papa\",minimoAvance,minimoPapa}. Nuevas: {tipo:\"todas_nota_tipologia\",clave,minimo} (todas las aprobadas de esa tipología con nota > minimo y componente completo), {tipo:\"materia_con_nota\",patron,minimo} (nota >= minimo), {tipo:\"materia_aprobada\",patron}, {tipo:\"semestre_sin_perder\",creditos}. {tipo:\"logros_requeridos\",ids:[...]} (se desbloquea al tener todos esos logros; no anidar). IMPORTANTE: todo id nuevo debe agregarse también a la tabla logros_catalogo en Supabase.",
   "logros": [
     {
       "id": "primiparo",
@@ -384,6 +384,27 @@
         "tipo": "materia_con_nota",
         "patron": "ANALISIS Y DISENO DE ALGORITMOS",
         "minimo": 5
+      }
+    },
+    {
+      "id": "leyenda-de-sistemas",
+      "nombre": "Leyenda de Sistemas",
+      "descripcion": "El platino de la carrera: desbloquea Big Seven, Victoria Impecable, Complejidad Óptima, Teorema Demostrado, Senior Developer, El Elegido y The Completionist.",
+      "puntos": 1000,
+      "categoria": "mitico",
+      "icono": "gema",
+      "porcentaje": 0,
+      "regla": {
+        "tipo": "logros_requeridos",
+        "ids": [
+          "big-six",
+          "victoria-impecable",
+          "complejidad-optima",
+          "teorema-demostrado",
+          "senior-developer",
+          "el-elegido",
+          "the-completionist"
+        ]
       }
     }
   ]

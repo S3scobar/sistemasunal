@@ -99,6 +99,7 @@
               <span id="btn-smartkey-login-texto">Iniciar sesión con correo UNAL</span>
             </button>
             <p class="auth-smartkey-badge">SmartKey / Google Workspace</p>
+            <p class="auth-aviso-datos">Si es tu primera vez, o aún no has aceptado la política, te pediremos autorizar el tratamiento de tus datos al entrar. <a href="politica-datos.html" target="_blank" rel="noopener">Leer la política</a></p>
 
             <div class="tarjeta-auth__alerta" id="login-alerta" role="alert" hidden></div>
           </form>
@@ -121,6 +122,11 @@
               </ol>
               <textarea id="registro-historia" class="entrada__texto" rows="6" spellcheck="false" placeholder="Pega aquí el contenido copiado del SIA (Ctrl + V)..." required></textarea>
             </div>
+
+            <label class="campo__acepto" for="registro-acepta">
+              <input type="checkbox" id="registro-acepta">
+              <span>Autorizo el tratamiento de mis datos personales (correo, nombre, historia académica y logros) según la <a href="politica-datos.html" target="_blank" rel="noopener">Política de tratamiento de datos</a>. Entiendo que se almacenan en servidores en el exterior y que puedo revocar esta autorización cuando quiera.</span>
+            </label>
 
             <button type="button" class="auth-google-btn" id="btn-smartkey-registro">
               <svg class="auth-google-btn__icon" viewBox="0 0 24 24" aria-hidden="true">

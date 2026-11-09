@@ -27,6 +27,7 @@ const EXTRAS = (() => {
     bronce: { etiqueta: 'BRONCE', texto: '#fb923c', a: '#f97316', b: '#c2410c', brillo: 'rgba(249,115,22,' },
     plata: { etiqueta: 'PLATA', texto: '#7dd3fc', a: '#38bdf8', b: '#0284c7', brillo: 'rgba(56,189,248,' },
     oro: { etiqueta: 'ORO', texto: '#f7b61a', a: '#fbbf24', b: '#d97706', brillo: 'rgba(247,182,26,' },
+    mitico: { etiqueta: 'MÍTICO', texto: '#ff9eb1', a: '#ff4d6d', b: '#ffb703', brillo: 'rgba(255,77,109,' },
     platino: { etiqueta: 'PLATINO', texto: '#f0abfc', a: '#c084fc', b: '#f472b6', brillo: 'rgba(192,132,252,' },
   };
   const rareza = (c) => RAREZAS[c] || RAREZAS.bronce;
@@ -238,6 +239,7 @@ const EXTRAS = (() => {
         <p class="dialogo-logro__desc">${esc(v.descripcion)}</p>
         <p class="dialogo-logro__puntos">+${esc(v.puntos)} pts</p>
         ${v.escasez ? `<p class="dialogo-logro__escasez dialogo-logro__escasez--${v.escasez.id}">${esc(textoRareza(v))}</p>` : ''}
+        ${v.requisitos ? `<ul class="dialogo-requisitos">${v.requisitos.map((r) => `<li class="${r.ok ? 'is-ok' : ''}"><span aria-hidden="true">${r.ok ? '✔' : '○'}</span>${esc(r.nombre)}</li>`).join('')}</ul>` : ''}
         ${!v.ok && v.progreso ? `<div class="dialogo-logro__progreso"><div class="progreso-barra"><span style="width:${v.progreso.pct}%"></span></div><p>${esc(v.progreso.texto)}</p></div>` : ''}
         ${!v.ok && !v.progreso ? '<p class="dialogo-logro__pista">Aún bloqueado. Cumple lo que dice la descripción para desbloquearlo.</p>' : ''}
       </div>`;
@@ -273,6 +275,11 @@ const EXTRAS = (() => {
       if (tipo === 'bienvenida') compartirJugador(contexto, e.currentTarget); else compartirLogro(principal, contexto, e.currentTarget);
     });
     confeti([rz.a, rz.b, '#8fd2ff', '#ffffff']);
+    // El logro mítico merece una celebración doble
+    if (principal.categoria === 'mitico') {
+      setTimeout(() => confeti(['#ff4d6d', '#ffb703', '#ffd166', '#ffffff']), 500);
+      setTimeout(() => confeti(['#ff4d6d', '#ffb703', '#ffd166', '#ffffff']), 1100);
+    }
   }
 
   /* ---------- Tarjetas para compartir (canvas) ---------- */
