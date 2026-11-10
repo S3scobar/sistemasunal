@@ -354,18 +354,48 @@ Mi avatar es una versión holográfica inspirada en la inteligencia de Cortana, 
     }
 
     // ------------------------------------------------------------------------
-    // 2. Malla Curricular en general / "Malla curricular" / "Otras asignaturas"
+    // 2. Malla Curricular, Tipologías de Asignaturas y Estructura del Plan
     // ------------------------------------------------------------------------
-    if (preguntaNorm === 'malla curricular' || preguntaNorm === 'ver malla curricular' || preguntaNorm === 'ver en la malla interactiva' || preguntaNorm === 'otras asignaturas') {
+    const esConsultaMalla = /malla curricular|ver malla|que es la malla|como funciona la malla|pensum|plan de estudios|malla interactiva|otras asignaturas/.test(preguntaNorm) || preguntaNorm === 'malla';
+    const esConsultaTipologias = /tipo de materias|tipos de materias|que tipo de materias|tipologia|tipologias|cuales son las tipologias|componentes del plan|distribucion de creditos|creditos exigidos/.test(preguntaNorm);
+
+    if (esConsultaMalla || esConsultaTipologias) {
+      if (esConsultaTipologias || preguntaNorm.includes('tipologia') || preguntaNorm.includes('tipo de materia')) {
+        return {
+          texto: `El plan de estudios de **Ingeniería de Sistemas e Informática (\`3534\`)** consta de **160 créditos académicos** organizados en 3 grandes componentes y 6 tipologías oficiales:
+
+1. **Fundamentación Obligatoria (27 créditos):**
+   Matemáticas básicas, Cálculo diferencial e integral, Álgebra lineal y Física (Mecánica, Electricidad y Magnetismo).
+2. **Fundamentación Optativa (16 créditos):**
+   Profundización en ciencias básicas (Probabilidad y Estadística, Ecuaciones Diferenciales, Cálculo en Varias Variables, Métodos Numéricos, etc.).
+3. **Disciplinar Obligatoria (57 créditos):**
+   El corazón del ingeniero de sistemas: POO, Estructuras de Datos, Algoritmos, Arquitectura de Computadores, Sistemas Operativos, Redes, Bases de Datos, Ingeniería de Software y Gestión de Proyectos.
+4. **Disciplinar Optativa / Tecnologías de Aplicación (22 créditos):**
+   Asignaturas de profundización técnica avanzada que eliges según tus intereses (Inteligencia Artificial, Sistemas Distribuidos, Criptografía, etc.).
+5. **Libre Elección (32 créditos - 20 % del plan):**
+   Materias que puedes cursar libremente en cualquier carrera o facultad (idiomas, artes, posgrados o profundización).
+6. **Trabajo de Grado (6 créditos):**
+   Pasantía empresarial, proyecto de investigación en semillero o asignaturas de posgrado.
+
+*(Nota: Si al ingresar tuviste nivelaciones de matemáticas o lectoescritura, esas consumen cupo pero no suman a los 160 créditos de avance).*
+
+Puedes explorar todas las materias clasificadas por su color y tipología en la [Malla Curricular](malla.html).`,
+          chips: ['Ver Malla Curricular', 'Optativas de Sistemas', 'Ir a Mi Avance', 'Prerrequisitos de materias'],
+        };
+      }
+
       return {
-        texto: `En nuestra [Malla Curricular](malla.html) interactiva puedes explorar los 10 semestres del plan de estudios:
+        texto: `La **Malla Curricular** es la hoja de ruta interactiva que estructura los 10 semestres y los 160 créditos de nuestra carrera:
 
-- **Semáforo de prerrequisitos:** Al hacer clic en cualquier asignatura se iluminan en amarillo sus requisitos previos y en verde las materias que te abre a futuro.
-- **Grupos de WhatsApp:** Cada materia tiene un botón para unirte a su grupo de estudio.
-- **Unidad Compartida de Drive:** En la parte superior de la malla está el acceso directo al banco de parciales y talleres.
+- **Semáforo interactivo:** Al hacer clic sobre cualquier materia, se iluminan en amarillo sus prerrequisitos previos y en verde las asignaturas que te abre en semestres futuros.
+- **Grupos de WhatsApp:** Acceso directo con un solo clic a la comunidad de estudio de cada asignatura.
+- **Unidad de Drive:** Enlace directo a la carpeta con parciales viejos, talleres y libros de cada materia.
+- **Filtros por tipología:** Puedes filtrar fácilmente obligatorias, optativas y de libre elección.
 
-¿Deseas consultar los prerrequisitos de alguna materia en específico? Solo dime su nombre (ej: *"Prerrequisitos de Simulación"* o *"Prerrequisitos de POO"*).`,
-        chips: ['Prerrequisitos de Simulación', 'Prerrequisitos de POO', 'Materias de primer semestre', 'Drive de material de estudio'],
+👉 Explora la malla interactiva completa aquí: [Malla Curricular de Sistemas](malla.html)
+
+¿Quieres conocer los prerrequisitos de una asignatura en específico? Escríbeme su nombre (ej: *"Prerrequisitos de Simulación"* o *"Prerrequisitos de POO"*).`,
+        chips: ['Tipologías de materias', 'Prerrequisitos de Simulación', 'Drive de material de estudio', 'Optativas de Sistemas'],
       };
     }
 
@@ -806,11 +836,29 @@ Si quieres ver el semáforo de prerrequisitos o unirte al WhatsApp de alguna, pu
     }
 
     // ------------------------------------------------------------------------
-    // 11. Convenios y Beneficios
+    // 11. Convenios, Beneficios y Alianzas
     // ------------------------------------------------------------------------
-    const esConvenio = /convenio|convenios|beneficio|beneficios/.test(preguntaNorm);
+    const esConvenio = /convenio|convenios|beneficio|beneficios|alianza|alianzas|acuerdo|acuerdos/.test(preguntaNorm);
 
     if (esConvenio || /kiro|aws|coursera|github|copilot|jetbrains|pycharm|intellij|office|microsoft|matlab|autodesk|revit|autocad|spotify|sapiencia|icetex/.test(preguntaNorm)) {
+      if (preguntaNorm.includes('alianza') || /cuales son las alianzas|todas las alianzas|convenios y alianzas|cuales son los convenios|lista de convenios|ver todos los convenios|convenios estudiantiles/.test(preguntaNorm)) {
+        return {
+          texto: `Los estudiantes de Ingeniería de Sistemas e Informática cuentan con un completo ecosistema de **alianzas y convenios institucionales** activos:
+
+1. **Kiro (AWS) · Programación con IA:** 1.000 créditos mensuales gratis durante un año para desarrollar y prototipar con IA.
+2. **GitHub Student Developer Pack:** GitHub Copilot gratis, cuenta Pro, dominios gratuitos y créditos en la nube (Azure, DigitalOcean).
+3. **JetBrains Student Pack:** Licencias profesionales completas para IntelliJ IDEA Ultimate, PyCharm Pro, WebStorm, CLion, DataGrip, etc.
+4. **Coursera for Campus UNAL:** Cursos y certificaciones profesionales gratis e ilimitadas con Stanford, Google, IBM y más.
+5. **Microsoft 365 Educación:** Suite completa de Office en hasta 5 dispositivos y 1 TB de almacenamiento en la nube en OneDrive.
+6. **MATLAB y Simulink:** Licencia institucional completa para cálculo numérico y modelado.
+7. **Bienestar Universitario y Metro:** Subsidio alimentario, tarifa estudiantil en Tarjeta Cívica y apoyos económicos.
+8. **Movilidad y Doble Titulación:** Convenios internacionales con universidades de Francia, Alemania y Norteamérica.
+
+Puedes consultar los pasos de activación y guías paso a paso en la sección de [Convenios](convenios.html).`,
+          chips: ['Convenio Kiro (AWS)', 'GitHub Student Pack', 'Coursera UNAL', 'Auxilios de Bienestar'],
+        };
+      }
+
       if (preguntaNorm.includes('kiro') || preguntaNorm.includes('programar con ia') || preguntaNorm.includes('ia para programar')) {
         return {
           texto: `**Convenio Kiro (AWS) · Programación con IA:**
@@ -985,9 +1033,37 @@ Al ingresar a la carrera recibes un cupo de créditos para cursar tu plan:
     }
 
     // ------------------------------------------------------------------------
-    // 14. Dónde está cada cosa en la página / Tour de la web
+    // 14. Dónde está cada cosa / Creador y Cómo funciona la plataforma
     // ------------------------------------------------------------------------
-    if (/donde esta|donde veo|donde encuentro|como funciona la pagina|como funciona la web|tour|secciones|ir a mi avance/.test(preguntaNorm)) {
+    if (/quien creo la web|quien creo la pagina|quien hizo la pagina|quien desarrollo la pagina|creador de la pagina|creador de la web|autor de la web|quien la creo|quien lo creo|como se creo la web|quien la desarrollo/.test(preguntaNorm)) {
+      return {
+        texto: `Esta plataforma fue diseñada y creada por **Santiago Escobar Arias**, Representante Estudiantil de Ingeniería de Sistemas e Informática (2026), en conjunto con la comunidad de estudiantes de la Facultad de Minas - UNAL Sede Medellín.
+
+🎯 **¿Por qué nació el proyecto?**
+Nació para resolver necesidades reales del día a día estudiantil:
+- Visualizar la malla curricular y sus prerrequisitos con un semáforo interactivo instantáneo.
+- Centralizar en un solo lugar los enlaces oficiales a los grupos de WhatsApp de estudio y la Unidad Compartida de Google Drive con parciales y talleres.
+- Calcular y simular el P.A.P.A., cupo de créditos y avance académico de forma privada y sin riesgos.
+- Proporcionar a **sofIA** como asistente virtual permanente para responder dudas sobre fechas, normativas y convenios.`,
+        chips: ['¿Cómo funciona la página?', 'Contacto del Representante', 'Ver Malla Curricular'],
+      };
+    }
+
+    if (/como funciona la web|como funciona la pagina|como funciona el portal|tecnologia de la web|como esta hecha la web|como esta hecha la pagina|arquitectura de la web/.test(preguntaNorm)) {
+      return {
+        texto: `**¿Cómo funciona esta web técnicamente?**
+
+1. **100 % Client-Side y Ultra Ligera:**
+   Toda la interfaz y los motores interactivos (incluyendo a **sofIA**) se ejecutan directamente en tu navegador (Vanilla JavaScript, HTML5 semántico y CSS modular con variables UNAL). No sobrecarga tu conexión ni tu dispositivo.
+2. **Cero consumo innecesario de base de datos:**
+   Toda la información académica (malla de 93 materias, 28 fechas del calendario, convenios y rutas) está indexada en archivos estáticos locales de alta velocidad.
+3. **Privacidad y Seguridad Total:**
+   El análisis de tu historia académica en [Mi Avance](avance.html) ocurre de forma local en tu navegador. Tus notas o documentos nunca se comparten ni se venden. Solo si decides iniciar sesión para guardar tus logros, se sincroniza en Supabase con estrictas políticas de seguridad por fila (RLS).`,
+        chips: ['¿Quién creó la página?', 'Ver Malla Curricular', 'Ir a Mi Avance'],
+      };
+    }
+
+    if (/donde esta|donde veo|donde encuentro|tour|secciones|que hay en la pagina|que encuentro en la web/.test(preguntaNorm)) {
       return {
         texto: `Te enseño qué encuentras en cada rincón del portal:
 
@@ -1022,8 +1098,29 @@ Al ingresar a la carrera recibes un cupo de créditos para cursar tu plan:
     }
 
     // ------------------------------------------------------------------------
-    // 16. Trámites administrativos y Solicitudes GAE
+    // 16. Trámites administrativos, Solicitudes GAE y Cambio de Carrera
     // ------------------------------------------------------------------------
+    if (/cambio de carrera|cambiarme de carrera|cambiar de carrera|como me cambio|traslado de carrera|traslado de programa|cambio de programa|pasar a otra carrera|trasladarme a sistemas|como paso a sistemas|como pasar a sistemas/.test(preguntaNorm)) {
+      const filaTraslado = indices.fechasCalendario.find((f) => /traslado/.test(f.actividadNorm));
+      const rangoTraslado = filaTraslado?.inicio ? `del **${filaTraslado.inicio}** al **${filaTraslado.fin}**` : `hasta el **${filaTraslado?.fin || '8 de octubre'}**`;
+
+      return {
+        texto: `El cambio de carrera en la UNAL se tramita oficialmente como un **Traslado de Programa Curricular** (si es dentro de la Sede Medellín) o **Movilidad entre Sedes**:
+
+📌 **Requisitos indispensables:**
+1. **Cupo de créditos suficiente:** Debes contar con cupo de créditos disponible en el SIA para asumir el nuevo plan.
+2. **P.A.P.A. competitivo:** La carrera de destino evalúa a los postulantes y asigna los cupos en orden descendente de promedio académico acumulado (P.A.P.A.).
+3. **Periodo cursado:** Haber aprobado al menos un periodo académico completo en tu carrera de origen.
+4. **Radicación oficial:** Se solicita a través del [Portal SGS de Minas](${ENLACES_OFICIALES.sgsMinas}) dentro de las fechas fijadas en el calendario académico (para 2027-1S: ${rangoTraslado}).
+
+💡 **Convalidación de asignaturas:** Una vez aprobado el traslado, las materias comunes aprobadas (cálculos, álgebra, físicas, programación, libre elección) se convalidan automáticamente en tu nueva historia académica.
+
+Si tienes dudas sobre si tu P.A.P.A. te alcanza o cómo preparar la carta, Santiago (nuestro Representante) te puede orientar de forma personal:
+👉 [Escribirle a Santiago: ${ENLACES_OFICIALES.telefonoRepre}](${ENLACES_OFICIALES.wppRepre})`,
+        chips: ['Portal SGS Minas', 'Calendario académico', '¿Qué es el P.A.P.A.?', 'Contacto del Representante'],
+      };
+    }
+
     if (/tramite|tramites|solicitud|solicitudes|gae|sgs|reingreso|traslado|reserva de cupo|doble titulacion/.test(preguntaNorm)) {
       return {
         texto: `Las solicitudes académicas en la Facultad de Minas se radican a través del **Sistema de Gestión de Solicitudes (SGS)** ante la Gestión de Asuntos Estudiantiles (GAE).
@@ -1062,6 +1159,27 @@ Si se trata de un caso complejo o necesitas asesoría antes de radicar, Santiago
 
 Si necesitas material de estudio de la materia o parciales anteriores, los encuentras en nuestra [Unidad Compartida de Drive](${ENLACES_OFICIALES.driveSistemas}).`,
         chips: ['Drive de material de estudio', 'Ver Malla Curricular', 'Prerrequisitos de materias'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // 18.1 ¿Por qué estudiar Ingeniería de Sistemas e Informática?
+    // ------------------------------------------------------------------------
+    if (/por que estudiar sistemas|por que sistemas|por que ingenieria de sistemas|ventajas de estudiar sistemas|razones para estudiar sistemas|por que elegir sistemas|motivos para estudiar sistemas|futuro de sistemas|de que trabaja un ingeniero de sistemas|campo laboral de sistemas/.test(preguntaNorm)) {
+      return {
+        texto: `Estudiar **Ingeniería de Sistemas e Informática en la UNAL Sede Medellín (Facultad de Minas)** es una decisión con inmenso futuro por varias razones clave:
+
+1. **Rigor y formación de vanguardia:**
+   No solo aprendes a programar: te formas en modelado matemático, arquitectura de software, inteligencia artificial, estructuras de datos avanzadas y resolución de problemas complejos a gran escala.
+2. **Campos de alto impacto:**
+   Puedes especializarte en áreas líderes de la industria tecnológica: Inteligencia Artificial, Machine Learning, Ciberseguridad, Computación en la Nube, Big Data, Sistemas Distribuidos, Desarrollo Web/Móvil e Investigación.
+3. **Demanda global y versatilidad:**
+   Es una carrera con proyección internacional, excelentes salarios y amplias oportunidades de trabajo remoto para empresas de todo el mundo o creación de tus propias startups tech.
+4. **Ecosistema activo en Minas:**
+   Contamos con semilleros de investigación líderes como **AtarraIA** (ciencias de la computación e IA), **UNAlgoritmo** (programación competitiva), **Aperture**, **Turing Box** y **UNeural**, además de convenios tecnológicos exclusivos (Kiro AWS, JetBrains, GitHub Pack).
+5. **Flexibilidad curricular:**
+   Cuentas con 32 créditos de libre elección y 22 optativos para armar tu propio perfil profesional a tu gusto.`,
+        chips: ['Ver Malla Curricular', 'Semilleros y grupos', 'Ver todos los convenios', 'Optativas de Sistemas'],
       };
     }
 
