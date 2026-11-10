@@ -12,24 +12,40 @@
 /* ---------- sofIA: Asistente Virtual Inteligente de Sistemas UNAL ----------
    Chatbot client-side que indexa y consulta toda la información oficial del portal:
    - Malla curricular completa (93 asignaturas, prerrequisitos, créditos, tipologías)
+   - Grupos de WhatsApp oficiales de estudio por materia
+   - Unidad Compartida de Google Drive (material de estudio, parciales, talleres)
    - Fechas y calendario académico oficial (adiciones, cancelaciones, notas)
    - Rutas y horarios de transporte intercampus (Robledo, Volador, Río)
-   - Convenios y beneficios tecnológicos (Kiro AWS, Coursera, GitHub, JetBrains, etc.)
-   - Grupos estudiantiles y semilleros (AtarraIA, UNAlgoritmo, Aperture, etc.)
+   - Convenios tecnológicos y de bienestar (Kiro AWS, Coursera, GitHub, JetBrains, auxilios UNAL)
+   - Grupos estudiantiles y semilleros (AtarraIA, UNAlgoritmo, Aperture, Turing Box, UNeural)
    - Guías normativas: P.A.P.A., Prelación DNINFOA / Citas SIA, Bolsa de Créditos
-   - Búsqueda difusa y semántica tolerante a mayúsculas, minúsculas y tildes.
-   100 % en el navegador, sin llamadas externas ni costos de base de datos. */
+   - Redirecciones asistidas a SGS Minas, SIA y contacto directo con la Representación.
+   Tono: Amiga de la juventud, cercana, clara, empática y sin excesos de emojis. */
 
 (function moduloSofia() {
   'use strict';
 
-  // No cargar en la pantalla de descanso nocturno
   if (typeof document === 'undefined') return;
   const esPaginaDescanso = document.body?.dataset?.pagina === 'descanso' || (window.location.pathname || '').endsWith('descanso.html');
   if (esPaginaDescanso) return;
 
   /* ==========================================================================
-     1. BASE DE CONOCIMIENTO Y CACHÉ LOCAL
+     1. CONSTANTES Y ENLACES OFICIALES
+     ========================================================================== */
+
+  const ENLACES_OFICIALES = {
+    driveSistemas: 'https://drive.google.com/drive/folders/0AEk8YJGqI3OvUk9PVA?hl=es',
+    solicitudAccesoDrive: 'https://docs.google.com/spreadsheets/d/1ixIitudn7GLZ9z99Vl9hFM9cmgE48aZV85Zkgqe_ARc',
+    sia: 'https://sia.unal.edu.co/',
+    sgsMinas: 'https://minas.medellin.unal.edu.co/estudiantes/gestion-de-asuntos-estudiantiles/gae-solicitudes-estudiantiles',
+    bienestarMinas: 'https://bienestaruniversitario.medellin.unal.edu.co/secciones/gestion-y-fomento',
+    wppRepre: 'https://wa.me/573123772091',
+    telefonoRepre: '(+57) 312 377 2091',
+    correoRepre: 'saescobara@unal.edu.co',
+  };
+
+  /* ==========================================================================
+     2. ESTADO Y CACHÉ LOCAL
      ========================================================================== */
 
   const estadoSofia = {
@@ -53,13 +69,13 @@
       materiasPorNombre: new Map(),
       aliasMaterias: new Map(),
       fechasCalendario: [],
-      conveniosPorNombre: new Map(),
+      conveniosPorId: new Map(),
       gruposPorNombre: new Map(),
     },
   };
 
   /* ==========================================================================
-     2. UTILIDADES DE TEXTO Y NORMALIZACIÓN DIFUSA
+     3. UTILIDADES DE TEXTO
      ========================================================================== */
 
   function normalizar(texto) {
@@ -68,9 +84,9 @@
       .toString()
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Quita tildes y diacríticos
-      .replace(/[^a-z0-9\s]/g, ' ')   // Solo letras y números
-      .replace(/\s+/g, ' ')           // Espacios simples
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
       .trim();
   }
 
@@ -78,8 +94,7 @@
     'de', 'la', 'el', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'e', 'o', 'u',
     'en', 'a', 'para', 'por', 'con', 'sin', 'sobre', 'que', 'como', 'cual', 'cuales',
     'donde', 'cuando', 'quien', 'quienes', 'es', 'son', 'me', 'mi', 'te', 'se', 'su',
-    'sus', 'al', 'del', 'dime', 'saber', 'quiero', 'favor', 'hola', 'buenas', 'dias',
-    'tardes', 'noches', 'ayuda', 'cuentame', 'explica', 'informacion', 'acerca'
+    'sus', 'al', 'del', 'dime', 'saber', 'quiero', 'favor', 'cuentame', 'explica'
   ]);
 
   function extraerTerminos(texto) {
@@ -88,7 +103,6 @@
       .filter((palabra) => palabra.length > 1 && !PALABRAS_VACIAS.has(palabra));
   }
 
-  // Similitud de Levenshtein optimizada para palabras cortas / typos
   function distanciaLevenshtein(a, b) {
     if (a === b) return 0;
     if (!a.length) return b.length;
@@ -104,9 +118,9 @@
           matriz[i][j] = matriz[i - 1][j - 1];
         } else {
           matriz[i][j] = Math.min(
-            matriz[i - 1][j - 1] + 1, // sustitución
-            matriz[i][j - 1] + 1,     // inserción
-            matriz[i - 1][j] + 1      // eliminación
+            matriz[i - 1][j - 1] + 1,
+            matriz[i][j - 1] + 1,
+            matriz[i - 1][j] + 1
           );
         }
       }
@@ -127,7 +141,7 @@
   }
 
   /* ==========================================================================
-     3. CARGA E INDEXACIÓN DE DATOS DEL SITIO
+     4. CARGA E INDEXACIÓN
      ========================================================================== */
 
   async function cargarJsonLocal(ruta) {
@@ -172,7 +186,7 @@
       indexarConocimiento();
       estadoSofia.cargado = true;
     } catch (error) {
-      console.warn('sofIA: No se pudo cargar toda la base de conocimiento local', error);
+      console.warn('sofIA: no se pudo cargar toda la base local', error);
     } finally {
       estadoSofia.cargando = false;
     }
@@ -181,14 +195,12 @@
   function indexarConocimiento() {
     const { indices, datos } = estadoSofia;
 
-    // 1. Indexar asignaturas por código y por nombre
     datos.asignaturas.forEach((asig) => {
       indices.materiasPorCodigo.set(asig.codigo, asig);
       const normNombre = normalizar(asig.nombre);
       indices.materiasPorNombre.set(normNombre, asig);
     });
 
-    // 2. Diccionario de alias y abreviaturas comunes en Sistemas UNAL
     const ALIAS_MATERIAS = [
       [['poo', 'programacion orientada a objetos', 'objetos'], 'Programación Orientada a Objetos'],
       [['eda', 'estructuras de datos', 'algoritmos'], 'Estructuras de Datos y Algoritmos'],
@@ -215,7 +227,7 @@
       [['probabilidad', 'estadistica 1', 'modelos probabilisticos 1'], 'Modelos Probabilísticos y Estadística I'],
       [['estadistica 2', 'modelos probabilisticos 2'], 'Modelos Probabilísticos y Estadística II'],
       [['ing economica', 'ingenieria economica', 'economica'], 'Ingeniería Económica'],
-      [['trabajo de grado', 'tesis', 'grado'], 'Trabajo de Grado'],
+      [['trabajo de grado', 'tesis', 'grado', 'pasantia', 'practica'], 'Trabajo de Grado'],
       [['teoria de computacion', 'automatas'], 'Teoría de la Computación'],
     ];
 
@@ -226,7 +238,6 @@
       }
     });
 
-    // 3. Indexar fechas del calendario académico
     if (datos.info?.guias) {
       const guiaCal = datos.info.guias.find((g) => g.id === 'calendario-academico');
       if (guiaCal?.calendario?.grupos) {
@@ -246,26 +257,23 @@
       }
     }
 
-    // 4. Indexar convenios y grupos
-    datos.convenios.forEach((c) => indices.conveniosPorNombre.set(normalizar(c.nombre), c));
+    datos.convenios.forEach((c) => indices.conveniosPorId.set(normalizar(c.id || c.nombre), c));
     datos.grupos.forEach((g) => indices.gruposPorNombre.set(normalizar(g.nombre), g));
   }
 
   /* ==========================================================================
-     4. MOTOR DE RESPUESTAS INTELIGENTES DE sofIA
+     5. MOTOR DE INTENCIONES Y BÚSQUEDA
      ========================================================================== */
 
   function buscarAsignaturaPorTexto(preguntaNorm) {
     const { indices, datos } = estadoSofia;
 
-    // 1. Coincidencia por alias directo
     for (const [alias, asig] of indices.aliasMaterias.entries()) {
       if (new RegExp(`\\b${alias}\\b`).test(preguntaNorm)) {
         return asig;
       }
     }
 
-    // 2. Coincidencia por código de asignatura (ej: 3007843, 1000004-M)
     for (const [codigo, asig] of indices.materiasPorCodigo.entries()) {
       const codLimpio = normalizar(codigo);
       if (preguntaNorm.includes(codLimpio) || codLimpio.includes(preguntaNorm)) {
@@ -273,7 +281,6 @@
       }
     }
 
-    // 3. Coincidencia por nombre exacto o contenido
     for (const asig of datos.asignaturas) {
       const nombreNorm = normalizar(asig.nombre);
       if (preguntaNorm.includes(nombreNorm)) {
@@ -281,7 +288,6 @@
       }
     }
 
-    // 4. Coincidencia parcial con palabras clave de la materia
     let mejorMateria = null;
     let mejorScore = 0;
     const terminosPregunta = extraerTerminos(preguntaNorm);
@@ -309,43 +315,161 @@
     const { indices, datos } = estadoSofia;
 
     // ------------------------------------------------------------------------
-    // Caso 1: Saludo, identidad o agradecimiento
+    // A. Saludo y presentación
     // ------------------------------------------------------------------------
-    if (/^(hola|buenos dias|buenas tardes|buenas noches|hey|que tal|buenas)\b/.test(preguntaNorm) && preguntaNorm.split(' ').length <= 4) {
+    if (/^(hola|buenos dias|buenas tardes|buenas noches|hey|que tal|buenas|holi|hola sofia)\b/.test(preguntaNorm) && preguntaNorm.split(' ').length <= 4) {
       return {
-        texto: `¡Hola! Soy **sofIA**, la asistente virtual de Ingeniería de Sistemas e Informática de la UNAL Medellín.
+        texto: `¡Hola! Qué gusto saludarte. Soy sofIA, tu compañera virtual de la carrera.
 
-Estoy conectada a toda la información del portal. Pregúntame sobre:
-- ⚡ **Prerrequisitos y materias** de la carrera
-- 📅 **Fechas clave del calendario** (cancelaciones, notas)
-- 🚌 **Rutas y horarios del bus intercampus**
-- 🎁 **Convenios estudiantiles** (Kiro AWS, Coursera, GitHub)
-- 👥 **Semilleros y grupos** (AtarraIA, UNAlgoritmo, etc.)
-- 🎓 **P.A.P.A., Bolsa de créditos y trámites SIA**
-
-¿Sobre qué tema te gustaría consultar hoy?`,
-        chips: ['Prerrequisitos de materias', 'Fechas de cancelación', 'Rutas del bus intercampus', 'Convenio Kiro (AWS)'],
+Pregúntame con confianza lo que necesites sobre materias, prerrequisitos, grupos de WhatsApp de estudio, fechas clave del calendario, la Unidad Compartida de Drive, convenios o trámites de la Facultad. ¿En qué te doy una mano hoy?`,
+        chips: ['Prerrequisitos de materias', 'Drive de material de estudio', 'Fechas de cancelación', 'Convenios estudiantiles'],
       };
     }
 
     if (/quien eres|quien te creo|que eres|como te llamas|presentate/.test(preguntaNorm)) {
       return {
-        texto: `Soy **sofIA**, la inteligencia de soporte estudiantil para **Ingeniería de Sistemas e Informática** de la Universidad Nacional de Colombia (Sede Medellín).
+        texto: `Soy sofIA, asistente virtual estudiantil de Ingeniería de Sistemas e Informática de la UNAL Medellín.
 
-Fui diseñada y desarrollada por **Santiago Escobar Arias**, Representante Estudiantil de Sistemas, para que no tengas que buscar entre decenas de PDFs o resoluciones: leo y cruzo al instante las mallas, calendarios, convenios y normativas académicas del portal.`,
-        chips: ['Ver malla curricular', 'Ver convenios estudiantiles', 'Calendario académico'],
+Fui creada por Santiago Escobar Arias (nuestro Representante Estudiantil) para ayudarte a navegar la carrera sin rodeos: consulto en segundos los datos oficiales de la malla, fechas del calendario, convenios, rutas de transporte y normativas académicas.`,
+        chips: ['Ver malla curricular', 'Unidad de Drive de estudio', 'Calendario académico'],
       };
     }
 
-    if (/gracias|muchas gracias|genial|excelente|bacano|super/.test(preguntaNorm) && preguntaNorm.split(' ').length <= 4) {
+    if (/gracias|muchas gracias|genial|excelente|bacano|super|te quiero|vale gracias/.test(preguntaNorm) && preguntaNorm.split(' ').length <= 4) {
       return {
-        texto: `¡Con mucho gusto! Aquí estaré siempre que necesites consultar asignaturas, fechas o trámites de la U. ¡Muchos éxitos en tu camino académico! 🚀`,
-        chips: ['Prerrequisitos de materias', 'Fechas del calendario', 'Semilleros estudiantiles'],
+        texto: `¡De nada! Recuerda que aquí estoy para cualquier duda que tengas con el semestre. ¡Mucho ánimo en las materias!`,
+        chips: ['Prerrequisitos de materias', 'Calendario académico', 'Material de estudio'],
       };
     }
 
     // ------------------------------------------------------------------------
-    // Caso 2: Prerrequisitos / Correquisitos de materias
+    // B. Grupos de WhatsApp de materias (distinto a semilleros)
+    // ------------------------------------------------------------------------
+    const esConsultaWpp = /whatsapp|wpp|chat|chats|grupo de estudio|comunidad de estudio/.test(preguntaNorm);
+    const esConsultaSemillero = /semillero|semilleros|grupo estudiantil|grupos estudiantiles|atarraia|unalgoritmo|aperture|turing|uneural/.test(preguntaNorm);
+
+    if (esConsultaWpp && !esConsultaSemillero) {
+      const materiaWpp = buscarAsignaturaPorTexto(preguntaNorm);
+
+      if (materiaWpp) {
+        if (materiaWpp.whatsapp) {
+          return {
+            texto: `Aquí tienes el grupo de estudio de WhatsApp para **${materiaWpp.nombre}** (\`${materiaWpp.codigo}\`):
+
+👉 [Entrar al grupo de WhatsApp de ${materiaWpp.nombre}](${materiaWpp.whatsapp})
+
+Recuerda que también puedes ver todas las materias con grupo de estudio directamente en la [Malla Curricular](malla.html).`,
+            chips: [`Prerrequisitos de ${materiaWpp.nombre}`, 'Ver malla curricular', 'Drive de material de estudio'],
+          };
+        } else {
+          return {
+            texto: `Actualmente **${materiaWpp.nombre}** (\`${materiaWpp.codigo}\`) no tiene un enlace de WhatsApp registrado en la web.
+
+Si tú o tus compañeros tienen el grupo de este semestre, escríbele a Santiago para que lo añadamos al portal:
+- WhatsApp del repre: [${ENLACES_OFICIALES.telefonoRepre}](${ENLACES_OFICIALES.wppRepre})`,
+            chips: [`Prerrequisitos de ${materiaWpp.nombre}`, 'Ver malla curricular', 'Drive de material de estudio'],
+          };
+        }
+      }
+
+      // Pregunta general sobre grupos de WhatsApp de materias
+      return {
+        texto: `Los grupos de WhatsApp de estudio están organizados por materia dentro de nuestra [Malla Curricular](malla.html). 
+
+Al hacer clic sobre cualquier asignatura que tenga el ícono de WhatsApp podrás unirte directamente a su comunidad. Si buscas una materia en específico, solo dime por ejemplo: *"pásame el wpp de Simulación"* o *"grupo de Cálculo Diferencial"*.`,
+        chips: ['WhatsApp de Simulación', 'WhatsApp de POO', 'WhatsApp de Cálculo Diferencial', 'Ver malla curricular'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // C. Banco de Recursos / Drive / Parciales anteriores / Material de estudio
+    // ------------------------------------------------------------------------
+    if (/drive|material de estudio|materiales|parciales|parciales viejos|parciales anteriores|talleres|apuntes|guias|banco de recursos|unidad compartida/.test(preguntaNorm)) {
+      return {
+        texto: `Todo el banco de material de estudio de la carrera está centralizado en la **Unidad Compartida de Google Drive de Sistemas**:
+
+📁 **[Abrir la Unidad Compartida de Sistemas en Google Drive](${ENLACES_OFICIALES.driveSistemas})**
+
+Allí encuentras carpetas por materia con:
+- Parciales y quices de semestres anteriores
+- Talleres resueltos y guías de laboratorio
+- Libros guía, diapositivas y apuntes comunitarios
+
+Si al ingresar con tu correo \`@unal.edu.co\` no tienes permisos de acceso todavía, pide tu alta en este formulario:
+👉 [Formulario para solicitar acceso al Drive](${ENLACES_OFICIALES.solicitudAccesoDrive})`,
+        chips: ['Ver malla curricular', 'Grupos de WhatsApp', 'Fechas del calendario'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // D. Cancelación de materias o cancelación de semestre (con empatía y contacto repre)
+    // ------------------------------------------------------------------------
+    const esCancelacionSemestre = /cancelar semestre|cancelacion de semestre|cancelar el periodo|cancelacion de periodo|retirar semestre/.test(preguntaNorm);
+    const esCancelacionMaterias = /cancelar materia|cancelar materias|cancelacion de asignatura|cancelacion de asignaturas|hasta cuando puedo cancelar/.test(preguntaNorm);
+
+    if (esCancelacionSemestre || esCancelacionMaterias) {
+      const fechas = indices.fechasCalendario;
+      const cancelSin = fechas.find((f) => /sin descuento/.test(normalizar(f.actividad)));
+      const cancelCon = fechas.find((f) => /con descuento/.test(normalizar(f.actividad)));
+      const finClases = fechas.find((f) => /finalizacion de clases/.test(normalizar(f.actividad)));
+
+      let fechasTxt = '';
+      if (esCancelacionSemestre) {
+        fechasTxt = `**Cancelación de Periodo Académico (Semestre completo):**
+- Se solicita ante el Consejo de Facultad mediante el [Portal de Solicitudes Estudiantiles SGS](${ENLACES_OFICIALES.sgsMinas}).
+- La fecha límite oficial del calendario (2026-2S) es el **${finClases?.fin || '17 de diciembre de 2026'}** (último día de clases).
+- No requiere haber aprobado un porcentaje mínimo y te permite solicitar reingreso o reserva según tu situación.`;
+      } else {
+        fechasTxt = `**Plazos para Cancelar Asignaturas (2026-2S):**
+- **Semana 3 (sin pérdida de créditos):** Del ${cancelSin?.inicio || '27 de agosto'} al **${cancelSin?.fin || '10 de septiembre'}**. Los créditos vuelven completos a tu bolsa.
+- **Semana 8 (con pérdida de créditos):** Del ${cancelCon?.inicio || '15 de septiembre'} al **${cancelCon?.fin || '22 de octubre'}**. No afecta tu P.A.P.A., pero los créditos de la materia se descuentan de tu bolsa disponible.
+- **Cancelación extemporánea (después de semana 8):** Solo procede por fuerza mayor, caso fortuito o motivos de salud justificados a través del [Portal SGS de Minas](${ENLACES_OFICIALES.sgsMinas}).`;
+      }
+
+      return {
+        texto: `${fechasTxt}
+
+---
+
+💙 **Un mensaje importante de compañera a compañero:**
+Si estás pensando en cancelar porque estás pasando por un momento personal difícil, problemas de salud o la carga te está superando, **no estás solo ni tienes que resolverlo en silencio**. 
+
+Santiago (nuestro Representante Estudiantil) te puede orientar de forma confidencial para ver si conviene radicar una solicitud extraordinaria, aplazar o buscar un apoyo académico. Escríbele directo a su WhatsApp:
+👉 [Escribirle a Santiago: ${ENLACES_OFICIALES.telefonoRepre}](${ENLACES_OFICIALES.wppRepre})`,
+        chips: ['Bolsa de créditos', 'Portal SGS Minas', 'Calendario académico'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // E. Materias de último semestre / Décimo semestre
+    // ------------------------------------------------------------------------
+    if (/ultimo semestre|ultimos semestres|decimo semestre|semestre 10|10 semestre|materias para graduarme|terminar la carrera/.test(preguntaNorm)) {
+      return {
+        texto: `En el **10° y último semestre** de Ingeniería de Sistemas e Informática el plan está estructurado para que culmines tu formación con:
+
+1. **Trabajo de Grado (\`3007850\` - 6 créditos):**
+   Es la asignatura central. Tienes varias modalidades para realizarla:
+   - **Práctica de extensión / Pasantía empresarial** en una empresa del sector tecnológico.
+   - **Proyecto de investigación** vinculado a un grupo o semillero.
+   - **Asignaturas de posgrado** (cursar materias de especialización o maestría en Minas).
+
+2. **Créditos pendientes de Tecnologías de Aplicación (Optativas):**
+   Completar el acumulado exigido de **22 créditos** en asignaturas disciplinares optativas.
+
+3. **Créditos de Libre Elección:**
+   Completar los **32 créditos** de libre elección en materias que te gusten, idiomas o posgrados.
+
+4. **Requisitos de Grado:**
+   - Cumplir el requisito de idioma extranjero (Inglés B1/B2 según tu año de admisión).
+   - Tener aprobados los 160 créditos exigidos del plan (más nivelaciones si aplicaban).
+
+Si tienes dudas sobre tu cupo de créditos restante, revisa tu avance en la sección [Mi Avance](avance.html).`,
+        chips: ['Prerrequisitos de Trabajo de Grado', 'Optativas de Sistemas', 'Ir a Mi Avance'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // F. Prerrequisitos y materias específicas
     // ------------------------------------------------------------------------
     const esConsultaPrereq = /prerrequisit|prerequisit|requisito|que pide|que necesito para ver|para matricular|correquisit|abrir|correr/.test(preguntaNorm);
     const materiaEncontrada = buscarAsignaturaPorTexto(preguntaNorm);
@@ -356,13 +480,13 @@ Fui diseñada y desarrollada por **Santiago Escobar Arias**, Representante Estud
 
       let detallePrereq = '';
       if (preCodigos.length === 0) {
-        detallePrereq = `✅ **No tiene prerrequisitos.** La puedes inscribir libremente desde tu primer semestre (siempre que tu cupo de créditos y el SIA lo permitan).`;
+        detallePrereq = `No tiene prerrequisitos. La puedes matricular desde tu primer semestre (según tu cupo de créditos y cita del SIA).`;
       } else {
         const nombresPre = preCodigos.map((cod) => {
           const preMat = indices.materiasPorCodigo.get(cod);
           return preMat ? `• **${preMat.nombre}** (\`${cod}\`)` : `• Asignatura código \`${cod}\``;
         }).join('\n');
-        detallePrereq = `📌 **Prerrequisito(s) exigido(s):**\n${nombresPre}`;
+        detallePrereq = `**Prerrequisito(s) necesario(s):**\n${nombresPre}`;
       }
 
       let detalleCorreq = '';
@@ -371,14 +495,14 @@ Fui diseñada y desarrollada por **Santiago Escobar Arias**, Representante Estud
           const cMat = indices.materiasPorCodigo.get(cod);
           return cMat ? `• **${cMat.nombre}** (\`${cod}\`)` : `• Asignatura código \`${cod}\``;
         }).join('\n');
-        detalleCorreq = `\n🔄 **Correquisito(s) (simultáneos):**\n${nombresCorreq}`;
+        detalleCorreq = `\n\n**Correquisito(s) (simultáneos):**\n${nombresCorreq}`;
       }
 
       const semestreTxt = materiaEncontrada.semestre ? `Semestre sugerido: **${materiaEncontrada.semestre}°**` : 'Asignatura Optativa / Elegible';
       const obligatoriaTxt = materiaEncontrada.obligatoria ? 'Obligatoria' : 'Optativa';
       const wspTxt = materiaEncontrada.whatsapp
-        ? `\n💬 **Comunidad de WhatsApp:** [Unirse al grupo de estudio](${materiaEncontrada.whatsapp})`
-        : '';
+        ? `\n\n👉 [Unirte al grupo de WhatsApp de estudio](${materiaEncontrada.whatsapp})`
+        : '\n\n*(Esta materia no tiene grupo de WhatsApp registrado actualmente en la web).*';
 
       const chipsPre = preCodigos
         .map((cod) => indices.materiasPorCodigo.get(cod))
@@ -386,20 +510,19 @@ Fui diseñada y desarrollada por **Santiago Escobar Arias**, Representante Estud
         .map((m) => `Prerrequisitos de ${m.nombre}`);
 
       return {
-        texto: `### 📘 ${materiaEncontrada.nombre} (\`${materiaEncontrada.codigo}\`)
+        texto: `### ${materiaEncontrada.nombre} (\`${materiaEncontrada.codigo}\`)
 
 ${detallePrereq}${detalleCorreq}
 
-📊 **Detalles académicos:**
 - **Créditos:** ${materiaEncontrada.creditos}
 - **Tipología:** ${obligatoriaTxt} (${materiaEncontrada.agrupacion || 'Plan de estudios'})
 - **Nivel:** ${semestreTxt}${wspTxt}`,
-        chips: chipsPre.length > 0 ? chipsPre : ['Ver materias de este semestre', 'Otras asignaturas'],
+        chips: chipsPre.length > 0 ? chipsPre : ['Ver en la malla interactiva', 'Drive de material de estudio'],
       };
     }
 
     // ------------------------------------------------------------------------
-    // Caso 3: Materias por semestre (ej: "qué materias veo en 1er semestre", "materias semestre 4")
+    // G. Materias por semestre (ej: materias de 1er semestre, 4 semestre)
     // ------------------------------------------------------------------------
     const matchSemestre = preguntaNorm.match(/semestre\s*([1-9]|10)|primer\s*semestre|segundo\s*semestre|tercer\s*semestre|cuarto\s*semestre|quinto\s*semestre|sexto\s*semestre|septimo\s*semestre|octavo\s*semestre|noveno\s*semestre|decimo\s*semestre/);
     if (matchSemestre && (preguntaNorm.includes('materia') || preguntaNorm.includes('asignatura') || preguntaNorm.includes('veo') || preguntaNorm.includes('curso') || preguntaNorm.includes('plan'))) {
@@ -421,19 +544,19 @@ ${detallePrereq}${detalleCorreq}
               const asig = indices.materiasPorCodigo.get(item.codigo);
               if (asig) {
                 const preCount = asig.prerrequisitos?.length || 0;
-                const preInfo = preCount > 0 ? ` _(exige ${preCount} prerreq.)_` : ' _(sin prerreq.)_';
+                const preInfo = preCount > 0 ? ` _(pide ${preCount} prerreq.)_` : ' _(sin prerreq.)_';
                 return `• **${asig.nombre}** (${asig.creditos} créditos)${preInfo}`;
               }
-              return `• Asignatura \`${item.codigo}\``;
+              return `• Asignatura código \`${item.codigo}\``;
             } else if (item.tipo === 'bolsa') {
-              return `• 🧩 **${item.nombre || 'Asignatura Optativa'}** (${item.creditos} créditos)`;
+              return `• **${item.nombre || 'Asignatura Optativa'}** (${item.creditos} créditos)`;
             }
             return '';
           }).filter(Boolean).join('\n');
         } else {
           listaTxt = materiasSemestre.map((m) => {
             const preCount = m.prerrequisitos?.length || 0;
-            const preInfo = preCount > 0 ? ` _(exige ${preCount} prerreq.)_` : ' _(sin prerreq.)_';
+            const preInfo = preCount > 0 ? ` _(pide ${preCount} prerreq.)_` : ' _(sin prerreq.)_';
             return `• **${m.nombre}** (${m.creditos} créditos)${preInfo}`;
           }).join('\n');
         }
@@ -441,236 +564,300 @@ ${detallePrereq}${detalleCorreq}
         const creditosTotales = bloquePlan?.creditos || materiasSemestre.reduce((acc, m) => acc + (m.creditos || 0), 0);
 
         return {
-          texto: `### 🗓️ Plan sugerido para el Semestre ${numSemestre} (${creditosTotales} créditos totales)
+          texto: `### Plan de estudios para Semestre ${numSemestre} (${creditosTotales} créditos sugeridos)
 
 ${listaTxt}
 
-Puedes hacer clic en cualquiera de estas materias para ver qué requisitos pide o si tiene grupo de WhatsApp:`,
+Si quieres ver el semáforo de prerrequisitos o unirte al WhatsApp de alguna, puedes pulsar abajo o abrir la [Malla Curricular](malla.html).`,
           chips: materiasSemestre.slice(0, 4).map((m) => `Prerrequisitos de ${m.nombre}`),
         };
       }
     }
 
     // ------------------------------------------------------------------------
-    // Caso 4: Fechas, Calendario Académico, Cancelaciones y Notas
+    // H. Auxilios de Bienestar Universitario
     // ------------------------------------------------------------------------
-    if (/fecha|fechas|calendario|cuando empieza|cuando inicia|inicio de clases|fin de clases|termina el semestre|cancelar|cancelacion|adicion|adiciones|reporte de notas|parciales|30 %|60 %|100 %|semana 3|semana 8/.test(preguntaNorm)) {
-      const fechas = indices.fechasCalendario;
-      const cancelSinDescuento = fechas.find((f) => /sin descuento/.test(normalizar(f.actividad)));
-      const cancelConDescuento = fechas.find((f) => /con descuento/.test(normalizar(f.actividad)));
-      const reporte60 = fechas.find((f) => /60\s*%/.test(f.actividad));
-      const reporte100 = fechas.find((f) => /100\s*%/.test(f.actividad));
-      const finClases = fechas.find((f) => /finalizacion de clases/.test(normalizar(f.actividad)));
-
-      let cancelacionResp = '';
-      if (preguntaNorm.includes('cancel') || preguntaNorm.includes('adicion')) {
-        cancelacionResp = `\n\n📌 **Reglas de Cancelación en la UNAL:**\n- **Hasta Semana 3 (sin pérdida de créditos):** Del ${cancelSinDescuento?.inicio || 'inicio'} al **${cancelSinDescuento?.fin || '10 de septiembre'}**. Los créditos se te devuelven a tu bolsa.\n- **Hasta Semana 8 (con pérdida de créditos):** Del ${cancelConDescuento?.inicio || '15 de septiembre'} al **${cancelConDescuento?.fin || '22 de octubre'}**. No te afecta el P.A.P.A., pero esos créditos se descuentan de tu bolsa.`;
-      }
-
+    if (/auxilio|auxilios|bienestar|apoyo alimentario|apoyo economico|bono de transporte|alojamiento|residencias|almuerzo|almuerzos|subsidio|comida|pbm/.test(preguntaNorm)) {
       return {
-        texto: `### 📅 Fechas Clave del Periodo Académico (2026-2S)
+        texto: `El Área de Gestión y Fomento Socioeconómico de Bienestar Universitario ofrece varios apoyos para estudiantes de pregrado:
 
-- 🚀 **Adición y cancelación sin pérdida de créditos:** ${cancelSinDescuento?.inicio || '27-ago'} al **${cancelSinDescuento?.fin || '10-sep'}**
-- ⚠️ **Cancelación de asignaturas con pérdida:** ${cancelConDescuento?.inicio || '15-sep'} al **${cancelConDescuento?.fin || '22-oct'}**
-- 📝 **Reporte de notas parciales (60 %):** Límite **${reporte60?.fin || '05 de noviembre'}**
-- 🏁 **Finalización oficial de clases:** **${finClases?.fin || '17 de diciembre'}**
-- 🎓 **Reporte final de calificaciones (100 %):** **${reporte100?.fin || '19 de diciembre'}**${cancelacionResp}`,
-        chips: ['¿Cómo funciona la bolsa de créditos?', 'Citas de inscripción SIA', 'Solicitudes GAE'],
+1. **Apoyo Alimentario:**
+   Almuerzo diario durante el semestre en los restaurantes universitarios del Campus El Volador y Robledo.
+2. **Apoyo Económico Estudiantil:**
+   Subsidio monetario semestral para gastos de sostenimiento académico.
+3. **Auxilio o Tarifa Estudiantil de Transporte:**
+   Tarifa preferencial en la Tarjeta Cívica del Metro de Medellín y auxilios de movilidad.
+4. **Alojamiento y Residencias Estudiantiles:**
+   Subsidio o cupo de vivienda para estudiantes que provienen de fuera del Área Metropolitana.
+
+**Requisitos principales:**
+- Estar matriculado en el semestre vigente.
+- Tener evaluado el Puntaje Básico de Matrícula (PBM).
+- Postularte dentro de las fechas fijadas en la convocatoria oficial (a inicio de cada semestre).
+- Cumplir el compromiso de **Horas de Corresponsabilidad** (mínimo 16 horas semestrales en dependencias de la universidad).
+
+👉 Más información y convocatorias abiertas: [Bienestar UNAL Medellín](${ENLACES_OFICIALES.bienestarMinas})`,
+        chips: ['Horas de corresponsabilidad', 'Convenios estudiantiles', 'Calendario académico'],
       };
     }
 
     // ------------------------------------------------------------------------
-    // Caso 5: Rutas y Transporte Intercampus (Buses UNAL)
+    // I. Convenios según necesidad ("convenio para X")
     // ------------------------------------------------------------------------
-    if (/bus|buses|intercampus|transporte|ruta|rutas|horario bus|robledo|volador|rio|minas/.test(preguntaNorm)) {
+    const esConvenio = /convenio|convenios|beneficio|beneficios/.test(preguntaNorm);
+
+    if (esConvenio || /kiro|aws|coursera|github|copilot|jetbrains|pycharm|intellij|office|microsoft|matlab|autodesk|revit|autocad|spotify|sapiencia|icetex/.test(preguntaNorm)) {
+      // 1. Kiro (AWS)
+      if (preguntaNorm.includes('kiro') || preguntaNorm.includes('programar con ia') || preguntaNorm.includes('ia para programar')) {
+        return {
+          texto: `**Convenio Kiro (AWS) · Programación con IA:**
+- **Beneficio:** 1.000 créditos mensuales gratis durante 1 año.
+- **¿Qué hace?** Es un entorno de IA desarrollado sobre Amazon Web Services que convierte ideas y especificaciones en código real ejecutable para tus proyectos y materias.
+- **¿Cómo activarlo?** Entra a [dned.unal.edu.co](https://dned.unal.edu.co) con tu cuenta de correo institucional de la UNAL.`,
+          chips: ['GitHub Student Pack', 'Coursera UNAL', 'Ver todos los convenios'],
+        };
+      }
+
+      // 2. Cursos / Certificaciones gratis
+      if (preguntaNorm.includes('coursera') || preguntaNorm.includes('curso') || preguntaNorm.includes('certificacion') || preguntaNorm.includes('diplomado')) {
+        return {
+          texto: `**Coursera for Campus UNAL:**
+- **Beneficio:** Cursos y certificaciones profesionales gratis con universidades internacionales (Google, IBM, Stanford, Michigan, etc.).
+- **¿Cómo activarlo?** Inicia sesión en [coursera.org](https://www.coursera.org/) seleccionando "Iniciar sesión con la organización" usando tu correo \`@unal.edu.co\`.`,
+          chips: ['Convenio Kiro (AWS)', 'GitHub Student Pack', 'Ver convenios'],
+        };
+      }
+
+      // 3. GitHub / Copilot
+      if (preguntaNorm.includes('github') || preguntaNorm.includes('copilot') || preguntaNorm.includes('autocompletar')) {
+        return {
+          texto: `**GitHub Student Developer Pack:**
+- **Beneficio:** GitHub Copilot gratis, cuenta GitHub Pro sin costo, dominios gratuitos por un año (.me), créditos en la nube (Azure, DigitalOcean) y herramientas de desarrollo.
+- **¿Cómo activarlo?** Postúlate en [education.github.com/pack](https://education.github.com/pack) subiendo tu carnet o certificado de matrícula.`,
+          chips: ['JetBrains Student Pack', 'Convenio Kiro (AWS)', 'Ver convenios'],
+        };
+      }
+
+      // 4. JetBrains / IDEs
+      if (preguntaNorm.includes('jetbrains') || preguntaNorm.includes('intellij') || preguntaNorm.includes('pycharm') || preguntaNorm.includes('webstorm') || preguntaNorm.includes('ide')) {
+        return {
+          texto: `**JetBrains Student Pack:**
+- **Beneficio:** Licencias educativas profesionales para IntelliJ IDEA Ultimate, PyCharm Professional, WebStorm, CLion, DataGrip, etc.
+- **¿Cómo activarlo?** Regístrate en [jetbrains.com/community/education](https://www.jetbrains.com/community/education/) con tu correo \`@unal.edu.co\`.`,
+          chips: ['GitHub Student Pack', 'Microsoft 365', 'Ver convenios'],
+        };
+      }
+
+      // 5. Office / Word / Excel / Almacenamiento
+      if (preguntaNorm.includes('office') || preguntaNorm.includes('microsoft') || preguntaNorm.includes('word') || preguntaNorm.includes('excel') || preguntaNorm.includes('onedrive') || preguntaNorm.includes('almacenamiento')) {
+        return {
+          texto: `**Microsoft 365 Educación:**
+- **Beneficio:** Suite completa de Office (Word, Excel, PowerPoint, Teams) para descargar en hasta 5 dispositivos y 1 TB de almacenamiento en la nube en OneDrive.
+- **¿Cómo activarlo?** Inicia sesión en [portal.office.com](https://portal.office.com) con tu usuario y contraseña del correo UNAL.`,
+          chips: ['MATLAB y Simulink', 'Coursera UNAL', 'Ver convenios'],
+        };
+      }
+
+      // 6. MATLAB / Simulink
+      if (preguntaNorm.includes('matlab') || preguntaNorm.includes('simulink') || preguntaNorm.includes('calculo numerico')) {
+        return {
+          texto: `**MATLAB y Simulink (Campus-Wide License):**
+- **Beneficio:** Acceso ilimitado a todas las toolboxes de MATLAB, Simulink y cursos de MATLAB Academy.
+- **¿Cómo activarlo?** Entra al portal de MathWorks UNAL y crea tu cuenta con tu correo institucional.`,
+          chips: ['Convenios de Sistemas', 'Autodesk UNAL'],
+        };
+      }
+
+      // 7. Autodesk / CAD / 3D
+      if (preguntaNorm.includes('autodesk') || preguntaNorm.includes('autocad') || preguntaNorm.includes('revit') || preguntaNorm.includes('cad') || preguntaNorm.includes('3d')) {
+        return {
+          texto: `**Autodesk Education:**
+- **Beneficio:** Licencias educativas de 1 año renovables para AutoCAD, Revit, 3ds Max, Maya e Inventor.
+- **¿Cómo activarlo?** Regístrate en [autodesk.com/education](https://www.autodesk.com/education/) verificando tu calidad de estudiante.`,
+          chips: ['Ver convenios de software'],
+        };
+      }
+
+      // 8. Música / Spotify
+      if (preguntaNorm.includes('spotify') || preguntaNorm.includes('musica')) {
+        return {
+          texto: `**Spotify Premium Estudiantes:**
+- **Beneficio:** 50 % de descuento en la suscripción mensual de Spotify Premium verificando tu estatus estudiantil a través de SheerID con tu correo UNAL.`,
+          chips: ['Ver todos los convenios'],
+        };
+      }
+
+      // Resumen general de convenios
       return {
-        texto: `### 🚌 Transporte Intercampus UNAL Medellín (100 % Gratuito)
+        texto: `En la sección de [Convenios](convenios.html) tenemos recopilados los principales beneficios a los que tienes derecho:
 
-El servicio de bus universitario conecta las tres sedes de Medellín:
+- **Programación e IA:** Kiro (AWS) con 1.000 créditos/mes y GitHub Copilot.
+- **Cursos y certificación:** Coursera for Campus con acceso gratuito.
+- **IDEs y herramientas:** JetBrains Student Pack (IntelliJ, PyCharm, WebStorm).
+- **Productividad:** Microsoft 365 con 1 TB de OneDrive y MATLAB Campus-Wide.
+- **Bienestar:** Almuerzos estudiantiles, tarifa Metro Cívica y Spotify al 50 %.
 
-1. **Ruta Robledo ⇄ Volador:**
-   - **Salida Robledo:** Facultad de Minas (Bloque M3).
-   - **Llegada Volador:** Bloque 41 / Portería Coca-Cola.
-   - **Horario:** Lunes a viernes de 6:00 a. m. a 9:00 p. m. (frecuencia cada 15-20 min en hora pico).
-
-2. **Ruta Río ⇄ Volador:**
-   - Conecta la Sede del Río con el Campus Volador.
-
-3. **Conexión Metro de Medellín:**
-   - El bus te deja cerca a la estación **Suramericana** o **Floresta** mediante paradas intermedias señalizadas.
-
-💡 **Requisito:** Únicamente debes presentar tu **carnet estudiantil digital o físico** al abordar. No requiere ningún pago.`,
-        chips: ['Ver sección Intercampus', 'Fechas del calendario', 'Grupos y semilleros'],
+Si buscas un beneficio para algo en particular (por ejemplo *"convenio para cursos"*, *"para office"* o *"para programar con IA"*), dímelo y te paso los pasos exactos.`,
+        chips: ['Kiro AWS', 'GitHub Student Pack', 'Coursera UNAL', 'Auxilios de Bienestar'],
       };
     }
 
     // ------------------------------------------------------------------------
-    // Caso 6: Convenios y Beneficios (Kiro, AWS, GitHub, Coursera, etc.)
+    // J. Semilleros y Grupos de Investigación
     // ------------------------------------------------------------------------
-    if (/convenio|convenios|beneficio|beneficios|kiro|aws|coursera|github|copilot|jetbrains|office|microsoft|matlab|autodesk|spotify|bienestar|auxilio/.test(preguntaNorm)) {
-      if (preguntaNorm.includes('kiro')) {
-        return {
-          texto: `### 🤖 Convenio Kiro (AWS) · Programación con Inteligencia Artificial
-
-¡La UNAL cuenta con convenio oficial de **Kiro** a través del programa estudiantil de Amazon Web Services (AWS)!
-
-- 🎁 **Beneficio:** **1.000 créditos mensuales GRATIS** durante todo 1 año.
-- ⚡ **¿Para qué sirve?** Kiro es un asistente de IA para desarrollo de software que genera especificaciones estructuradas, prototipos y código ejecutable para tus proyectos y materias.
-- 🔗 **¿Cómo acceder?** Ingresa a [dned.unal.edu.co](https://dned.unal.edu.co) con tu correo institucional UNAL y activa tu plan estudiantil.`,
-          chips: ['Otros convenios estudiantiles', 'GitHub Student Pack', 'Coursera UNAL'],
-        };
-      }
-
-      if (preguntaNorm.includes('github') || preguntaNorm.includes('copilot')) {
-        return {
-          texto: `### 🐙 GitHub Student Developer Pack
-
-Con tu correo \`@unal.edu.co\` recibes gratis:
-- **GitHub Copilot** (asistente de autocompletado con IA)
-- **GitHub Pro** sin costo mientras seas estudiante
-- Dominios gratis por 1 año (.me en Namecheap)
-- Créditos en la nube (DigitalOcean, Azure, Heroku) y acceso a Canva Pro.
-👉 Actívalo en [education.github.com/pack](https://education.github.com/pack).`,
-          chips: ['Convenio Kiro (AWS)', 'JetBrains Student Pack', 'Coursera UNAL'],
-        };
-      }
-
-      if (preguntaNorm.includes('coursera')) {
-        return {
-          texto: `### 🎓 Coursera for Campus UNAL
-
-Todos los estudiantes activos de la UNAL tienen acceso al catálogo de **Coursera**:
-- Cursos y certificaciones profesionales gratis emitidas por universidades como Stanford, Google, IBM y Michigan.
-- Se activa iniciando sesión en Coursera con tu cuenta institucional de Google Workspace UNAL.`,
-          chips: ['Convenios estudiantiles', 'Microsoft 365', 'Kiro AWS'],
-        };
-      }
-
-      // Convenios generales
-      return {
-        texto: `### 🎁 Principales Convenios y Beneficios Estudiantiles UNAL
-
-Como estudiante activo de Sistemas en la UNAL tienes acceso a:
-1. **Kiro (AWS):** 1.000 créditos/mes gratis para programar con IA.
-2. **GitHub Student Pack:** Copilot gratis, herramientas Pro y dominios.
-3. **Coursera for Campus:** Certificaciones internacionales 100 % cubiertas.
-4. **JetBrains Student Pack:** Licencias Pro de IntelliJ IDEA, PyCharm, WebStorm, CLion.
-5. **Microsoft 365:** Word, Excel, PowerPoint y 1 TB en OneDrive institucional.
-6. **MATLAB y Simulink:** Licencia Campus-Wide ilimitada para cálculo numérico.
-7. **Spotify:** 50 % de descuento en el plan Premium Estudiantes.
-8. **Bienestar Universitario:** Apoyos alimentarios, económicos y residencias.`,
-        chips: ['Ver Kiro (AWS)', 'Ver GitHub Pack', 'Ver Coursera UNAL'],
-      };
-    }
-
-    // ------------------------------------------------------------------------
-    // Caso 7: Semilleros y Grupos Estudiantiles
-    // ------------------------------------------------------------------------
-    if (/semillero|semilleros|grupo|grupos|comunidad|atarraia|unalgoritmo|aperture|turing|uneural/.test(preguntaNorm)) {
+    if (esConsultaSemillero) {
       if (preguntaNorm.includes('atarraia')) {
         return {
-          texto: `### 🕸️ AtarraIA · Semillero de Ciencias de la Computación
+          texto: `**AtarraIA · Semillero de Ciencias de la Computación:**
+Es un semillero de investigación enfocado en inteligencia artificial, modelos de aprendizaje automático y soluciones colaborativas en la Facultad de Minas.
 
-**AtarraIA** es un semillero de investigación en ciencias de la computación enfocado en **Inteligencia Artificial**, desarrollo algorítmico y aplicaciones prácticas, promoviendo el aprendizaje colaborativo en la UNAL Medellín.
-
-- 💬 **Grupo de WhatsApp Oficial:** [Unirse al grupo de WhatsApp](https://chat.whatsapp.com/Dd8RnPsMGdg22x3H3s6vIa?mode=ems_copy_t)`,
+- WhatsApp oficial de AtarraIA: [Unirme al grupo de WhatsApp](https://chat.whatsapp.com/Dd8RnPsMGdg22x3H3s6vIa?mode=ems_copy_t)`,
           chips: ['Ver otros semilleros', 'UNAlgoritmo', 'Aperture'],
         };
       }
 
       if (preguntaNorm.includes('unalgoritmo')) {
         return {
-          texto: `### 🏆 UNAlgoritmo · Grupo de Programación Competitiva
-
-Grupo estudiantil adscrito a la Facultad de Minas dedicado al pensamiento algorítmico, estructuras de datos avanzadas y entrenamiento para maratones de programación (ICPC, Maratón Nacional, MFP).`,
+          texto: `**UNAlgoritmo · Programación Competitiva:**
+Grupo estudiantil dedicado a estructuras de datos, algoritmia y preparación para competencias de programación (ICPC, Maratón Nacional, MFP). Entrenan semanalmente en resolución de problemas en equipo.`,
           chips: ['AtarraIA', 'Aperture', 'Turing Box'],
         };
       }
 
+      if (preguntaNorm.includes('aperture')) {
+        return {
+          texto: `**Aperture Systems Lab:**
+Semillero de investigación estudiantil enfocado en ciencia de datos, machine learning e inteligencia artificial aplicada con proyectos prácticos.`,
+          chips: ['AtarraIA', 'UNAlgoritmo', 'UNeural'],
+        };
+      }
+
       return {
-        texto: `### 👥 Grupos y Semilleros de Ingeniería de Sistemas
+        texto: `En Ingeniería de Sistemas contamos con semilleros y grupos estudiantiles muy activos:
 
-En la Facultad de Minas contamos con comunidades muy activas donde puedes investigar y crear proyectos:
+1. **AtarraIA:** Semillero de Ciencias de la Computación enfocado en Inteligencia Artificial.
+2. **UNAlgoritmo:** Programación competitiva y maratones algorítmicas (ICPC).
+3. **Aperture:** Ciencia de datos y machine learning colaborativo.
+4. **Turing Box:** Cultura tecnológica, desarrollo de proyectos y comunidad.
+5. **UNeural:** Redes neuronales y neurocomputación.
 
-1. **AtarraIA:** Semillero de Ciencias de la Computación enfocado en IA y aprendizaje automático.
-2. **UNAlgoritmo:** Programación competitiva y preparación para ICPC.
-3. **Aperture:** Semillero en ciencia de datos, machine learning e IA colaborativa.
-4. **Turing Box:** Grupo enfocado en cultura tecnológica y desarrollo.
-5. **UNeural:** Grupo de investigación en redes neuronales y neurocomputación.`,
+Puedes conocer más de ellos y sus redes en la sección [Grupos y Semilleros](index.html#grupos).`,
         chips: ['Semillero AtarraIA', 'UNAlgoritmo', 'Aperture'],
       };
     }
 
     // ------------------------------------------------------------------------
-    // Caso 8: P.A.P.A., Citas SIA, Prelación DNINFOA y Bolsa de Créditos
+    // K. Dónde está cada cosa en la página / Cómo funciona la web
     // ------------------------------------------------------------------------
-    if (/papa|pappi|ipa|prelacion|citas|cita sia|sia|bolsa|creditos disponibles|cupo de creditos|corresponsabilidad|horas corresponsabilidad|solicitud|solicitudes|gae|sgs/.test(preguntaNorm)) {
-      if (preguntaNorm.includes('prelacion') || preguntaNorm.includes('cita') || preguntaNorm.includes('dninfoa')) {
-        return {
-          texto: `### 🎯 ¿Cómo se asignan las Citas de Inscripción en el SIA?
-
-¡El **P.A.P.P.I. ya no define tu cita**! La Dirección Nacional de Información Académica (DNINFOA) ahora aplica los **4 Grupos de Prelación**:
-
-1. **Grupo 1:** Estudiantes con reconocimiento académico y distinciones.
-2. **Grupo 2:** Estudiantes en permanencia regular con alto avance y buen P.A.P.A. (ordenados por el Índice IPA).
-3. **Grupo 3:** Estudiantes con bajo avance o periodos suspendidos.
-4. **Grupo 4:** Casos especiales y reservas de cupo.
-
-💡 Dentro de cada grupo, tu cita se ordena mediante el **Índice de Prioridad Académica (IPA)**, que combina tu P.A.P.A. y el ritmo de aprobación de créditos.`,
-          chips: ['¿Qué es el P.A.P.A.?', 'Bolsa de créditos', 'Fechas del calendario'],
-        };
-      }
-
-      if (preguntaNorm.includes('papa') || preguntaNorm.includes('pappi')) {
-        return {
-          texto: `### 📊 P.A.P.A. vs. P.A.P.P.I. en la UNAL
-
-- **P.A.P.A. (Promedio Académico Ponderado Acumulado):**
-  Es el promedio histórico de TODAS las asignaturas que has cursado en la universidad (aprobadas y reprobadas).
-  *¿Para qué sirve?* Define tu permanencia en la UNAL (debe ser $\\ge 3.0$ para no caer en pérdida de cupo), dobles titulaciones, becas de posgrado y exenciones de matrícula.
-
-- **P.A.P.P.I. (Promedio del Periodo):**
-  Calcula únicamente el rendimiento del último semestre cursado.`,
-          chips: ['Citas de inscripción SIA', 'Bolsa de créditos', 'Solicitudes GAE'],
-        };
-      }
-
-      if (preguntaNorm.includes('bolsa') || preguntaNorm.includes('credito')) {
-        return {
-          texto: `### 💰 La Bolsa de Créditos en la UNAL
-
-Al entrar a la carrera recibes un **cupo de créditos** equivalente a los créditos del plan más un porcentaje de holgura:
-- Si apruebas una materia: se consumen sus créditos.
-- Si cancelas en **Semana 3** (sin pérdida): se te reintegran inmediatamente a tu bolsa.
-- Si cancelas en **Semana 8** o repruebas: se pierden de tu bolsa de créditos disponibles.
-- Si se te acaban los créditos antes de graduarte, debes solicitar créditos adicionales ante el Consejo de Facultad mediante el SGS.`,
-          chips: ['Fechas de cancelación', 'Citas SIA', 'Plan de estudios'],
-        };
-      }
-    }
-
-    // ------------------------------------------------------------------------
-    // Caso 9: Optativas y Líneas de Profundización
-    // ------------------------------------------------------------------------
-    if (/optativa|optativas|lineas|profundizacion|libre eleccion|tecnologias/.test(preguntaNorm)) {
+    if (/donde esta|donde veo|donde encuentro|como funciona la pagina|como funciona la web|tour|secciones/.test(preguntaNorm)) {
       return {
-        texto: `### 🧩 Asignaturas Optativas y Líneas de Profundización
+        texto: `Te enseño qué encuentras en cada rincón del portal:
 
-El plan de Ingeniería de Sistemas e Informática cuenta con alta flexibilidad:
-
-1. **Tecnologías de Aplicación (Disciplinar Optativa):**
-   - Debes cursar **22 créditos** en materias de profundización.
-   - Áreas destacadas: Inteligencia Artificial, Ciberseguridad, Desarrollo de Software, Analítica de Datos, Redes y Cómputo en la Nube.
-
-2. **Componente de Libre Elección:**
-   - Cuentas con **32 créditos** para matricular libremente asignaturas de cualquier facultad, sede, idiomas o posgrados de la UNAL.`,
-        chips: ['Ver malla curricular', 'Semilleros de investigación', 'Convenio Kiro (AWS)'],
+- **[Inicio](index.html):** Información general del programa, decanatura, perfil del egresado y los grupos estudiantiles y semilleros.
+- **[Malla Curricular](malla.html):** Malla interactiva de 10 semestres. Al hacer clic en una materia ves sus prerrequisitos en semáforo, el enlace a su WhatsApp de estudio y el botón para entrar a la **Unidad Compartida de Drive**.
+- **[Mi Avance](avance.html):** Subes o pegas tu historia académica del SIA. Te calcula tu P.A.P.A. real, créditos pendientes por tipología, desbloquea logros, tu carnet digital oficial y tu arquetipo geek.
+- **[Info y Guías](info.html):** Fechas del calendario académico oficial, explicación de los 4 grupos de prelación DNINFOA para citas SIA, bolsa de créditos y trámites de solicitudes SGS.
+- **[Convenios](convenios.html):** Guías para reclamar Kiro AWS, Coursera, GitHub Pack, JetBrains, Microsoft 365 y apoyos de Bienestar.
+- **[Intercampus](intercampus.html):** Rutas y horarios de los buses gratuitos entre Robledo, Volador y Río.`,
+        chips: ['Ver Malla Curricular', 'Ir a Mi Avance', 'Ver Convenios', 'Ver Calendario'],
       };
     }
 
     // ------------------------------------------------------------------------
-    // Caso 10: Búsqueda difusa universal en FAQs, Guías y Asignaturas
+    // L. Citas SIA, Prelación DNINFOA y P.A.P.A.
     // ------------------------------------------------------------------------
+    if (/citas|cita sia|prelacion|dninfoa|ipa|pappi/.test(preguntaNorm)) {
+      return {
+        texto: `**¿Cómo se asignan las Citas de Inscripción del SIA?**
+
+La DNINFOA ya no usa el PAPPI para dar citas. Ahora rigen los **4 Grupos de Prelación**:
+
+1. **Grupo 1:** Estudiantes con reconocimientos y distinciones académicas.
+2. **Grupo 2:** Estudiantes en permanencia regular ordenados por el **Índice IPA** (que combina tu P.A.P.A. histórico con tu ritmo de créditos aprobados).
+3. **Grupo 3:** Estudiantes con bajo avance o periodos suspendidos.
+4. **Grupo 4:** Casos especiales y reservas de cupo.
+
+💡 Para consultar tu cita o inscribir materias cuando abra tu turno, ingresa al [Portal SIA](${ENLACES_OFICIALES.sia}).`,
+        chips: ['¿Qué es el P.A.P.A.?', 'Bolsa de créditos', 'Fechas del calendario'],
+      };
+    }
+
+    if (/que es el papa|como se calcula el papa|promedio acumulado/.test(preguntaNorm)) {
+      return {
+        texto: `El **P.A.P.A. (Promedio Académico Ponderado Acumulado)** es el promedio ponderado de todas las asignaturas que has cursado en la universidad (tanto aprobadas como reprobadas), ponderadas por el número de créditos de cada una.
+
+- Es el promedio que rige tu permanencia (debes mantenerlo en 3.0 o más para no perder el cupo).
+- Es el que se toma en cuenta para estímulos de matrícula de honor, dobles titulaciones y admisiones automáticas a posgrados.
+- Puedes calcular y simular tu P.A.P.A. en nuestra herramienta [Mi Avance](avance.html).`,
+        chips: ['Ir a Mi Avance', 'Citas SIA', 'Bolsa de créditos'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // M. Rutas de Bus Intercampus
+    // ------------------------------------------------------------------------
+    if (/bus|buses|intercampus|transporte|horario bus|robledo|volador|rio/.test(preguntaNorm)) {
+      return {
+        texto: `**Transporte Intercampus UNAL Medellín (100 % Gratuito):**
+
+1. **Ruta Robledo ⇄ Volador:**
+   - Sale de la Facultad de Minas (Bloque M3) y llega al Bloque 41 / Portería Coca-Cola en Volador.
+   - Opera de lunes a viernes entre las 6:00 a. m. y las 9:00 p. m.
+2. **Ruta Río ⇄ Volador:**
+   - Conecta la Sede del Río con Campus Volador.
+3. **Metro de Medellín:**
+   - Cuenta con paradas intermedias de conexión rápida a las estaciones Floresta y Suramericana.
+
+💡 Para subirte solo debes mostrar tu **carnet estudiantil físico o digital**. Puedes revisar paradas y detalles en [Intercampus](intercampus.html).`,
+        chips: ['Ver sección Intercampus', 'Fechas del calendario', 'Grupos estudiantiles'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // N. Trámites administrativos y Solicitudes GAE
+    // ------------------------------------------------------------------------
+    if (/tramite|tramites|solicitud|solicitudes|gae|sgs|reingreso|traslado|reserva de cupo|doble titulacion/.test(preguntaNorm)) {
+      return {
+        texto: `Las solicitudes académicas en la Facultad de Minas se radican a través del **Sistema de Gestión de Solicitudes (SGS)** ante la Gestión de Asuntos Estudiantiles (GAE).
+
+Para conocer los requisitos, soportes necesarios y radicar tu caso, entra al portal oficial:
+👉 [Portal de Solicitudes Estudiantiles de Minas (SGS)](${ENLACES_OFICIALES.sgsMinas})
+
+Si se trata de un caso complejo o necesitas asesoría antes de radicar, Santiago (el Repre de Sistemas) te puede orientar personalmente:
+- WhatsApp: [${ENLACES_OFICIALES.telefonoRepre}](${ENLACES_OFICIALES.wppRepre})`,
+        chips: ['Calendario de solicitudes', 'P.A.P.A. y permanencia', 'Bolsa de créditos'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // O. Horas de corresponsabilidad
+    // ------------------------------------------------------------------------
+    if (/corresponsabilidad|horas de corresponsabilidad|horas bienestar/.test(preguntaNorm)) {
+      return {
+        texto: `Las **Horas de Corresponsabilidad** son un compromiso formativo y solidario obligatorio para estudiantes beneficiarios de apoyos de Bienestar Universitario (alimentario, económico, residencias).
+
+- Son mínimo **16 horas semestrales**.
+- Se pueden pagar apoyando en Bibliotecas (Efe Gómez o Minas), salas de cómputo (bloques M3 y M8), eventos de bienestar o actividades de la facultad.
+- Las plazas se publican al inicio de cada periodo por correo o en Bienestar Minas (Bloque M4).`,
+        chips: ['Auxilios de Bienestar', 'Calendario académico'],
+      };
+    }
+
+    // ------------------------------------------------------------------------
+    // P. Fallback guiado: si es sobre materias -> SIA; si es trámites -> SGS; si no -> Repre
+    // ------------------------------------------------------------------------
+    if (preguntaNorm.includes('profesor') || preguntaNorm.includes('docente') || preguntaNorm.includes('horario de clase') || preguntaNorm.includes('cupo') || preguntaNorm.includes('salon')) {
+      return {
+        texto: `Para consultar horarios específicos de clases, profesores asignados, aulas o cupos disponibles en tiempo real, debes revisar directamente en el buscador de la universidad:
+
+👉 [Buscador de Cursos del SIA](${ENLACES_OFICIALES.sia})
+
+Si necesitas material de estudio de la materia o parciales anteriores, los encuentras en nuestra [Unidad Compartida de Drive](${ENLACES_OFICIALES.driveSistemas}).`,
+        chips: ['Drive de material de estudio', 'Malla curricular', 'Prerrequisitos de materias'],
+      };
+    }
+
+    // Búsqueda en FAQs existentes en info.json
     const terminosBusqueda = extraerTerminos(preguntaNorm);
     if (terminosBusqueda.length > 0 && datos.info?.faq) {
       let mejorFaq = null;
@@ -698,7 +885,7 @@ El plan de Ingeniería de Sistemas e Informática cuenta con alta flexibilidad:
 
       if (mejorFaq && mejorPuntajeFaq >= 2.5) {
         return {
-          texto: `### 💡 ${mejorFaq.pregunta}
+          texto: `**${mejorFaq.pregunta}**
 
 ${mejorFaq.respuesta}`,
           chips: ['Citas SIA', 'Bolsa de créditos', 'Ver calendario'],
@@ -706,23 +893,20 @@ ${mejorFaq.respuesta}`,
       }
     }
 
-    // ------------------------------------------------------------------------
-    // Caso 11: Fallback guiado y amigable
-    // ------------------------------------------------------------------------
+    // Respuesta final empática redirigiendo a fuentes y al representante
     return {
-      texto: `No encontré una respuesta exacta para esa consulta en la base de datos de la web, pero puedo ayudarte con cualquiera de estos temas:
+      texto: `No tengo el dato exacto de esa consulta en la base del portal, pero no te quedes con la duda:
 
-- ⚡ **Materias y prerrequisitos:** Pregúntame por ejemplo *"¿Qué prerrequisitos pide Simulación?"* o *"Materias de 4to semestre"*.
-- 📅 **Calendario:** Pregunta *"¿Cuándo inician las clases?"* o *"Fechas de cancelación"*.
-- 🚌 **Bus intercampus:** Pregunta *"¿Cómo funciona el bus a Minas?"*.
-- 🎁 **Convenios:** Pregunta *"¿Cómo activo Kiro o GitHub Pack?"*.
-- 👥 **Semilleros:** Pregunta por *"AtarraIA, UNAlgoritmo o Aperture"*.`,
-      chips: ['Prerrequisitos de materias', 'Fechas de cancelación', 'Rutas del bus intercampus', 'Convenios estudiantiles'],
+- Si es sobre trámites o solicitudes de la Facultad, revísalo en el [Portal SGS de Minas](${ENLACES_OFICIALES.sgsMinas}).
+- Si es sobre cupos o profesores específicos, consulta en el [Buscador del SIA](${ENLACES_OFICIALES.sia}).
+- Para cualquier otra duda personal o académica, escríbele con toda confianza a Santiago (Representante Estudiantil de Sistemas):
+  👉 WhatsApp: [${ENLACES_OFICIALES.telefonoRepre}](${ENLACES_OFICIALES.wppRepre}) · Correo: \`${ENLACES_OFICIALES.correoRepre}\``,
+      chips: ['Drive de material de estudio', 'Prerrequisitos de materias', 'Fechas de cancelación', 'Convenios estudiantiles'],
     };
   }
 
   /* ==========================================================================
-     5. INTERFAZ GRÁFICA Y RENDERIZADO DEL CHAT
+     6. INTERFAZ GRÁFICA
      ========================================================================== */
 
   function renderizarIconoBot() {
@@ -739,7 +923,6 @@ ${mejorFaq.respuesta}`,
   function crearElementosDOM() {
     if (document.getElementById('sofia-contenedor-global')) return;
 
-    // Asegurar que la hoja de estilo esté inyectada si no vino en el <head>
     if (!document.getElementById('css-sofia')) {
       const linkCss = document.createElement('link');
       linkCss.id = 'css-sofia';
@@ -751,7 +934,6 @@ ${mejorFaq.respuesta}`,
     const wrapGlobal = document.createElement('div');
     wrapGlobal.id = 'sofia-contenedor-global';
     wrapGlobal.innerHTML = `
-      <!-- Contenedor del Botón Flotante -->
       <div class="sofia-flotante-wrap" id="sofia-flotante-wrap">
         <div class="sofia-globo-bienvenida" id="sofia-globo" role="tooltip" aria-label="Aviso de sofIA">
           <span class="sofia-globo-texto">👋 ¿Dudas con materias o fechas? <strong>Pregúntale a sofIA</strong></span>
@@ -766,9 +948,7 @@ ${mejorFaq.respuesta}`,
         </button>
       </div>
 
-      <!-- Ventana Principal del Chat -->
       <aside class="sofia-ventana" id="sofia-ventana" role="dialog" aria-label="Ventana de conversación con sofIA" aria-modal="true" hidden>
-        <!-- Cabecera -->
         <header class="sofia-cabecera">
           <div class="sofia-cabecera__info">
             <div class="sofia-cabecera__avatar" aria-hidden="true">
@@ -777,11 +957,11 @@ ${mejorFaq.respuesta}`,
             <div class="sofia-cabecera__titulos">
               <div class="sofia-cabecera__nombre-wrap">
                 <span class="sofia-cabecera__nombre">sofIA</span>
-                <span class="sofia-tag-ia">IA UNAL</span>
+                <span class="sofia-tag-ia">UNAL</span>
               </div>
               <span class="sofia-cabecera__subtitulo">
                 <span class="sofia-punto-verde" aria-hidden="true"></span>
-                En línea · Base oficial
+                En línea · Asistente de Sistemas
               </span>
             </div>
           </div>
@@ -795,17 +975,15 @@ ${mejorFaq.respuesta}`,
           </div>
         </header>
 
-        <!-- Mensajes -->
         <div class="sofia-mensajes" id="sofia-mensajes" tabindex="0" aria-live="polite"></div>
 
-        <!-- Pie / Formulario -->
         <footer class="sofia-pie">
           <form class="sofia-formulario" id="sofia-form">
             <input
               type="text"
               class="sofia-input"
               id="sofia-input"
-              placeholder="Pregúntale a sofIA sobre materias, fechas, convenios..."
+              placeholder="Pregúntale a sofIA sobre materias, fechas, WhatsApps..."
               autocomplete="off"
               required
               aria-label="Mensaje para sofIA"
@@ -817,7 +995,7 @@ ${mejorFaq.respuesta}`,
               </svg>
             </button>
           </form>
-          <p class="sofia-aviso-privacidad">sofIA se alimenta de la información oficial de este portal.</p>
+          <p class="sofia-aviso-privacidad">sofIA consulta la base oficial del portal de Sistemas UNAL.</p>
         </footer>
       </aside>
     `;
@@ -830,18 +1008,12 @@ ${mejorFaq.respuesta}`,
   function formatearMarkdown(texto) {
     if (!texto) return '';
     return texto
-      // Negrita
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Código en línea
       .replace(/`(.*?)`/g, '<code class="sofia-code">$1</code>')
-      // Títulos de nivel 3
       .replace(/^### (.*$)/gim, '<div class="sofia-tarjeta-dato__titulo">$1</div>')
-      // Enlaces [texto](url)
       .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>')
-      // Listas con viñeta
       .replace(/^\s*• (.*$)/gim, '<li>$1</li>')
       .replace(/^\s*- (.*$)/gim, '<li>$1</li>')
-      // Párrafos y saltos
       .replace(/\n\n+/g, '</p><p>')
       .replace(/\n/g, '<br>');
   }
@@ -864,7 +1036,7 @@ ${mejorFaq.respuesta}`,
         <div class="sofia-chips-contenedor">
           <div class="sofia-chips-titulo">Sugerencias:</div>
           <div class="sofia-chips-rejilla">
-            ${chips.map((chip) => `<button type="button" class="sofia-chip" data-consulta="${escapeHtml(chip)}"><span>⚡</span>${escapeHtml(chip)}</button>`).join('')}
+            ${chips.map((chip) => `<button type="button" class="sofia-chip" data-consulta="${escapeHtml(chip)}">${escapeHtml(chip)}</button>`).join('')}
           </div>
         </div>`;
     }
@@ -890,7 +1062,6 @@ ${mejorFaq.respuesta}`,
     contenedor.appendChild(fila);
     contenedor.scrollTop = contenedor.scrollHeight;
 
-    // Guardar en sesión
     estadoSofia.mensajes.push({ emisor, texto: textoMarkdown, chips });
     guardarHistorial();
   }
@@ -929,7 +1100,7 @@ ${mejorFaq.respuesta}`,
   }
 
   /* ==========================================================================
-     6. GESTIÓN DEL HISTORIAL EN SESIÓN
+     7. HISTORIAL Y SESIÓN
      ========================================================================== */
 
   function guardarHistorial() {
@@ -957,27 +1128,26 @@ ${mejorFaq.respuesta}`,
       }
     } catch (_) {}
 
-    // Mensaje de bienvenida por defecto si no hay historial
     const chipsIniciales = [
+      'Drive de material de estudio',
       'Prerrequisitos de materias',
-      'Fechas del calendario',
-      'Rutas del bus intercampus',
+      'Fechas de cancelación',
       'Convenio Kiro (AWS)',
-      'Semilleros y grupos',
-      '¿Cómo funciona el PAPA?',
+      'Auxilios de Bienestar',
+      'WhatsApp de una materia',
     ];
     agregarMensajeAlDOM(
       'bot',
-      `¡Hola! Soy **sofIA**, la asistente virtual de Ingeniería de Sistemas e Informática de la UNAL Medellín.
+      `¡Hola! Soy **sofIA**, tu asistente de Ingeniería de Sistemas e Informática de la UNAL Medellín.
 
-Estoy conectada a toda la información del portal: malla curricular, fechas del calendario, prerrequisitos, rutas de buses, convenios y más. ¿En qué te puedo ayudar hoy?`,
+Estoy conectada a toda la información del portal: malla, fechas del calendario, Unidad de Drive con parciales y talleres, grupos de WhatsApp de estudio, convenios y trámites. ¿En qué te doy una mano?`,
       chipsIniciales,
       false
     );
   }
 
   /* ==========================================================================
-     7. VINCULACIÓN DE EVENTOS Y CONTROL DE APERTURA / CIERRE
+     8. CONTROL Y EVENTOS
      ========================================================================== */
 
   function abrirSofia() {
@@ -989,7 +1159,6 @@ Estoy conectada a toda la información del portal: malla curricular, fechas del 
     inicializarBaseConocimiento();
 
     ventana.hidden = false;
-    // Forzar reflow para que la transición CSS anime
     void ventana.offsetWidth;
     ventana.classList.add('is-abierta');
     btn.setAttribute('aria-expanded', 'true');
@@ -1024,17 +1193,13 @@ Estoy conectada a toda la información del portal: malla curricular, fechas del 
     const consultaLimpia = (texto || '').trim();
     if (!consultaLimpia) return;
 
-    // Agregar mensaje del usuario al chat
     agregarMensajeAlDOM('usuario', consultaLimpia);
 
-    // Limpiar input
     const input = document.getElementById('sofia-input');
     if (input) input.value = '';
 
-    // Mostrar animación "pensando..."
     mostrarIndicadorEscribiendo();
 
-    // Pequeño retardo natural (280-450ms) para respuesta orgánica
     setTimeout(() => {
       removerIndicadorEscribiendo();
       const respuesta = responderPregunta(consultaLimpia);
@@ -1085,7 +1250,6 @@ Estoy conectada a toda la información del portal: malla curricular, fechas del 
       if (input) procesarConsultaUsuario(input.value);
     });
 
-    // Delegación de eventos para chips interactivos de sugerencias
     contenedorMensajes?.addEventListener('click', (e) => {
       const chip = e.target.closest('.sofia-chip');
       if (chip) {
@@ -1094,7 +1258,6 @@ Estoy conectada a toda la información del portal: malla curricular, fechas del 
       }
     });
 
-    // Accesibilidad con teclado: Esc cierra la ventana
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && estadoSofia.abierto) {
         cerrarSofia();
@@ -1102,24 +1265,18 @@ Estoy conectada a toda la información del portal: malla curricular, fechas del 
     });
   }
 
-  /* ==========================================================================
-     8. INICIALIZACIÓN AUTOMÁTICA
-     ========================================================================== */
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', crearElementosDOM);
   } else {
     crearElementosDOM();
   }
 
-  // Precargar en segundo plano cuando el navegador esté libre
   if (typeof window.requestIdleCallback === 'function') {
     window.requestIdleCallback(() => inicializarBaseConocimiento(), { timeout: 3000 });
   } else {
     setTimeout(inicializarBaseConocimiento, 1500);
   }
 
-  // Exportar API global limpia por si otros módulos desean interactuar con sofIA
   window.sofIA = {
     abrir: abrirSofia,
     cerrar: cerrarSofia,
