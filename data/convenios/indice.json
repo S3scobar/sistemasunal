@@ -31,12 +31,30 @@
     "lema": "Matemáticas de ingeniería, paso a paso",
     "descripcion": "Cursos virtuales para estudiantes de la UNAL Medellín, fieles al programa de cada materia.",
     "cursos": [
-      "Cálculo",
-      "Álgebra lineal",
-      "Física",
-      "Química",
-      "Ecuaciones diferenciales",
-      "Estadística"
+      {
+        "area": "Matemáticas",
+        "materias": [
+          "Geometría vectorial",
+          "Cálculo diferencial",
+          "Cálculo integral",
+          "Álgebra lineal",
+          "Cálculo en varias variables",
+          "Ecuaciones diferenciales",
+          "Estadística 1"
+        ]
+      },
+      {
+        "area": "Física",
+        "materias": [
+          "Física mecánica"
+        ]
+      },
+      {
+        "area": "Química",
+        "materias": [
+          "Química general"
+        ]
+      }
     ],
     "datos": [
       "9 cursos",

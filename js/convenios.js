@@ -56,7 +56,10 @@ function pintarAliado() {
         <div class="aliado__texto">
           <h3 class="aliado__lema"><span aria-hidden="true">&gt;</span> ${esc(a.lema)}</h3>
           <p class="aliado__desc">${esc(a.descripcion)}</p>
-          <p class="aliado__cursos">${a.cursos.map(esc).join(' · ')}</p>
+          <details class="aliado__materias">
+            <summary>Ver las ${a.cursos.reduce((n, g) => n + g.materias.length, 0)} materias</summary>
+            ${a.cursos.map((g) => `<p class="aliado__area">${esc(g.area)}</p><ul>${g.materias.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>`).join('')}
+          </details>
           <ul class="aliado__datos">${a.datos.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
           <p class="aliado__descuento">
             <strong>${esc(a.descuento.titulo)}</strong> ${esc(a.descuento.texto)}
