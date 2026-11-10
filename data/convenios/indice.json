@@ -24,6 +24,50 @@
       "descripcion": "Apoyos socioeconómicos y alimentarios de Bienestar Universitario (Área de Gestión y Fomento Socioeconómico) para estudiantes de pregrado."
     }
   ],
+  "destacado": {
+    "id": "math-con-jean",
+    "nombre": "Math con Jean",
+    "cinta": "Aliado de la representación estudiantil",
+    "lema": "Matemáticas de ingeniería, paso a paso",
+    "descripcion": "Cursos virtuales para estudiantes de la UNAL Medellín, fieles al programa de cada materia.",
+    "cursos": [
+      "Cálculo",
+      "Álgebra lineal",
+      "Física",
+      "Química",
+      "Ecuaciones diferenciales",
+      "Estadística"
+    ],
+    "datos": [
+      "9 cursos",
+      "100 % virtual",
+      "Clases grabadas",
+      "Soporte por WhatsApp",
+      "Simulacros tipo parcial",
+      "Desde $25.000"
+    ],
+    "descuento": {
+      "titulo": "Descuento especial",
+      "texto": "para estudiantes de Sistemas e Informática.",
+      "pronto": "Muy pronto te contamos cómo redimirlo."
+    },
+    "nota": "Aliado de la representación estudiantil de Sistemas. No es un convenio de la Universidad. Precios según su página, pueden cambiar.",
+    "enlaces": [
+      {
+        "texto": "Ver cursos",
+        "url": "https://mathconjean.com/",
+        "principal": true
+      },
+      {
+        "texto": "WhatsApp",
+        "url": "https://wa.me/573137445333"
+      },
+      {
+        "texto": "@math_jean1",
+        "url": "https://www.instagram.com/math_jean1/"
+      }
+    ]
+  },
   "convenios": [
     {
       "id": "kiro",

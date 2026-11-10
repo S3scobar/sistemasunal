@@ -40,6 +40,42 @@ const tipoDe = (id) => estado.indice.tipos.find((t) => t.id === id);
 const urlSegura = (url) => (/^https?:\/\//i.test(url) ? url : '#');
 
 
+/* ---------- Aliado destacado (siempre de primero, no depende del filtro) ---------- */
+
+function pintarAliado() {
+  const a = estado.indice.destacado;
+  const zona = $('#aliado');
+  if (!a) { zona.hidden = true; return; }
+  zona.innerHTML = `
+    <article class="aliado" id="${esc(a.id)}">
+      <p class="aliado__cinta"><span>//</span> ${esc(a.cinta)}</p>
+      <div class="aliado__cuerpo">
+        <div class="aliado__marca">
+          <img src="img/${esc(a.id)}.png" alt="Logo de ${esc(a.nombre)}" width="220" height="219" loading="lazy">
+        </div>
+        <div class="aliado__texto">
+          <h3 class="aliado__lema"><span aria-hidden="true">&gt;</span> ${esc(a.lema)}</h3>
+          <p class="aliado__desc">${esc(a.descripcion)}</p>
+          <p class="aliado__cursos">${a.cursos.map(esc).join(' · ')}</p>
+          <ul class="aliado__datos">${a.datos.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
+          <p class="aliado__descuento">
+            <strong>${esc(a.descuento.titulo)}</strong> ${esc(a.descuento.texto)}
+            <em>${esc(a.descuento.pronto)}</em>
+          </p>
+          <div class="aliado__acciones">
+            ${a.enlaces.map((e) => `
+              <a class="aliado__boton ${e.principal ? 'aliado__boton--principal' : ''}" href="${esc(urlSegura(e.url))}" target="_blank" rel="noopener noreferrer">
+                ${esc(e.texto)}${EXTERNO}
+              </a>`).join('')}
+          </div>
+        </div>
+      </div>
+      <p class="aliado__nota">${esc(a.nota)}</p>
+    </article>`;
+  zona.hidden = false;
+}
+
+
 /* ---------- Filtros ---------- */
 
 function pintarFiltros() {
@@ -223,6 +259,7 @@ cargarDatos('convenios/indice')
     estado.indice = indice;
     const deLaDireccion = location.hash.slice(1);
     if (indice.convenios.some((c) => c.id === deLaDireccion)) estado.abierto = deLaDireccion;
+    pintarAliado();
     pintarFiltros();
     pintarLista();
     if (estado.abierto) $(`#item-${CSS.escape(estado.abierto)}`)?.scrollIntoView({ block: 'start' });
