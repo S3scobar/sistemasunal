@@ -614,3 +614,28 @@ document.addEventListener('click', (e) => {
 pintarBarra();
 pintarPie();
 mostrarMensajeAutor();
+
+
+/* ---------- Asistente Virtual sofIA (carga automática en todas las páginas salvo descanso) ---------- */
+(function inicializarSofiaSiAplica() {
+  if (typeof document === 'undefined') return;
+  const ruta = (window.location.pathname || '').toLowerCase();
+  const esDescanso = document.body?.dataset?.pagina === 'descanso' || ruta.endsWith('descanso.html');
+  if (esDescanso) return;
+
+  if (!document.getElementById('css-sofia')) {
+    const link = document.createElement('link');
+    link.id = 'css-sofia';
+    link.rel = 'stylesheet';
+    link.href = 'css/sofia.css';
+    (document.head || document.body).appendChild(link);
+  }
+
+  if (!document.getElementById('script-sofia') && typeof window.sofIA === 'undefined') {
+    const s = document.createElement('script');
+    s.id = 'script-sofia';
+    s.src = 'js/sofia.js';
+    s.defer = true;
+    document.body.appendChild(s);
+  }
+})();
