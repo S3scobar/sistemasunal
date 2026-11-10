@@ -42,6 +42,21 @@ const urlSegura = (url) => (/^https?:\/\//i.test(url) ? url : '#');
 
 /* ---------- Aliado destacado (siempre de primero, no depende del filtro) ---------- */
 
+/* Mini animaciones de las materias de Math con Jean (SVG + CSS; aparecen al segundo de abrir la lista) */
+const S = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
+const ANIM_MATERIA = {
+  'Geometría vectorial': `<svg viewBox="0 0 32 32" ${S}><path d="M5 27h22M5 27V5" opacity=".45"/><path d="M5 27l17-5" opacity=".6"/><g class="an-gira"><path d="M5 27l18-14M23 13l-5.2.6M23 13l-1.6 5"/></g></svg>`,
+  'Cálculo diferencial': `<svg viewBox="0 0 32 32" ${S}><path d="M3 27C10 27 11 5 29 5" opacity=".6"/><g class="an-tangente"><path d="M-5 0h10" stroke-width="1.8"/><circle r="2" fill="currentColor" stroke="none"/></g></svg>`,
+  'Cálculo integral': `<svg viewBox="0 0 32 32" ${S}><path d="M3 28h27" opacity=".5"/><g fill="currentColor" stroke="none">${[0,1,2,3,4].map((i) => `<rect class="an-barra" style="--d:${i*.14}s" x="${4+i*5.4}" y="${22-i*3.6}" width="4.4" height="${6+i*3.6}" rx=".8"/>`).join('')}</g><path d="M3 24C10 22 18 14 30 6" opacity=".9"/></svg>`,
+  'Álgebra lineal': `<svg viewBox="0 0 32 32" ${S}><path d="M4 28h24M4 28V4" opacity=".4"/><path class="an-matriz" d="M8 24V12h12v12z" fill="currentColor" fill-opacity=".18"/></svg>`,
+  'Cálculo en varias variables': `<svg viewBox="0 0 32 32" ${S}><ellipse class="an-onda" style="--d:0s" cx="16" cy="19" rx="12" ry="5"/><ellipse class="an-onda" style="--d:.25s" cx="16" cy="17" rx="8" ry="3.4"/><ellipse class="an-onda" style="--d:.5s" cx="16" cy="15" rx="4" ry="1.8"/><circle cx="16" cy="6" r="2" fill="currentColor" stroke="none" class="an-cae"/></svg>`,
+  'Ecuaciones diferenciales': `<svg viewBox="0 0 32 32" ${S}><path d="M3 16h26" opacity=".35"/><path class="an-traza" pathLength="1" d="M3 16C5 4 8 4 9.5 16S13 28 14.8 16 17.5 8.5 19 16s2.4 5 3.4 0 1.6-2.6 2.4 0 1.4 1 2.4 0"/></svg>`,
+  'Estadística 1': `<svg viewBox="0 0 32 32" ${S}><path d="M3 28h26" opacity=".5"/><g fill="currentColor" stroke="none">${[5,10,15,10,5].map((h, i) => `<rect class="an-barra" style="--d:${i*.12}s" x="${4+i*5.2}" y="${28-h-3}" width="4.2" height="${h+3}" rx=".8"/>`).join('')}</g><path d="M3 26C9 26 11 6 16 6s7 20 13 20" opacity=".9"/></svg>`,
+  'Física mecánica': `<svg viewBox="0 0 32 32" ${S}><path d="M8 4h16" opacity=".6"/><g class="an-pendulo"><path d="M16 4v17"/><circle cx="16" cy="24" r="3.4" fill="currentColor"/></g></svg>`,
+  'Química general': `<svg viewBox="0 0 32 32" ${S}><circle cx="16" cy="16" r="2.6" fill="currentColor" stroke="none"/><g class="an-orbita"><ellipse cx="16" cy="16" rx="13" ry="5" opacity=".55"/><circle cx="29" cy="16" r="1.9" fill="currentColor" stroke="none"/></g><g class="an-orbita an-orbita--b"><ellipse cx="16" cy="16" rx="13" ry="5" opacity=".55"/><circle cx="3" cy="16" r="1.9" fill="currentColor" stroke="none"/></g></svg>`,
+};
+const animMateria = (m) => `<span class="aliado__anim" aria-hidden="true">${ANIM_MATERIA[m] || ''}</span>`;
+
 function pintarAliado() {
   const a = estado.indice.destacado;
   const zona = $('#aliado');
@@ -58,7 +73,7 @@ function pintarAliado() {
           <p class="aliado__desc">${esc(a.descripcion)}</p>
           <details class="aliado__materias">
             <summary>Ver las ${a.cursos.reduce((n, g) => n + g.materias.length, 0)} materias</summary>
-            ${a.cursos.map((g) => `<p class="aliado__area">${esc(g.area)}</p><ul>${g.materias.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>`).join('')}
+            ${a.cursos.map((g) => `<p class="aliado__area">${esc(g.area)}</p><ul>${g.materias.map((m) => `<li><span class="aliado__nombre">${esc(m)}</span>${animMateria(m)}</li>`).join('')}</ul>`).join('')}
           </details>
           <ul class="aliado__datos">${a.datos.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
           <p class="aliado__descuento">

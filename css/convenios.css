@@ -82,7 +82,39 @@
 .aliado__materias summary:focus-visible { outline: 3px solid var(--neon); outline-offset: 2px; border-radius: 10px; }
 .aliado__area { margin: 4px 14px 4px; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #8995a4; }
 .aliado__materias ul { list-style: none; margin: 0 14px 10px; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
-.aliado__materias li { padding: 4px 10px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .22); font-size: 12.5px; color: #e4ebf3; }
+.aliado__materias li {
+  display: inline-flex; align-items: center; gap: 0; padding: 8px 14px; min-height: 40px; border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .22); font-size: 13.5px; color: #e4ebf3; background: rgba(255, 255, 255, .03);
+}
+/* el icono nace al segundo de abrir la lista, dentro del mismo cajón (el cajón ya reserva su espacio) */
+.aliado__anim { width: 26px; height: 26px; margin-left: 8px; flex: none; color: var(--cian); opacity: 0; animation: an-aparece .5s ease 1s forwards; }
+.aliado__anim svg { width: 100%; height: 100%; display: block; overflow: visible; }
+@keyframes an-aparece { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+.aliado__anim [class^="an-"], .aliado__anim [class*=" an-"] { transform-box: fill-box; }
+.an-gira { transform-origin: 0 100%; animation: an-gira 3s ease-in-out 1s infinite alternate; }
+@keyframes an-gira { from { transform: rotate(18deg); } to { transform: rotate(-40deg); } }
+.an-tangente { transform-box: view-box !important; offset-path: path('M3 27C10 27 11 5 29 5'); offset-rotate: auto; animation: an-recorre 3s ease-in-out 1s infinite alternate; }
+@keyframes an-recorre { from { offset-distance: 4%; } to { offset-distance: 96%; } }
+.an-barra { transform-origin: 50% 100%; transform: scaleY(0); animation: an-crece 2.4s ease-in-out calc(1s + var(--d, 0s)) infinite alternate; }
+@keyframes an-crece { to { transform: scaleY(1); } }
+.an-matriz { transform-origin: 0 100%; animation: an-matriz 2.6s ease-in-out 1s infinite alternate; }
+@keyframes an-matriz { from { transform: none; } to { transform: matrix(1.25, .25, .55, .85, 0, 0); } }
+.an-onda { transform-origin: 50% 50%; animation: an-onda 1.8s ease-in-out calc(1s + var(--d, 0s)) infinite alternate; }
+@keyframes an-onda { from { transform: scale(.8); opacity: .5; } to { transform: scale(1.12); opacity: 1; } }
+.an-cae { animation: an-cae 1.8s ease-in 1s infinite; }
+@keyframes an-cae { 0% { transform: translateY(0); opacity: 1; } 85% { transform: translateY(8px); opacity: 1; } 100% { transform: translateY(8px); opacity: 0; } }
+.an-traza { stroke-dasharray: 1; stroke-dashoffset: 1; animation: an-traza 3s ease-in-out 1s infinite; }
+@keyframes an-traza { 0% { stroke-dashoffset: 1; } 70%, 100% { stroke-dashoffset: 0; } }
+.an-pendulo { transform-origin: 16px 4px; transform-box: view-box !important; animation: an-pendulo 1.6s ease-in-out 1s infinite alternate; }
+@keyframes an-pendulo { from { transform: rotate(34deg); } to { transform: rotate(-34deg); } }
+.an-orbita { transform-origin: 16px 16px; transform-box: view-box !important; animation: an-orbita 3s linear 1s infinite; }
+.an-orbita--b { animation-duration: 4.2s; animation-direction: reverse; transform: rotate(60deg); }
+@keyframes an-orbita { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .aliado__anim, .aliado__anim * { animation: none !important; }
+  .aliado__anim { opacity: 1; }
+  .an-barra { transform: none; } .an-traza { stroke-dashoffset: 0; }
+}
 .aliado__datos { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; gap: 7px; }
 .aliado__datos li {
   padding: 5px 11px; border: 1px solid rgba(255, 255, 255, .32); border-radius: 999px;
