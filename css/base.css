@@ -1376,3 +1376,36 @@ a { color: var(--azul); }
   opacity: 0.75;
   letter-spacing: .02em;
 }
+
+/* =========================================================
+   Botón "Instalar app" y su ayuda
+   ========================================================= */
+.instalar-fila { display: flex; justify-content: center; margin-top: 14px; }
+.instalar-fila--portada { margin: 20px 0 6px; }
+.instalar-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 18px; border: 2px solid var(--neon); border-radius: 999px;
+  background: #050f1f; color: var(--cian);
+  font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  cursor: pointer; transition: background .15s, color .15s, box-shadow .15s;
+  box-shadow: 0 0 18px -6px rgba(47, 168, 255, .6);
+}
+.instalar-btn svg { width: 17px; height: 17px; flex: none; }
+.instalar-btn:hover, .instalar-btn:focus-visible { background: var(--neon); color: #03101f; box-shadow: 0 0 24px -4px rgba(47, 168, 255, .8); }
+.instalar-btn:focus-visible { outline: 3px solid var(--cian); outline-offset: 3px; }
+
+.instalar-dialogo {
+  width: min(92vw, 420px); padding: 22px 24px; border: 1px solid #1b4a86; border-radius: 14px;
+  background: linear-gradient(160deg, #0a2142, #050f1f); color: #d8ecff;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8);
+}
+.instalar-dialogo::backdrop { background: rgba(2, 8, 18, .7); backdrop-filter: blur(3px); }
+.instalar-dialogo__etiqueta { margin: 0 0 6px; font-family: var(--mono); font-size: 12px; color: #6fb6ea; }
+.instalar-dialogo__titulo { margin: 0 0 12px; font-family: var(--mono); font-size: 20px; color: #fff; }
+.instalar-dialogo__pasos { margin: 0 0 16px; padding-left: 22px; display: grid; gap: 8px; font-size: 15px; line-height: 1.5; }
+.instalar-dialogo__pasos b { color: #fff; }
+.instalar-dialogo__cerrar {
+  width: 100%; padding: 11px; border: 2px solid var(--neon); border-radius: 999px; background: transparent;
+  color: var(--cian); font-family: var(--mono); font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.instalar-dialogo__cerrar:hover, .instalar-dialogo__cerrar:focus-visible { background: var(--neon); color: #03101f; }
