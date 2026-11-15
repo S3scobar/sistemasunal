@@ -182,8 +182,25 @@ function calcularAvance(historia, ritmoElegido) {
   const ritmo = ritmoElegido || ritmoCalculado;
 
   const semestreActual = (new Date().getMonth() >= 6) ? 2 : 1;
-  const ultimo = historial.length ? historial[historial.length - 1].periodo : { anio: new Date().getFullYear(), num: semestreActual };
-  const periodoEnCurso = enCursoMaterias.length ? enCursoMaterias[0].periodo : ultimo;
+  const periodoActualCalendario = { anio: new Date().getFullYear(), num: semestreActual };
+
+  let periodoEnCurso;
+  if (enCursoMaterias.length && enCursoMaterias[0].periodo) {
+    periodoEnCurso = enCursoMaterias[0].periodo;
+  } else if (cerrados.length) {
+    // Si ya hay semestres anteriores cerrados (con notas aprobadas/reprobadas),
+    // el periodo en curso no puede ser el que ya se aprobó (ej: 2026-1), sino el siguiente (2026-2)
+    // o el semestre calendario actual si es mayor.
+    const ultimoCerrado = cerrados[cerrados.length - 1].periodo;
+    const sig = siguientePeriodo(ultimoCerrado);
+    periodoEnCurso = (clavePeriodo(periodoActualCalendario) >= clavePeriodo(sig))
+      ? periodoActualCalendario
+      : sig;
+  } else if (historial.length) {
+    periodoEnCurso = historial[historial.length - 1].periodo;
+  } else {
+    periodoEnCurso = periodoActualCalendario;
+  }
 
   // Proyección: el periodo actual cubre lo inscrito; el resto se reparte según el ritmo
   const proyeccion = [];
@@ -206,7 +223,7 @@ function calcularAvance(historia, ritmoElegido) {
 
   return {
     aprobados, inscritos, pendientes, exigidos, porcentaje, nivel,
-    ritmo, ritmoCalculado, historial, proyeccion, graduacion, semestresFaltantes,
+    ritmo, ritmoCalculado, historial: cerrados, proyeccion, graduacion, semestresFaltantes,
     semestresCursados, completo: pendientes === 0,
     materiasAprobadas: aprobadasPorCodigo.size,
   };
