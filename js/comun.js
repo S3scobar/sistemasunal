@@ -558,7 +558,7 @@ function mostrarMensajeAutor() {
       </div>
 
       <p class="toast-autor__mensaje">
-        ¡Hola! Creé este portal con el propósito de apoyar, guiar y facilitar la vida universitaria de todos los estudiantes de <strong>Ingeniería de Sistemas e Informática</strong>. Seguiré incluyendo más herramientas, funciones y recursos para acompañarte en tu paso por la U.
+        ¡Hola! Soy <strong class="toast-autor__destacado">Santiago Escobar</strong>. Creé esta plataforma para hacerte la vida en la U mucho más fácil.<br>Si encuentras algún error o tienes ideas para mejorarla, ¡escríbeme!
       </p>
 
       <div class="toast-autor__pie">
