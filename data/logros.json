@@ -361,7 +361,7 @@
     {
       "id": "victoria-impecable",
       "nombre": "Victoria Impecable",
-      "descripcion": "Completaste todas las asignaturas de fundamentación obligatoria con más de 4,5 en cada una.",
+      "descripcion": "Completaste todas las asignaturas de fundamentación obligatoria con 4,5 o más en cada una.",
       "puntos": 350,
       "categoria": "platino",
       "icono": "gema",
