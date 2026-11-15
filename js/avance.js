@@ -224,11 +224,11 @@ function logroDesbloqueado(logro, avance, historia) {
     }
 
     case 'todas_nota_tipologia': {
-      // Componente completo y TODAS las aprobadas de esa tipología con nota mayor al mínimo
+      // Componente completo y TODAS las aprobadas de esa tipología con nota mayor o igual al mínimo (4.5 o más)
       const fila = historia.resumen[regla.clave];
       const completo = Boolean(fila) && fila.exigidos > 0 && (fila.pendientes === 0 || fila.aprobados >= fila.exigidos);
       const aprobadas = historia.materias.filter((m) => m.estado === 'APROBADA' && m.tipologia === regla.clave);
-      return completo && aprobadas.length > 0 && aprobadas.every((m) => m.nota !== null && m.nota > minimo);
+      return completo && aprobadas.length > 0 && aprobadas.every((m) => m.nota !== null && m.nota >= minimo);
     }
 
     case 'materia_con_nota': {
