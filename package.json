@@ -4,6 +4,7 @@
   "description": "Portal Web Oficial · Ingeniería de Sistemas e Informática · UNAL Medellín",
   "private": true,
   "scripts": {
-    "build": "node tools/generar-config.js"
+    "build": "node tools/generar-config.js",
+    "build:sql": "node tools/generar-sql-malla.js"
   }
 }

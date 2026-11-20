@@ -1,0 +1,5 @@
+{
+  "_comentario": "Datos para verificar que una historia académica es de Sistemas. 'plan' es el código del plan en el SIA. Si una asignatura legítima de la historia de un estudiante de Sistemas no está en asignaturas.json (por ejemplo, una equivalencia aprobada por el comité), agrégala en 'codigosAdicionales' con codigo, nombre, creditos y grupo ('fundamentacion' o 'disciplinar'). Después ejecuta npm run build:sql y vuelve a correr supabase/catalogo-malla.sql en Supabase.",
+  "plan": "3534",
+  "codigosAdicionales": []
+}

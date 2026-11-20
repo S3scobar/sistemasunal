@@ -37,7 +37,7 @@ const EXTERNO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 
 const tipoDe = (id) => estado.indice.tipos.find((t) => t.id === id);
 // Solo se enlazan direcciones http(s)
-const urlSegura = (url) => (/^https?:\/\//i.test(url) ? url : '#');
+const urlSegura = (url) => (/^https?:\/\//i.test(url) || /^[a-z0-9-]+\.html(#[\w-]*)?$/i.test(url) ? url : '#');
 
 
 /* ---------- Aliado destacado (siempre de primero, no depende del filtro) ---------- */
@@ -76,10 +76,16 @@ function pintarAliado() {
             ${a.cursos.map((g) => `<p class="aliado__area">${esc(g.area)}</p><ul>${g.materias.map((m) => `<li><span class="aliado__nombre">${esc(m)}</span>${animMateria(m)}</li>`).join('')}</ul>`).join('')}
           </details>
           <ul class="aliado__datos">${a.datos.map((d) => `<li>${esc(d)}</li>`).join('')}</ul>
-          <p class="aliado__descuento">
-            <strong>${esc(a.descuento.titulo)}</strong> ${esc(a.descuento.texto)}
-            <em>${esc(a.descuento.pronto)}</em>
-          </p>
+          <div class="aliado__descuento">
+            <p class="aliado__descuento-titulo"><strong>${esc(a.descuento.titulo)}</strong> ${esc(a.descuento.texto)}</p>
+            ${a.descuento.pasos?.length ? `
+              <p class="aliado__como">${esc(a.descuento.comoTitulo || 'Cómo usarlo')}</p>
+              <ol class="aliado__pasos">
+                ${a.descuento.pasos.map((p) => `<li><span class="aliado__paso-n" aria-hidden="true"></span><span><strong>${esc(p.titulo)}</strong> ${esc(p.texto)}</span></li>`).join('')}
+              </ol>` : ''}
+            ${a.descuento.ayuda ? `<p class="aliado__ayuda">${esc(a.descuento.ayuda)}</p>` : ''}
+            ${a.descuento.boton ? `<a class="aliado__boton aliado__boton--principal aliado__boton--codigo" href="${esc(urlSegura(a.descuento.boton.url))}">${esc(a.descuento.boton.texto)}</a>` : ''}
+          </div>
           <div class="aliado__acciones">
             ${a.enlaces.map((e) => `
               <a class="aliado__boton ${e.principal ? 'aliado__boton--principal' : ''}" href="${esc(urlSegura(e.url))}" target="_blank" rel="noopener noreferrer">
