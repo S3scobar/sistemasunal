@@ -23,7 +23,7 @@ const guardado = {
   borrar() { try { localStorage.removeItem(CLAVE_GUARDADO); } catch (e) { /* sin almacenamiento */ } },
 };
 
-const estado = { texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, huellaLogros: null, pestana: 'ruta', vistas: null, avance: null, puntos: 0, racha: null, nuevosIds: null, celebrando: false };
+const estado = { catalogo: null, verificacion: null, promo: null, aliado: null, correo: '', texto: '', nombre: '', ritmo: null, historia: null, logros: [], usuarioId: null, statsLogros: null, huellaLogros: null, pestana: 'ruta', vistas: null, avance: null, puntos: 0, racha: null, nuevosIds: null, celebrando: false };
 
 const GRUPOS_COMPONENTE = {
   fundamentacion: { nombre: 'Fundamentación', color: 'var(--fundamentacion)' },
@@ -32,6 +32,25 @@ const GRUPOS_COMPONENTE = {
 };
 
 const formatear = (n, d = 0) => Number(n).toLocaleString('es-CO', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+/* ---------- Verificación de la historia (malla de Sistemas) ---------- */
+
+// Catálogo de la malla para verificar la historia. Si no carga, la verificación falla (no se acepta nada sin poder comprobarlo).
+let promesaCatalogo = null;
+function cargarCatalogo() {
+  if (!promesaCatalogo) {
+    promesaCatalogo = Promise.all([
+      cargarDatos('malla/asignaturas'),
+      cargarDatos('malla/componentes'),
+      cargarDatos('malla/verificacion').catch(() => ({})),
+    ]).then(([asignaturas, componentes, extras]) => construirCatalogo(asignaturas, componentes, extras))
+      .catch((e) => { console.warn('No se pudo cargar la malla para verificar:', e); promesaCatalogo = null; return null; });
+  }
+  return promesaCatalogo;
+}
+
+// Lo usa supabase-config.js al terminar el registro con SmartKey (ya se conoce el correo)
+globalThis.VERIFICADOR_HISTORIA = async (texto, correo) => validarHistoriaSistemas(leerHistoria(texto), await cargarCatalogo(), { correo });
 
 
 /* ---------- Iconos y Logros (definidos en data/logros.json) ---------- */
@@ -609,6 +628,80 @@ function pintarHistorial(historia) {
     </details>`;
 }
 
+/* ---------- Código especial de promoción (Math con Jean) ----------
+   El código lo crea el servidor (supabase/promocion.sql) solo si la historia guardada pasa la verificación.
+   La tarjeta se comprueba en verificar.html, así que una imagen retocada no pasa. */
+
+function enlaceWhatsAppPromo(codigo) {
+  const d = estado.aliado && estado.aliado.descuento;
+  if (!d || !d.whatsapp) return null;
+  const mensaje = `Hola, soy estudiante de Ingeniería de Sistemas e Informática de la UNAL Medellín. Te envío mi tarjeta con el código de promoción ${codigo}. Se verifica aquí: ${EXTRAS.urlVerificar(codigo)}`;
+  return `${d.whatsapp}?text=${encodeURIComponent(mensaje)}`;
+}
+
+function pintarPromocionContenido() {
+  const v = estado.verificacion;
+  const p = estado.promo;
+  if (v && !v.ok) {
+    return `
+      <p class="promo__texto">Para darte el código tenemos que verificar que tu historia académica es de Ingeniería de Sistemas e Informática, y la que tienes guardada no pasó esa revisión:</p>
+      <ul class="promo__motivos">${v.motivos.slice(0, 3).map((m) => `<li>${esc(m)}</li>`).join('')}</ul>
+      <p class="promo__texto">Entra al SIA, abre <b>Historia Académica</b>, copia la página completa (<kbd>Ctrl</kbd> + <kbd>A</kbd>, <kbd>Ctrl</kbd> + <kbd>C</kbd>) y pégala en «Actualizar o recargar mi historia académica».</p>`;
+  }
+  if (!p || p.estado === 'cargando') return '<p class="promo__texto promo__cargando" role="status">Preparando tu código…</p>';
+  if (p.estado === 'error') {
+    return `<p class="promo__texto">${esc(p.mensaje)}</p><button type="button" class="btn-juego btn-juego--mini" data-reintentar-promo>Reintentar</button>`;
+  }
+  const d = p.datos;
+  const whatsapp = enlaceWhatsAppPromo(d.codigo);
+  return `
+    <div class="promo__cuerpo">
+      <div class="promo__ticket">
+        <span class="promo__etiqueta">TU CÓDIGO</span>
+        <b class="promo__codigo">${esc(d.codigo)}</b>
+        <span class="promo__quien">${esc(d.nombre)}</span>
+        <span class="promo__quien promo__quien--correo">${esc(d.correo)}</span>
+      </div>
+      <div class="promo__lado">
+        <p class="promo__texto">Es tu código personal de estudiante de Sistemas para el descuento de <b>Math con Jean</b>. Comparte la tarjeta por WhatsApp con ellos y confirman el código en el verificador del portal, así que una tarjeta retocada no pasa la revisión.</p>
+        <div class="promo__acciones">
+          <button type="button" class="btn-juego btn-juego--principal" data-compartir-promo>Compartir tarjeta</button>
+          ${whatsapp ? `<a class="btn-juego" href="${esc(whatsapp)}" target="_blank" rel="noopener noreferrer">Abrir WhatsApp de Math con Jean</a>` : ''}
+          <button type="button" class="btn-juego" data-copiar-codigo>Copiar código</button>
+        </div>
+        <p class="promo__nota">Es personal e intransferible. No la publiques: quien la tenga puede usarla.</p>
+      </div>
+    </div>`;
+}
+
+function pintarPromocion() {
+  return `
+    <section class="panel promo" id="codigo-promocion" aria-label="Código especial de promoción">
+      <p class="panel__titulo">Código especial de promoción · Math con Jean</p>
+      <div id="zona-promocion">${pintarPromocionContenido()}</div>
+    </section>`;
+}
+
+function repintarPromocion() {
+  const zona = $('#zona-promocion');
+  if (zona) zona.innerHTML = pintarPromocionContenido();
+}
+
+// Pide el código al servidor (que vuelve a verificar la historia guardada). Se llama al entrar y al actualizar la historia.
+function cargarPromocion() {
+  const v = estado.verificacion;
+  if (!estado.usuarioId || !v || !v.ok) { estado.promo = null; repintarPromocion(); return Promise.resolve(); }
+  if (estado.promo && (estado.promo.estado === 'cargando' || estado.promo.estado === 'listo')) return Promise.resolve();
+  const usuario = estado.usuarioId;
+  estado.promo = { estado: 'cargando' };
+  repintarPromocion();
+  return ServicioAuth.obtenerCodigoPromocion().then((r) => {
+    if (estado.usuarioId !== usuario) return;           // cerró sesión mientras tanto
+    estado.promo = r.ok ? { estado: 'listo', datos: r.datos } : { estado: 'error', mensaje: r.mensaje };
+    repintarPromocion();
+  });
+}
+
 const PESTANAS = [
   { id: 'ruta', texto: 'Ruta' },
   { id: 'misiones', texto: 'Misiones' },
@@ -688,10 +781,11 @@ function dibujar() {
   juego.classList.toggle('sin-animar', sinAnimar);
   juego.hidden = false;
   juego.innerHTML = `
-    ${historia.esSistemas ? '' : '<p class="aviso-juego">Ojo: no veo «Ingeniería de Sistemas e Informática» en lo que pegaste. Las cuentas usan el plan de 160 créditos.</p>'}
+    ${estado.verificacion && !estado.verificacion.ok ? `<p class="aviso-juego">Ojo: esta historia no pasó la verificación de Ingeniería de Sistemas. ${esc(estado.verificacion.motivos[0] || '')} Copia la página completa del SIA y pégala de nuevo en «Actualizar o recargar mi historia académica».</p>` : ''}
     ${pintarJugador(avance, historia, puntos, estado.logros.length, desbloqueados.length)}
     ${pintarEstadisticas(avance, historia)}
     ${pintarGraduacion(avance)}
+    ${pintarPromocion()}
     <div class="pestanas-juego" role="tablist" aria-label="Secciones de Mi avance">
       ${PESTANAS.filter((t) => t.id !== 'misiones' || misiones).map((t) => `
         <button type="button" class="pestana-juego" role="tab" id="pest-${t.id}" data-pestana="${t.id}" aria-controls="panel-${t.id}">${t.texto}${t.id === 'logros' && estado.logros.length ? ` <span class="pestana-juego__cuenta">${desbloqueados.length}/${estado.logros.length}</span>` : ''}</button>`).join('')}
@@ -759,6 +853,11 @@ function dibujar() {
     }
     const compartir = e.target.closest('[data-compartir-jugador]');
     if (compartir) { EXTRAS.compartirJugador(contextoJugador(), compartir); return; }
+    const compartirPromo = e.target.closest('[data-compartir-promo]');
+    if (compartirPromo) { if (estado.promo && estado.promo.datos) EXTRAS.compartirPromo(estado.promo.datos, compartirPromo); return; }
+    const copiarCodigo = e.target.closest('[data-copiar-codigo]');
+    if (copiarCodigo) { if (estado.promo && estado.promo.datos) EXTRAS.copiarCodigo(estado.promo.datos.codigo); return; }
+    if (e.target.closest('[data-reintentar-promo]')) { estado.promo = null; cargarPromocion(); return; }
     const objetivo = e.target.closest('[data-abrir-logro]');
     if (objetivo) { abrirLogro(objetivo.dataset.abrirLogro); return; }
     const tarjeta = e.target.closest('.logro[data-id]');
@@ -770,16 +869,23 @@ function dibujar() {
     if (tarjeta && e.target === tarjeta) { e.preventDefault(); abrirLogro(tarjeta.dataset.id); }
   };
 
+  // Enlace desde Convenios (avance.html#codigo-promocion): baja hasta la tarjeta del código
+  if (location.hash === '#codigo-promocion' && !estado.hashPromoAtendido) {
+    estado.hashPromoAtendido = true;
+    setTimeout(() => { const t = $('#codigo-promocion'); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+  }
+
   revisarCelebracion();
 }
 
 function persistir() {
   guardado.escribir({ texto: estado.texto, nombre: estado.nombre, ritmo: estado.ritmo });
   if (typeof ServicioAuth !== 'undefined' && ServicioAuth.actualizarHistoria) {
-    ServicioAuth.actualizarHistoria(estado.texto, estado.ritmo, estado.nombre).catch((e) => {
+    return ServicioAuth.actualizarHistoria(estado.texto, estado.ritmo, estado.nombre).catch((e) => {
       console.warn('Error al sincronizar con el perfil:', e);
     });
   }
+  return Promise.resolve();
 }
 
 function mostrarError(mensaje) {
@@ -797,7 +903,15 @@ function procesar(texto, esCargaInicial) {
     mostrarError('No encontré información académica en lo que pegaste. Abre la Historia Académica en el SIA, selecciona todo (Ctrl + A), copia (Ctrl + C) y pega de nuevo.');
     return false;
   }
+  // Al actualizar la historia hay que verificarla antes de aceptarla. La que ya estaba guardada se muestra igual,
+  // pero sin código de promoción y con un aviso, para que la persona la vuelva a pegar.
+  const verificacion = validarHistoriaSistemas(historia, estado.catalogo, { correo: estado.correo });
+  if (!verificacion.ok && !esCargaInicial) {
+    mostrarError(`No pudimos verificar que esta sea tu historia académica de Ingeniería de Sistemas. ${verificacion.motivos.slice(0, 3).join(' ')}`);
+    return false;
+  }
   mostrarError('');
+  estado.verificacion = verificacion;
   estado.texto = texto;
   estado.historia = historia;
   if (!esCargaInicial || !estado.nombre) estado.nombre = estado.nombre || historia.nombre || '';
@@ -823,6 +937,7 @@ function aplicarSesion(usuario) {
   if (zonaAvance) zonaAvance.hidden = false;
 
   estado.usuarioId = usuario.id || null;
+  estado.correo = usuario.correo || '';
   estado.nombre = usuario.nombre || '';
   estado.ritmo = usuario.ritmo || null;
 
@@ -841,7 +956,7 @@ function aplicarSesion(usuario) {
   const textoAProcesar = usuario.historiaTexto || (guardado.leer()?.texto) || '';
   if (textoAProcesar) {
     $('#historia-texto').value = textoAProcesar;
-    procesar(textoAProcesar, true);
+    if (procesar(textoAProcesar, true)) cargarPromocion();
   } else {
     const entrada = $('#entrada');
     if (entrada) entrada.open = true;
@@ -861,6 +976,10 @@ function aplicarSinSesion() {
   estado.nombre = '';
   estado.ritmo = null;
   estado.historia = null;
+  estado.usuarioId = null;
+  estado.correo = '';
+  estado.verificacion = null;
+  estado.promo = null;
 
   const juego = $('#avance-juego');
   if (juego) { juego.innerHTML = ''; delete juego.dataset.visto; }
@@ -962,8 +1081,11 @@ function configurarFormulariosAuth() {
         return;
       }
 
-      if (!historia.esSistemas) {
-        mostrarAlertaAuth(registroAlerta, 'Acceso denegado: El registro está reservado exclusivamente para estudiantes de Ingeniería de Sistemas e Informática de la UNAL. En tu historia académica no se detectó este programa.');
+      // El registro es solo para Sistemas: todo lo que figure como Fundamentación, Disciplinar o Trabajo de grado
+      // tiene que estar en la malla de Sistemas, y las cifras del resumen tienen que cuadrar.
+      const veredicto = validarHistoriaSistemas(historia, await cargarCatalogo());
+      if (!veredicto.ok) {
+        mostrarAlertaAuth(registroAlerta, `Acceso denegado: no pudimos verificar que tu historia académica sea de Ingeniería de Sistemas e Informática (plan 3534). ${veredicto.motivos.slice(0, 3).join(' ')}`);
         return;
       }
 
@@ -1131,13 +1253,19 @@ async function iniciar() {
     estado.logros = [];
   }
 
+  // La malla se necesita para verificar cualquier historia; el aliado, para el enlace de WhatsApp del código
+  estado.catalogo = await cargarCatalogo();
+  cargarDatos('convenios/indice').then((i) => { estado.aliado = i.destacado || null; }).catch(() => {});
+
   await inicializarAutenticacion();
 
   $('#btn-guardar')?.addEventListener('click', () => {
     const texto = $('#historia-texto').value.trim();
     if (!texto) { mostrarError('Pega primero tu historia académica.'); return; }
     if (procesar(texto, false)) {
-      persistir();
+      // El código se pide cuando la historia ya quedó guardada, porque el servidor la verifica de nuevo
+      estado.promo = null;
+      persistir().then(() => cargarPromocion());
       $('#avance-juego').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
@@ -1147,7 +1275,7 @@ async function iniciar() {
     if (typeof ServicioAuth !== 'undefined' && ServicioAuth.actualizarHistoria) {
       ServicioAuth.actualizarHistoria('', null);
     }
-    estado.texto = ''; estado.nombre = ''; estado.ritmo = null; estado.historia = null;
+    estado.texto = ''; estado.nombre = ''; estado.ritmo = null; estado.historia = null; estado.verificacion = null; estado.promo = null;
     $('#historia-texto').value = '';
     const juego = $('#avance-juego');
     if (juego) {

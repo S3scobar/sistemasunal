@@ -129,6 +129,18 @@
 }
 .aliado__descuento strong { font-family: var(--mono); text-transform: uppercase; letter-spacing: .06em; color: #fff; }
 .aliado__descuento em { display: block; font-style: normal; font-size: 13px; color: var(--cian); }
+.aliado__descuento-titulo { margin: 0 0 10px; }
+.aliado__como { margin: 0 0 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--cian); }
+.aliado__pasos { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; counter-reset: paso; }
+.aliado__pasos li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; font-size: 14px; line-height: 1.45; color: #d6e6f5; counter-increment: paso; }
+.aliado__pasos li strong { font-family: inherit; text-transform: none; letter-spacing: 0; color: #fff; }
+.aliado__paso-n {
+  display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%;
+  font-family: var(--mono); font-size: 12px; font-weight: 700; color: #050505; background: var(--cian, #8fd2ff);
+}
+.aliado__paso-n::before { content: counter(paso); }
+.aliado__ayuda { margin: 0 0 12px; font-size: 13px; line-height: 1.45; color: #aebdcc; }
+.aliado__boton--codigo { display: inline-flex; }
 .aliado__acciones { display: flex; flex-wrap: wrap; gap: 10px; }
 .aliado__boton {
   display: inline-flex; align-items: center; gap: 8px;

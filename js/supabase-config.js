@@ -75,6 +75,21 @@ const cierreForzado = (async () => {
   }
 })();
 
+// Verificación de la historia de Sistemas: la define avance.js (necesita la malla) con globalThis.VERIFICADOR_HISTORIA.
+// Si no está disponible, NO se acepta el registro (falla cerrado).
+async function verificarHistoriaPendiente(texto, correo) {
+  const verificar = globalThis.VERIFICADOR_HISTORIA;
+  if (typeof verificar !== 'function') {
+    return { ok: false, motivos: ['No se pudo cargar el verificador. Recarga la página e inténtalo de nuevo.'] };
+  }
+  try {
+    return await verificar(texto, correo);
+  } catch (e) {
+    console.warn('No se pudo verificar la historia:', e);
+    return { ok: false, motivos: ['No se pudo verificar la historia. Inténtalo de nuevo.'] };
+  }
+}
+
 const ServicioAuth = {
   // Obtiene la sesión activa
   async obtenerSesion() {
@@ -106,6 +121,18 @@ const ServicioAuth = {
           } catch (_) {}
 
           if (registroPendiente && registroPendiente.historiaTexto) {
+            // Se vuelve a verificar la historia ahora que se conoce el correo con el que entró (el usuario del SIA
+            // tiene que ser el de ese correo) y antes de guardar nada. Si no se puede verificar, no se registra.
+            const veredicto = await verificarHistoriaPendiente(registroPendiente.historiaTexto, correo);
+            if (!veredicto.ok) {
+              await clienteSupabase.auth.signOut();
+              localStorage.removeItem(CLAVE_SESION_LOCAL);
+              localStorage.removeItem('sistemasunal.registro_pendiente');
+              return {
+                error: 'No pudimos verificar tu historia académica. ' + veredicto.motivos.slice(0, 2).join(' '),
+                noRegistrado: true,
+              };
+            }
             const nombreFinal = perfil?.nombre || registroPendiente.nombre || session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
             await this.guardarPerfil(session.user.id, correo, {
               nombre: nombreFinal,
@@ -502,6 +529,39 @@ const ServicioAuth = {
     } catch (err) {
       console.warn('[logros] error inesperado al guardar logros:', err);
       return false;
+    }
+  },
+
+
+  // Código especial de promoción (Math con Jean). Lo crea el servidor, que antes vuelve a verificar la historia
+  // guardada en el perfil. Devuelve { ok: true, datos: { codigo, nombre, correo, emitido_en } } o { ok: false, mensaje }.
+  async obtenerCodigoPromocion() {
+    if (!clienteSupabase) {
+      return { ok: false, mensaje: 'El código se genera cuando el portal está conectado a su base de datos.' };
+    }
+    try {
+      const { data, error } = await clienteSupabase.rpc('obtener_codigo_promocion');
+      if (error) {
+        const sinFuncion = error.code === 'PGRST202' || /could not find the function/i.test(error.message || '');
+        return { ok: false, mensaje: sinFuncion ? 'El código todavía no está activado en este portal.' : (error.message || 'No se pudo generar el código.') };
+      }
+      return { ok: true, datos: data };
+    } catch (err) {
+      console.warn('[promocion] error inesperado:', err);
+      return { ok: false, mensaje: 'No se pudo conectar para generar el código. Inténtalo de nuevo.' };
+    }
+  },
+
+  // Comprueba un código (no exige sesión). Devuelve { ok: true, datos: { valido, nombre, correo, ... } } o { ok: false, mensaje }.
+  async verificarCodigoPromocion(codigo) {
+    if (!clienteSupabase) return { ok: false, mensaje: 'El verificador no está conectado a la base de datos.' };
+    try {
+      const { data, error } = await clienteSupabase.rpc('verificar_codigo_promocion', { p_codigo: String(codigo || '') });
+      if (error) return { ok: false, mensaje: error.message || 'No se pudo verificar el código.' };
+      return { ok: true, datos: data || { valido: false } };
+    } catch (err) {
+      console.warn('[promocion] error al verificar:', err);
+      return { ok: false, mensaje: 'No se pudo conectar para verificar el código. Inténtalo de nuevo.' };
     }
   },
 

@@ -67,7 +67,31 @@
     "descuento": {
       "titulo": "Descuento especial",
       "texto": "para estudiantes de Sistemas e Informática.",
-      "pronto": "Muy pronto te contamos cómo redimirlo."
+      "whatsapp": "https://wa.me/573137445333",
+      "comoTitulo": "Cómo usarlo, en 4 pasos",
+      "pasos": [
+        {
+          "titulo": "Entra a Mi avance",
+          "texto": "Inicia sesión con tu correo @unal.edu.co. Si es tu primera vez, regístrate pegando tu historia académica del SIA: así comprobamos que eres de Sistemas."
+        },
+        {
+          "titulo": "Busca tu código",
+          "texto": "En Mi avance baja hasta «Código especial de promoción». Ahí está tu tarjeta con tu nombre, tu correo y tu código."
+        },
+        {
+          "titulo": "Compártela por WhatsApp",
+          "texto": "Toca «Compartir tarjeta» (o «Abrir WhatsApp de Math con Jean») y envíasela con el nombre del curso que quieres."
+        },
+        {
+          "titulo": "Ellos la comprueban",
+          "texto": "Math con Jean verifica tu código en el portal. Si es auténtico, te aplican el descuento."
+        }
+      ],
+      "ayuda": "¿No te aparece el código? La historia académica que tienes guardada no pasó la verificación de Sistemas. Cópiala completa desde el SIA (Ctrl + A, Ctrl + C) y pégala de nuevo en Mi avance.",
+      "boton": {
+        "texto": "Ir a mi código",
+        "url": "avance.html#codigo-promocion"
+      }
     },
     "nota": "Aliado de la representación estudiantil de Sistemas. No es un convenio de la Universidad. Precios según su página, pueden cambiar.",
     "enlaces": [

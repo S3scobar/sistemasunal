@@ -105,23 +105,43 @@ function leerCifraSuelta(texto, patron) {
   return m ? parseFloat(m[1].replace(',', '.')) : null;
 }
 
+/* ---------- Encabezado y conteo de filas (para verificar la historia) ---------- */
+
+function leerEncabezado(texto) {
+  const t = quitarTildes(texto).toUpperCase();
+  const plan = /(?:^|\n)[ \t]*(\d{4})[ \t]+INGENIERIA DE SISTEMAS E INFORMATICA[ \t]*(?:\r?\n|$)/.exec(t);
+  const facultad = /FACULTAD:[ \t]*(FACULTAD DE [A-Z ]+?)[ \t]*(?:\r?\n|$)/.exec(t);
+  return {
+    plan: plan ? plan[1] : null,
+    programaSistemas: Boolean(plan),
+    facultad: facultad ? facultad[1] : null,
+    facultadMinas: Boolean(facultad && /\bMINAS\b/.test(facultad[1])),
+  };
+}
+
+// Cuántas filas «Nombre (código) créditos …» hay en el texto, se hayan podido leer o no
+function contarFilasDeMaterias(texto) {
+  return (texto.match(/\(\d{6,7}(?:-[A-Z])?\)\s+\d{1,2}\s/g) || []).length;
+}
+
 function leerHistoria(textoOriginal) {
   const texto = String(textoOriginal || '').replace(/ /g, ' ');
   const materias = leerMaterias(texto);
   const resumen = leerResumen(texto);
+  const encabezado = leerEncabezado(texto);
+
+  // Usuario del SIA: la línea que sigue a «Portal de Servicios Académicos» (coincide con el correo institucional)
+  let usuarioSia = (/(?:Portal de Servicios Acad[ée]micos\s*\n\s*)([a-z0-9._-]+)/i.exec(texto) || [])[1] || '';
+  if (/^(Datos|Informaci|Mi|Proceso|Buscador)/i.test(usuarioSia)) usuarioSia = '';
 
   let nombre = (/(?:^|\n)\s*(?:Nombre|Estudiante)\s*:?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ ]{6,60})\s*(?:\n|$)/.exec(texto) || [])[1];
-  if (!nombre) {
-    const usuarioSia = (/(?:Portal de Servicios Acad[ée]micos\s*\n\s*)([a-z0-9._-]+)/i.exec(texto) || [])[1];
-    if (usuarioSia && !/^(Datos|Informaci|Mi|Proceso|Buscador)/i.test(usuarioSia)) {
-      nombre = usuarioSia;
-    }
-  }
+  if (!nombre && usuarioSia) nombre = usuarioSia;
 
   return {
     materias,
     resumen,
     nombre: nombre ? nombre.trim() : '',
+    usuarioSia,
     papa: leerCifraSuelta(texto, /(\d\.\d{1,2})\s*\(Acumulado\)\s*Pregrado\s*-\s*P\.A\.P\.A/i),
     promedio: leerCifraSuelta(texto, /(\d\.\d{1,2})\s*\(Acumulado\)\s*Pregrado\s*-\s*Promedio/i),
     cancelados: leerCifraSuelta(texto, /Cancelados\s+en\s+los\s+Periodos\s+Cursados?\s*(\d+)/i),
@@ -130,14 +150,11 @@ function leerHistoria(textoOriginal) {
     cupo: leerCifraSuelta(texto, /Cupo\s+de\s+cr[ée]ditos\s+(\d+)/i),
     disponibles: leerCifraSuelta(texto, /Cr[ée]ditos\s+disponibles\s*(-?\d+)/i),
     adicionales: leerCifraSuelta(texto, /Cr[ée]ditos\s+adicionales\s+(\d+)/i),
-    esSistemas:
-      /SISTEMAS\s+E\s+INFORM/i.test(quitarTildes(texto)) ||
-      /INGENIERIA\s+DE\s+SISTEMAS/i.test(quitarTildes(texto)) ||
-      /2879\s*-\s*INGENIERIA/i.test(quitarTildes(texto)) ||
-      /PROGRAMA:\s*2879/i.test(quitarTildes(texto)) ||
-      /3534\s*-\s*INGENIERIA/i.test(quitarTildes(texto)) ||
-      /3534\s+INGENIERIA/i.test(quitarTildes(texto)) ||
-      /PLAN.*3534/i.test(quitarTildes(texto)),
+    encabezado,
+    filasDetectadas: contarFilasDeMaterias(texto),
+    // Solo cuenta el encabezado real del SIA (línea «3534 INGENIERÍA DE SISTEMAS E INFORMÁTICA» + Facultad).
+    // Nombrar el programa en otra parte del texto (por ejemplo, en el nombre de una asignatura) ya no sirve.
+    esSistemas: encabezado.programaSistemas && encabezado.facultadMinas,
   };
 }
 
@@ -229,4 +246,154 @@ function calcularAvance(historia, ritmoElegido) {
   };
 }
 
-if (typeof module !== 'undefined') module.exports = { leerHistoria, calcularAvance, etiquetaPeriodo, TIPOLOGIAS };
+/* ---------- Verificación de que la historia es de Sistemas (plan 3534) ----------
+   La historia llega como texto pegado, y un texto se puede editar. Por eso no basta con ver el nombre del
+   programa: se comprueba contra la malla que todo lo que figure como Fundamentación, Disciplinar o Trabajo de
+   grado exista en Sistemas, con el mismo nombre y los mismos créditos, y que las cifras del «Resumen de créditos»
+   cuadren con las asignaturas y con el plan. Quien cambia un código, un nombre o una tipología rompe alguna de
+   esas comprobaciones. Las mismas reglas se aplican en el servidor (supabase/promocion.sql) al emitir el código. */
+
+// Tipologías que solo pueden contener asignaturas de la malla de Sistemas, y a qué componente pertenecen
+const GRUPO_DE_TIPOLOGIA = {
+  'FUND. OBLIGATORIA': 'fundamentacion',
+  'FUND. OPTATIVA': 'fundamentacion',
+  'DISCIPLINAR OBLIGATORIA': 'disciplinar',
+  'DISCIPLINAR OPTATIVA': 'disciplinar',
+  'TRABAJO DE GRADO': 'disciplinar',
+};
+const TIPOLOGIAS_DEL_SIA = [...Object.keys(GRUPO_DE_TIPOLOGIA), 'LIBRE ELECCIÓN', 'NIVELACIÓN'];
+const PARECIDO_MINIMO_NOMBRE = 0.5;
+
+const PALABRAS_VACIAS_NOMBRE = new Set(['de', 'la', 'el', 'los', 'las', 'y', 'e', 'o', 'u', 'en', 'a', 'del', 'al', 'un', 'una', 'para', 'con', 'por']);
+
+function palabrasDeNombre(texto) {
+  return new Set(quitarTildes(String(texto || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ')
+    .filter((w) => w && !PALABRAS_VACIAS_NOMBRE.has(w))
+    .map((w) => (w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w)));   // «Base» y «Bases» cuentan como la misma
+}
+
+// 0 a 1: qué tanto se parecen dos nombres de asignatura (el SIA y la malla no siempre escriben igual)
+function parecidoDeNombres(a, b) {
+  const A = palabrasDeNombre(a);
+  const B = palabrasDeNombre(b);
+  if (!A.size || !B.size) return 0;
+  let comunes = 0;
+  A.forEach((w) => { if (B.has(w)) comunes += 1; });
+  return (2 * comunes) / (A.size + B.size);
+}
+
+/* Arma el catálogo de verificación con los JSON de la malla:
+   - asignaturas: código -> { nombre, creditos, grupo }
+   - exigidos: créditos exigidos por tipología según el plan
+   - plan: código del plan («3534»)
+   extras (opcional, data/malla/verificacion.json): { plan, codigosAdicionales: [{ codigo, nombre, creditos, grupo }] } */
+function construirCatalogo(asignaturas, componentes, extras) {
+  const agrupaciones = new Map(componentes.agrupaciones.map((a) => [a.id, a]));
+  const mapa = new Map();
+  asignaturas.forEach((a) => {
+    const agrupacion = agrupaciones.get(a.agrupacion);
+    if (!agrupacion || !['fundamentacion', 'disciplinar'].includes(agrupacion.componente)) return;
+    mapa.set(a.codigo, { nombre: a.nombre, creditos: a.creditos === undefined ? null : a.creditos, grupo: agrupacion.componente });
+  });
+  ((extras && extras.codigosAdicionales) || []).forEach((a) => {
+    if (a && a.codigo && a.nombre) mapa.set(String(a.codigo), { nombre: a.nombre, creditos: a.creditos === undefined ? null : a.creditos, grupo: a.grupo || 'disciplinar' });
+  });
+
+  const suma = (lista, campo) => lista.reduce((s, a) => s + (a[campo] || 0), 0);
+  const ciencias = agrupaciones.get('ciencias-basicas') || {};
+  const disciplinares = componentes.agrupaciones.filter((a) => a.componente === 'disciplinar' && a.id !== 'trabajo-grado');
+  const trabajo = agrupaciones.get('trabajo-grado') || {};
+  const exigidos = {
+    'FUND. OBLIGATORIA': ciencias.obligatorios || 0,
+    'FUND. OPTATIVA': ciencias.optativos || 0,
+    'DISCIPLINAR OBLIGATORIA': suma(disciplinares, 'obligatorios'),
+    'DISCIPLINAR OPTATIVA': suma(disciplinares, 'optativos'),
+    'TRABAJO DE GRADO': trabajo.exigidos || 0,
+  };
+  exigidos['LIBRE ELECCIÓN'] = CREDITOS_PLAN - Object.values(exigidos).reduce((s, n) => s + n, 0);
+  return { asignaturas: mapa, exigidos, plan: String((extras && extras.plan) || '3534') };
+}
+
+/* Devuelve { ok, motivos, avisos }.
+   - motivos: razones por las que la historia NO se acepta (frases para mostrar a la persona).
+   - avisos: detalles raros que no bloquean.
+   opciones.correo (opcional): si se conoce el correo institucional, el usuario del SIA de la historia tiene que ser el mismo
+   (así una historia ajena, copiada tal cual, no sirve). */
+function validarHistoriaSistemas(historia, catalogo, opciones) {
+  const motivos = [];
+  const avisos = [];
+  if (!catalogo || !catalogo.asignaturas) {
+    return { ok: false, motivos: ['No se pudo cargar la malla curricular para verificar tu historia. Recarga la página e inténtalo de nuevo.'], avisos };
+  }
+  const lista = (materias) => materias.slice(0, 3).map((m) => `${m.nombre} (${m.codigo})`).join(', ') + (materias.length > 3 ? ` y ${materias.length - 3} más` : '');
+
+  // 1. Encabezado del SIA
+  const enc = historia.encabezado || {};
+  if (!enc.programaSistemas || enc.plan !== catalogo.plan) {
+    motivos.push(`En el encabezado no aparece el plan ${catalogo.plan} de Ingeniería de Sistemas e Informática.`);
+  }
+  if (!enc.facultadMinas) motivos.push('En el encabezado no aparece la Facultad de Minas.');
+
+  // 1b. La historia debe ser de quien tiene la sesión: el usuario del SIA es el principio del correo UNAL
+  const correo = opciones && opciones.correo ? String(opciones.correo).trim().toLowerCase() : '';
+  if (correo) {
+    const esperado = correo.split('@')[0];
+    if (!historia.usuarioSia) motivos.push('No se encontró tu usuario del SIA al inicio de la página. Copia la página completa (Ctrl + A).');
+    else if (historia.usuarioSia.toLowerCase() !== esperado) motivos.push('Esta historia académica pertenece a otro usuario del SIA, no a tu correo institucional.');
+  }
+
+  // 2. Que se haya leído todo: una fila que no se pueda leer no se puede verificar
+  if (!historia.materias.length) motivos.push('No se leyó ninguna asignatura.');
+  if (historia.filasDetectadas > historia.materias.length) {
+    motivos.push(`${historia.filasDetectadas - historia.materias.length} fila(s) de asignaturas no se pudieron leer. Copia la historia completa tal como la muestra el SIA.`);
+  }
+
+  // 3. Cada asignatura de Fundamentación / Disciplinar / Trabajo de grado tiene que ser de la malla de Sistemas
+  const desconocidas = []; const fuera = []; const creditosMal = []; const nombreMal = []; const grupoMal = [];
+  let disciplinares = 0;
+  historia.materias.forEach((m) => {
+    if (!TIPOLOGIAS_DEL_SIA.includes(m.tipologia)) { desconocidas.push(m); return; }
+    const grupo = GRUPO_DE_TIPOLOGIA[m.tipologia];
+    if (!grupo) return;                                     // libre elección y nivelación: cualquier asignatura
+    const enMalla = catalogo.asignaturas.get(m.codigo);
+    if (!enMalla) { fuera.push(m); return; }
+    if (enMalla.creditos !== null && enMalla.creditos !== m.creditos) creditosMal.push(m);
+    if (parecidoDeNombres(enMalla.nombre, m.nombre) < PARECIDO_MINIMO_NOMBRE) nombreMal.push(m);
+    if (enMalla.grupo !== grupo) grupoMal.push(m);
+    if (grupo === 'disciplinar') disciplinares += 1;
+  });
+  if (desconocidas.length) motivos.push(`Tipología no reconocida en: ${lista(desconocidas)}.`);
+  if (fuera.length) motivos.push(`Estas asignaturas figuran como Fundamentación, Disciplinar o Trabajo de grado, pero no están en la malla de Sistemas: ${lista(fuera)}.`);
+  if (nombreMal.length) motivos.push(`El nombre no corresponde al código en: ${lista(nombreMal)}.`);
+  if (creditosMal.length) motivos.push(`Los créditos no corresponden a la malla en: ${lista(creditosMal)}.`);
+  if (grupoMal.length) avisos.push(`Cambia de componente respecto a la malla: ${lista(grupoMal)}.`);
+  if (!fuera.length && !desconocidas.length && disciplinares === 0) {
+    motivos.push('No hay ninguna asignatura disciplinar de Sistemas en la historia.');
+  }
+
+  // 4. El «Resumen de créditos» tiene que ser el del plan y cuadrar con las asignaturas
+  const resumen = historia.resumen || {};
+  if (!resumen.TOTAL) {
+    motivos.push('No se encontró la tabla «Resumen de créditos». Copia la página completa (Ctrl + A).');
+  } else {
+    if (resumen.TOTAL.exigidos !== CREDITOS_PLAN) motivos.push(`El total de créditos exigidos es ${resumen.TOTAL.exigidos} y el plan pide ${CREDITOS_PLAN}.`);
+    Object.entries(catalogo.exigidos).forEach(([tipologia, esperado]) => {
+      const fila = resumen[tipologia];
+      if (!fila || fila.exigidos !== esperado) motivos.push(`En ${tipologia} el plan exige ${esperado} créditos y la historia dice ${fila ? fila.exigidos : 'nada'}.`);
+    });
+    const sumar = (materias) => materias.reduce((s, m) => s + m.creditos, 0);
+    TIPOLOGIAS_DEL_SIA.forEach((tipologia) => {
+      const propias = historia.materias.filter((m) => m.tipologia === tipologia);
+      const cerradas = sumar(propias.filter((m) => m.estado === 'APROBADA' || m.estado === 'REPROBADA'));
+      const todas = sumar(propias.filter((m) => m.estado !== 'CANCELADA'));
+      const cursados = resumen[tipologia] ? resumen[tipologia].cursados : 0;
+      if (cursados !== cerradas && cursados !== todas) {
+        motivos.push(`Los créditos cursados en ${tipologia} (${cursados}) no cuadran con las asignaturas listadas (${todas}).`);
+      }
+    });
+  }
+
+  return { ok: motivos.length === 0, motivos, avisos };
+}
+
+if (typeof module !== 'undefined') module.exports = { leerHistoria, calcularAvance, etiquetaPeriodo, TIPOLOGIAS, construirCatalogo, validarHistoriaSistemas, parecidoDeNombres };

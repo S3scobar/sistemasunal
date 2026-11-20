@@ -12,6 +12,7 @@ Sitio web del programa de Ingeniería de Sistemas e Informática de la Facultad 
 | `info.html` | Información general y guía estudiantil (P.A.P.A., bolsa de créditos, horas de corresponsabilidad, citas SIA, simulador interactivo y preguntas frecuentes) |
 | `avance.html` | Mi avance: se pega la historia académica del SIA (Ctrl+A, Ctrl+C), se procesa solo en el navegador y muestra nivel/XP, graduación estimada según tu ritmo, avance por componente y logros (se agregan en `data/logros.json`) |
 | `convenios.html` | Convenios de la UNAL (Coursera, MATLAB, Microsoft 365) y beneficios para estudiantes (Autodesk, GitHub, JetBrains, Spotify): lista desplegable con quién puede usarlos, qué incluyen y cómo activarlos paso a paso |
+| `verificar.html` | Verificador de tarjetas del código de promoción (Math con Jean): se escribe el código y muestra el nombre, el correo (parcial) y el sello reales guardados en la base de datos |
 
 Cada página carga solo los datos que necesita, y las secciones largas del inicio se cargan cuando la persona se acerca a ellas.
 
@@ -38,6 +39,12 @@ data/
 Cada asignatura se guarda una sola vez y las demás partes la referencian por código. Lo que depende de otras tablas (por ejemplo, «es prerrequisito de») se calcula en el navegador, así no hay datos duplicados que se desactualicen.
 
 Fuente de la malla: *Programa Curricular – Ingeniería de Sistemas e Informática*, Vicedecanatura Académica, Facultad de Minas (2026-2).
+
+## Verificación de la historia y código de promoción (Supabase)
+
+- `js/avance-lector.js` verifica que la historia pegada sea del plan 3534: todo lo que figure como Fundamentación, Disciplinar o Trabajo de grado debe estar en `data/malla/asignaturas.json` (mismo nombre y créditos), el «Resumen de créditos» debe ser el del plan y cuadrar con las asignaturas, y el usuario del SIA debe ser el de tu correo UNAL. Equivalencias legítimas que no estén en la malla se agregan en `data/malla/verificacion.json`.
+- `supabase/promocion.sql` (ejecutar una vez en Supabase → SQL Editor) repite esa verificación en el servidor y crea los códigos `SIS-XXXX-XXXX-XXXX`. Después ejecuta `supabase/catalogo-malla.sql`, que se genera con `npm run build:sql` y hay que volver a ejecutar cada vez que cambie la malla.
+- Para desactivar un código: `update public.codigos_promocion set revocado = true where codigo = 'SIS-…';`
 
 ## Ver el sitio en local
 

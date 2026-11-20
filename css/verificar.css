@@ -1,0 +1,79 @@
+/* ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== */
+
+/* =============================================
+   VERIFICADOR DE TARJETAS DE PROMOCIÓN
+   ============================================= */
+
+body[data-pagina="verificar"] {
+  --fondo: #050f1f;
+  --borde: #1b4a86;
+  --neon: #2fa8ff;
+  --luz: #d8ecff;
+  --suave: #8fb3d6;
+  --ok: #2fd47a;
+  --mal: #ff5d73;
+  --ambar: #f7b61a;
+  --mono: ui-monospace, 'JetBrains Mono', 'Fira Code', SFMono-Regular, Menlo, Consolas, monospace;
+}
+.verificar {
+  min-height: 70vh;
+  padding: 56px 0 80px;
+  color: var(--luz);
+  background:
+    linear-gradient(rgba(47, 168, 255, .06) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgba(47, 168, 255, .06) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(ellipse at 50% 0%, rgba(47, 168, 255, .16), transparent 60%),
+    var(--fondo);
+}
+.verificar__contenedor { max-width: 680px; }
+.verificar__caja {
+  padding: 28px 26px; border-radius: 20px; border: 1px solid rgba(143, 179, 214, .2);
+  background: linear-gradient(160deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+  box-shadow: 0 22px 44px -28px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+.verificar__etiqueta { margin: 0 0 8px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--neon); }
+.verificar h1 { margin: 0 0 10px; font-size: clamp(24px, 5vw, 32px); line-height: 1.15; color: #fff; }
+.verificar__texto { margin: 0 0 20px; font-size: 15px; line-height: 1.55; color: var(--luz); }
+.verificar__form label { display: block; margin-bottom: 6px; font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9fcfff; }
+.verificar__campo { display: flex; gap: 8px; flex-wrap: wrap; }
+.verificar__campo input {
+  flex: 1 1 240px; min-width: 0; padding: 12px 14px; border-radius: 10px;
+  font-family: var(--mono); font-size: 18px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: #fff; background: rgba(3, 10, 21, .75); border: 1px solid rgba(47, 168, 255, .5);
+}
+.verificar__campo input:focus-visible { outline: 2px solid #8fd2ff; outline-offset: 2px; }
+.verificar__boton {
+  appearance: none; cursor: pointer; padding: 12px 22px; border: 0; border-radius: 10px;
+  font-family: var(--mono); font-size: 14px; font-weight: 700; color: #04101f;
+  background: linear-gradient(135deg, #8fd2ff, #2fa8ff); box-shadow: 0 6px 22px rgba(47, 168, 255, .35);
+}
+.verificar__boton:hover { background: linear-gradient(135deg, #b4e1ff, #4db5ff); }
+.verificar__boton:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.verificar__boton:disabled { opacity: .6; cursor: progress; }
+
+.verificar__resultado:empty { display: none; }
+.verificar__resultado { margin-top: 20px; padding: 18px 18px 16px; border-radius: 14px; border: 1px solid rgba(143, 179, 214, .3); background: rgba(3, 10, 21, .6); }
+.verificar__resultado--ok { border-color: rgba(47, 212, 122, .7); background: rgba(47, 212, 122, .08); }
+.verificar__resultado--mal { border-color: rgba(255, 93, 115, .7); background: rgba(255, 93, 115, .09); }
+.verificar__resultado--aviso { border-color: rgba(247, 182, 26, .7); background: rgba(247, 182, 26, .08); }
+.resultado__estado { margin: 0 0 10px; font-family: var(--mono); font-size: 15px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--luz); }
+.verificar__resultado--ok .resultado__estado { color: var(--ok); }
+.verificar__resultado--mal .resultado__estado { color: var(--mal); }
+.verificar__resultado--aviso .resultado__estado { color: var(--ambar); }
+.resultado__cuerpo { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.resultado__sello { flex: none; line-height: 0; border-radius: 10px; overflow: hidden; border: 1px solid rgba(143, 210, 255, .55); }
+.resultado__datos { flex: 1 1 260px; min-width: 0; margin: 0; display: grid; gap: 8px; }
+.resultado__datos div { display: grid; gap: 1px; }
+.resultado__datos dt { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--suave); }
+.resultado__datos dd { margin: 0; font-size: 17px; font-weight: 600; color: #fff; overflow-wrap: anywhere; }
+.resultado__mono { font-family: var(--mono); font-size: 15px !important; color: #8fd2ff !important; }
+.resultado__nota { margin: 12px 0 0; font-size: 14px; line-height: 1.5; color: var(--luz); }
+.resultado__nota code { font-family: var(--mono); color: #8fd2ff; }
+.verificar__aviso { margin: 20px 0 0; padding: 12px 14px; border-left: 4px solid var(--ambar); background: rgba(247, 182, 26, .09); font-size: 14px; line-height: 1.5; color: #ffe7a8; }

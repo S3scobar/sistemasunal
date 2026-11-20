@@ -510,9 +510,124 @@ const EXTRAS = (() => {
     return compartirCanvas(lienzo, 'mi-tarjeta-sistemas.png', texto, boton);
   }
 
+
+  /* ---------- Tarjeta del código especial de promoción (Math con Jean) ----------
+     Nombre, correo, código y sello vienen del servidor (supabase/promocion.sql); aquí solo se dibujan.
+     La tarjeta es una imagen y una imagen se puede retocar: lo que la hace confiable es que el código se comprueba
+     en verificar.html contra la base de datos (nombre, correo y sello tienen que coincidir). */
+
+  const urlVerificar = (codigo) => `https://${URL_WEB}/verificar.html${codigo ? `?c=${encodeURIComponent(codigo)}` : ''}`;
+
+  function fechaCorta(iso) {
+    try { return new Date(iso).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' }); } catch { return ''; }
+  }
+
+  // Texto diminuto repetido en los cuatro bordes con el código: se deforma si la imagen se regenera o se retoca
+  function microtexto(ctx, W, H, texto) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(143, 210, 255, .4)'; ctx.font = `600 11px ${MONO}`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    let linea = `${texto}  ·  `;
+    while (ctx.measureText(linea).width < H) linea += `${texto}  ·  `;
+    const borde = (x, y, largo, giro) => {
+      ctx.save();
+      ctx.translate(x, y); ctx.rotate(giro);
+      ctx.beginPath(); ctx.rect(0, -14, largo, 20); ctx.clip();
+      ctx.fillText(linea, 0, 0);
+      ctx.restore();
+    };
+    borde(60, 52, W - 120, 0);
+    borde(60, H - 44, W - 120, 0);
+    borde(52, H - 60, H - 120, -Math.PI / 2);
+    borde(W - 44, H - 60, H - 120, -Math.PI / 2);
+    ctx.restore();
+  }
+
+  async function dibujarTarjetaPromo(c) {
+    await esperarFuentes();
+    const W = 1080; const H = 1350;
+    const lienzo = document.createElement('canvas'); lienzo.width = W; lienzo.height = H;
+    const ctx = lienzo.getContext('2d');
+    fondoTarjeta(ctx, W, H, 'rgba(47,168,255,');
+    microtexto(ctx, W, H, `SISTEMAS UNAL · ${c.codigo}`);
+    barraTerminal(ctx, W, '~/sistemas/beneficios $ ./promo');
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = '#8fd2ff'; ctx.font = `700 33px ${MONO}`;
+    ctx.fillText('CÓDIGO ESPECIAL DE PROMOCIÓN', W / 2, 192);
+    ctx.fillStyle = '#d8ecff'; ctx.font = `500 33px ${TEXTO}`;
+    lineas(ctx, 'Math con Jean · descuento para estudiantes de Ingeniería de Sistemas e Informática', W / 2, 242, W - 200, 42, 2);
+
+    // escudo
+    const tam = 150; const ix = (W - tam) / 2; const iy = 330;
+    const gr = ctx.createLinearGradient(ix, iy, ix + tam, iy + tam); gr.addColorStop(0, '#8fd2ff'); gr.addColorStop(1, '#2fa8ff');
+    ctx.shadowColor = 'rgba(47,168,255,.7)'; ctx.shadowBlur = 50;
+    ctx.fillStyle = gr; rect(ctx, ix, iy, tam, tam, 38); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3; rect(ctx, ix, iy, tam, tam, 38); ctx.stroke();
+    const escudo = typeof ICONOS_LOGRO !== 'undefined' ? ICONOS_LOGRO['escudo-check'] : '';
+    const img = await cargarImagenSvg(escudo, '#04101f');
+    if (img) ctx.drawImage(img, ix + 30, iy + 30, tam - 60, tam - 60);
+
+    // persona
+    ctx.fillStyle = '#ffffff'; ctx.font = `700 56px ${MONO}`;
+    const finNombre = lineas(ctx, c.nombre, W / 2, 560, W - 160, 64, 2);
+    let tamCorreo = 34;
+    ctx.font = `600 ${tamCorreo}px ${MONO}`;
+    while (ctx.measureText(c.correo).width > W - 160 && tamCorreo > 20) { tamCorreo -= 2; ctx.font = `600 ${tamCorreo}px ${MONO}`; }
+    ctx.fillStyle = '#8fd2ff';
+    ctx.fillText(c.correo, W / 2, finNombre - 12);
+
+    // código
+    const top = finNombre + 28; const alto = 180;
+    ctx.fillStyle = 'rgba(47,168,255,.1)'; rect(ctx, 90, top, W - 180, alto, 26); ctx.fill();
+    ctx.setLineDash([14, 10]); ctx.strokeStyle = 'rgba(143,210,255,.65)'; ctx.lineWidth = 3; rect(ctx, 90, top, W - 180, alto, 26); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#8fd2ff'; ctx.font = `700 24px ${MONO}`; ctx.fillText('TU CÓDIGO', W / 2, top + 44);
+    let tamCodigo = 78;
+    ctx.font = `700 ${tamCodigo}px ${MONO}`;
+    while (ctx.measureText(c.codigo).width > W - 260 && tamCodigo > 40) { tamCodigo -= 2; ctx.font = `700 ${tamCodigo}px ${MONO}`; }
+    ctx.fillStyle = '#ffffff'; ctx.fillText(c.codigo, W / 2, top + 116);
+    ctx.fillStyle = '#8fb3d6'; ctx.font = `500 26px ${TEXTO}`;
+    ctx.fillText(c.emitido_en ? `Emitido el ${fechaCorta(c.emitido_en)}` : 'Código de estudiante de Sistemas', W / 2, top + 156);
+
+    // sello
+    const topSello = top + alto + 30;
+    SELLO.dibujar(ctx, c.sello, 110, topSello, 96);
+    ctx.strokeStyle = 'rgba(143,210,255,.55)'; ctx.lineWidth = 2; ctx.strokeRect(110, topSello, 96, 96);
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#8fd2ff'; ctx.font = `700 24px ${MONO}`; ctx.fillText('SELLO', 232, topSello + 34);
+    ctx.fillStyle = '#ffffff'; ctx.font = `700 50px ${MONO}`; ctx.fillText(String(c.sello || '').toUpperCase(), 232, topSello + 84);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#d8ecff'; ctx.font = `600 27px ${TEXTO}`; ctx.fillText('Personal e intransferible', W - 110, topSello + 44);
+    ctx.fillStyle = '#8fb3d6'; ctx.font = `500 25px ${TEXTO}`; ctx.fillText('Solo estudiantes de Sistemas', W - 110, topSello + 80);
+
+    // cómo comprobarla
+    ctx.textAlign = 'center';
+    let y = topSello + 96 + 52;
+    ctx.fillStyle = '#8fb3d6'; ctx.font = `500 28px ${TEXTO}`; ctx.fillText('Comprueba esta tarjeta en', W / 2, y);
+    ctx.fillStyle = '#2fa8ff'; ctx.font = `700 31px ${MONO}`; ctx.fillText(`${URL_WEB}/verificar.html`, W / 2, y + 44);
+    ctx.fillStyle = '#8fb3d6'; ctx.font = `500 26px ${TEXTO}`;
+    lineas(ctx, 'El nombre, el correo y el sello tienen que ser iguales a los de esa página. Si no lo son, la tarjeta fue alterada.', W / 2, y + 90, W - 220, 34, 3);
+
+    ctx.fillStyle = '#8fb3d6'; ctx.font = `500 26px ${TEXTO}`;
+    ctx.fillText('Ingeniería de Sistemas e Informática · UNAL Medellín', W / 2, H - 76);
+    ctx.textAlign = 'left';
+    return lienzo;
+  }
+
+  async function compartirPromo(c, boton) {
+    const lienzo = await dibujarTarjetaPromo(c);
+    const texto = `Hola, soy estudiante de Ingeniería de Sistemas e Informática (UNAL Medellín). Mi código de promoción de Math con Jean es ${c.codigo}. Pueden comprobarlo en ${urlVerificar(c.codigo)}`;
+    return compartirCanvas(lienzo, `codigo-promocion-${c.codigo}.png`, texto, boton);
+  }
+
+  async function copiarCodigo(codigo) {
+    try { await navigator.clipboard.writeText(codigo); aviso('Código copiado.'); }
+    catch { aviso(`Tu código es ${codigo}`); }
+  }
+
   return {
     rareza, rangoNivel, faltanParaSiguienteNivel, escasez, progresoLogro, registrarVisita,
     leerVistos, guardarVistos, abrirDetalle, celebrar, compartirLogro, compartirJugador, aviso, confeti,
-    dibujarTarjetaLogro, dibujarTarjetaJugador,
+    dibujarTarjetaLogro, dibujarTarjetaJugador, dibujarTarjetaPromo, compartirPromo, copiarCodigo, urlVerificar,
   };
 })();

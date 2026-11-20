@@ -1,0 +1,69 @@
+<!doctype html>
+<!-- ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Facultad de Minas — Universidad Nacional de Colombia, Sede Medellín
+   Contacto: saescobara@unal.edu.co | Instagram: @s_escobar__ | WhatsApp: (+57) 312 377 2091
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== -->
+<html lang="es" data-author="Santiago Escobar Arias" data-developer="saescobara@unal.edu.co" data-auth-token="SEA-SIS-UNAL-2026-AUTH-F45123">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Santiago Escobar Arias">
+  <meta name="developer" content="Santiago Escobar Arias · Representante de Sistemas · saescobara@unal.edu.co">
+  <meta name="signature" content="SEA-SIS-UNAL-2026-AUTH-F45123">
+  <meta name="copyright" content="Santiago Escobar Arias · Facultad de Minas · UNAL Sede Medellín · Todos los derechos reservados">
+  <meta name="robots" content="noindex">
+  <title>Verificar tarjeta de promoción · Ingeniería de Sistemas e Informática UNAL Medellín</title>
+  <meta name="description" content="Comprueba si el código de promoción de una tarjeta de estudiante de Ingeniería de Sistemas e Informática de la UNAL Medellín es auténtico.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#122a46">
+  <link rel="apple-touch-icon" href="img/app/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sistemas.css">
+  <link rel="stylesheet" href="css/verificar.css">
+</head>
+<body data-pagina="verificar">
+
+  <div id="barra"></div>
+
+  <main class="verificar">
+    <div class="contenedor verificar__contenedor">
+      <section class="verificar__caja" aria-labelledby="verificar-titulo">
+        <p class="verificar__etiqueta">~/sistemas/beneficios $ ./verificar</p>
+        <h1 id="verificar-titulo">Verificar tarjeta de promoción</h1>
+        <p class="verificar__texto">Escribe el código que aparece en la tarjeta que te enviaron. Aquí se comprueba en la base de datos del portal: una imagen retocada no puede cambiar lo que se ve en esta página.</p>
+
+        <form class="verificar__form" id="form-verificar" autocomplete="off" novalidate>
+          <label for="codigo">Código de la tarjeta</label>
+          <div class="verificar__campo">
+            <input id="codigo" name="codigo" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" maxlength="19" placeholder="SIS-XXXX-XXXX-XXXX" required>
+            <button type="submit" class="verificar__boton" id="btn-verificar">Verificar</button>
+          </div>
+        </form>
+
+        <div class="verificar__resultado" id="resultado" aria-live="polite"></div>
+
+        <p class="verificar__aviso">Revisa que el <strong>nombre</strong>, el <strong>correo</strong> y el <strong>sello</strong> de esta página sean iguales a los de la tarjeta. Si algo no coincide, la tarjeta fue alterada y no se debe aplicar el descuento.</p>
+      </section>
+    </div>
+  </main>
+
+  <div id="pie"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/sello.js"></script>
+  <script src="js/verificar.js"></script>
+</body>
+</html>
