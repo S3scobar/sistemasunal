@@ -635,7 +635,7 @@ function pintarHistorial(historia) {
 function enlaceWhatsAppPromo(codigo) {
   const d = estado.aliado && estado.aliado.descuento;
   if (!d || !d.whatsapp) return null;
-  const mensaje = `Hola, soy estudiante de Ingeniería de Sistemas e Informática de la UNAL Medellín. Te envío mi tarjeta con el código de promoción ${codigo}. Se verifica aquí: ${EXTRAS.urlVerificar(codigo)}`;
+  const mensaje = `Hola, Math con Jean\n\nMe interesaría comprar alguno de tus cursos.\nMe puedes compartir más info, adicional tengo un descuento de la página de mi carrera y puedes verificarlo en: ${EXTRAS.urlVerificar(codigo)}\n\nPor cierto, el descuento es del 20%`;
   return `${d.whatsapp}?text=${encodeURIComponent(mensaje)}`;
 }
 
