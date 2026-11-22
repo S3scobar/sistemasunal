@@ -1,0 +1,168 @@
+<!doctype html>
+<!-- ==============================================================================
+   PORTAL WEB OFICIAL · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Arquitectura de software, maquetación y desarrollo integral por:
+   Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Facultad de Minas — Universidad Nacional de Colombia, Sede Medellín
+   Contacto: saescobara@unal.edu.co | Instagram: @s_escobar__ | WhatsApp: (+57) 312 377 2091
+   Firma de autoría: SEA-SIS-UNAL-2026-AUTH-F45123
+   Huella SHA-256: f45123e9c6328f942d84c447bcbfbc58f68513a98ed11862fca064413f831c2c
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== -->
+<html lang="es" data-author="Santiago Escobar Arias" data-developer="saescobara@unal.edu.co" data-auth-token="SEA-SIS-UNAL-2026-AUTH-F45123">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Santiago Escobar Arias">
+  <meta name="developer" content="Santiago Escobar Arias · Representante de Sistemas · saescobara@unal.edu.co">
+  <meta name="signature" content="SEA-SIS-UNAL-2026-AUTH-F45123">
+  <meta name="copyright" content="Santiago Escobar Arias · Facultad de Minas · UNAL Sede Medellín · Todos los derechos reservados">
+  <title>Minijuegos · Ingeniería de Sistemas e Informática UNAL Medellín</title>
+  <meta name="description" content="Snake y Tetris en una consola retro para descansar entre parciales. Juego libre, sin registro ni puntajes.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#122a46">
+  <link rel="apple-touch-icon" href="img/app/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Sistemas UNAL">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=Graduate&family=Press+Start+2P&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sistemas.css">
+  <link rel="stylesheet" href="css/minijuegos.css">
+  <link rel="stylesheet" href="css/sofia.css">
+</head>
+<body data-pagina="minijuegos">
+
+  <div id="barra"></div>
+
+  <!-- PORTADA -->
+  <section class="portada portada--corta foto foto--entrada">
+    <div class="portada__codigo" aria-hidden="true"></div>
+    <div class="contenedor portada__contenido">
+      <div class="portada__logo-wrap">
+        <img class="portada__logo" src="img/logo-sistemas.jpg" alt="Logo oficial de Ingeniería de Sistemas e Informática · Facultad de Minas" width="115" height="115">
+      </div>
+      <p class="portada__lugar">Un descanso entre parciales · UNAL Sede Medellín</p>
+      <h1 class="portada__titulo">
+        <span class="portada__antetitulo">Nuestros</span>
+        <span class="letras-varsity" data-texto="Minijuegos">Minijuegos</span>
+      </h1>
+      <p class="portada__texto">Snake y Tetris en una consola retro. Juego libre: sin registro y sin puntajes guardados.</p>
+      <p class="portada__prompt" aria-hidden="true"><span class="portada__prompt-ruta">~/sistemas/minijuegos</span> <span class="portada__prompt-signo">$</span> ./jugar<span class="cursor"></span></p>
+    </div>
+  </section>
+
+  <main>
+    <section class="minijuegos" aria-label="Consola de minijuegos">
+      <div class="consola-zona">
+        <div class="console" id="console" data-state="ready">
+
+          <!-- Letrero superior: el nombre del juego y las pestañas para cambiar -->
+          <div class="console__marquee">
+            <h2 class="console__title" id="console-nombre">Snake</h2>
+            <div class="console__weeks" id="console-weeks" role="group" aria-label="Juego"></div>
+          </div>
+
+          <!-- Marco negro alrededor de la pantalla -->
+          <div class="console__bezel">
+            <div class="console__screen" id="console-screen" tabindex="0"
+              aria-label="Pantalla del juego. Espacio para empezar, P para pausar.">
+              <div class="console__hud" aria-hidden="true">
+                <span>PTS <strong id="console-score">0000</strong></span>
+                <span class="console__hud-sound" id="console-sound">♪ ON</span>
+              </div>
+
+              <div class="console__board">
+                <canvas class="console__canvas" id="console-canvas" width="160" height="120" role="img" aria-label="Pantalla del juego"></canvas>
+
+                <div class="overlay overlay--start">
+                  <p class="overlay__title">¡A jugar!</p>
+                  <p class="overlay__text" id="start-text"></p>
+                  <div class="overlay__items" id="start-items"></div>
+                  <p class="overlay__status overlay__status--notice" id="start-notice" role="alert" hidden></p>
+                  <p class="overlay__blink"><span class="keyboard-only">Clic o Espacio</span><span class="touch-only">Presiona A</span></p>
+                  <p class="overlay__help"><span class="keyboard-only" id="keyboard-help"></span><span class="touch-only" id="touch-help"></span></p>
+                </div>
+
+                <div class="overlay overlay--loading" role="status">
+                  <p class="overlay__title overlay__title--loading">Cargando</p>
+                </div>
+
+                <div class="overlay overlay--paused">
+                  <p class="overlay__title">Pausa</p>
+                  <dl class="overlay__controls keyboard-only" id="pause-keyboard"></dl>
+                  <dl class="overlay__controls touch-only" id="pause-touch"></dl>
+                  <p class="overlay__blink"><span class="keyboard-only">Espacio para seguir</span><span class="touch-only">A para seguir</span></p>
+                </div>
+
+                <div class="overlay overlay--over">
+                  <p class="overlay__title overlay__title--over" id="end-title">Fin del juego</p>
+                  <p class="overlay__score"><span>Puntaje</span> <strong id="end-score">0000</strong></p>
+                  <p class="overlay__detail" id="end-detail" hidden></p>
+                  <p class="overlay__status" id="end-status" role="status" aria-live="polite"></p>
+                  <p class="overlay__blink"><span class="keyboard-only">Espacio para otra</span><span class="touch-only">A para otra</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles: cruceta, parlante, botones A y B y, debajo, Start -->
+          <div class="console__controls">
+            <div class="dpad" role="group" aria-label="Cruceta">
+              <button class="dpad__button dpad__button--up" type="button" data-direction="up" aria-label="Arriba"></button>
+              <button class="dpad__button dpad__button--left" type="button" data-direction="left" aria-label="Izquierda"></button>
+              <span class="dpad__center" aria-hidden="true"></span>
+              <button class="dpad__button dpad__button--right" type="button" data-direction="right" aria-label="Derecha"></button>
+              <button class="dpad__button dpad__button--down" type="button" data-direction="down" aria-label="Abajo"></button>
+            </div>
+
+            <div class="console__speaker" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="console__buttons">
+              <div class="console__button-group console__button-group--b">
+                <button class="console__button console__button--b" id="button-b" type="button" aria-label="B">B</button>
+                <span class="console__button-label" id="button-b-label" aria-hidden="true"></span>
+              </div>
+              <div class="console__button-group console__button-group--a">
+                <button class="console__button console__button--a" id="button-a" type="button" aria-label="A: jugar o pausar">A</button>
+                <span class="console__button-label" id="button-a-label" aria-hidden="true">Jugar</span>
+              </div>
+            </div>
+
+            <div class="console__menu">
+              <div class="console__menu-group">
+                <button class="console__pill" id="button-start" type="button" aria-label="Start: jugar o pausar"></button>
+                <span class="console__button-label" aria-hidden="true">Start</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stickers de programación -->
+          <div class="console__stickers" aria-hidden="true">
+            <span class="sticker sticker--go"><b>go</b> run .</span>
+            <span class="sticker sticker--py">&gt;&gt;&gt; <span>Python</span></span>
+            <span class="sticker sticker--linux"><b>sudo</b> apt install Linux</span>
+            <span class="sticker sticker--git">git push</span>
+            <span class="sticker sticker--web">&lt;/&gt;</span>
+            <span class="sticker sticker--bug">bug: 0</span>
+            <span class="sticker sticker--cafe">☕ while(true)</span>
+          </div>
+        </div>
+        <p class="minijuegos__nota"><b>Juego libre.</b> No se guarda ningún puntaje. Teclado: flechas, Espacio y P para pausar.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="pie"></div>
+
+  <script src="js/comun.js"></script>
+  <script type="module" src="js/minijuegos/consola.js"></script>
+  <script src="js/presencia.js"></script>
+  <script src="js/instalar.js"></script>
+  <script src="js/sofia.js" defer></script>
+</body>
+</html>

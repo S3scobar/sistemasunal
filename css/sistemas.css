@@ -63,7 +63,7 @@ body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus
   color: var(--neon);
 }
 body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__lugar::before { content: '// '; opacity: .7; }
-body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__antetitulo { font-family: var(--mono); font-weight: 700; letter-spacing: .22em; color: var(--cian); }
+body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"], [data-pagina="minijuegos"]) .portada__antetitulo { font-family: var(--mono); font-weight: 700; letter-spacing: .22em; color: var(--cian); }
 body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__antetitulo::before { content: '<'; margin-right: .5em; color: var(--neon); }
 body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .portada__antetitulo::after { content: '/>'; margin-left: .5em; color: var(--neon); }
 body:is([data-pagina="inicio"], [data-pagina="malla"], [data-pagina="intercampus"], [data-pagina="convenios"], [data-pagina="avance"]) .letras-varsity {
