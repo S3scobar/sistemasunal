@@ -101,7 +101,7 @@ const DEFRAG_KEYS = {
     ArrowLeft: 'left', KeyA: 'left',
     ArrowRight: 'right', KeyD: 'right',
     ArrowDown: 'down', KeyS: 'down',
-    ArrowUp: 'rotate', KeyW: 'rotate', KeyX: 'rotate',
+    KeyW: 'rotate', KeyX: 'rotate',   // la flecha arriba no hace nada en esta versión
     KeyZ: 'rotateBack', KeyQ: 'rotateBack',
     Space: 'drop',
     KeyC: 'hold', ShiftLeft: 'hold', ShiftRight: 'hold',
@@ -1005,12 +1005,12 @@ export const DEFRAG_CARTRIDGE = {
     splash: {
         text: 'Completa filas y libera la memoria',
         items: () => `<span class="overlay__item"><span class="overlay__sprite">${drawPixelArt(defragSprite('I'))}</span>50 pts</span>`,
-        keyboardHelp: 'Flechas o WASD, espacio suelta, P pausa',
+        keyboardHelp: 'Flechas mueven, X gira, espacio suelta, P pausa',
         touchHelp: 'Cruceta mueve, A gira, B guarda',
     },
     controls: {
         keyboard: [
-            ['Flechas o WASD', 'Mover'], ['Arriba o X', 'Girar'], ['Z', 'Girar al otro lado'], ['Abajo', 'Bajar'],
+            ['Flechas o WASD', 'Mover'], ['W o X', 'Girar'], ['Z', 'Girar al otro lado'], ['Abajo', 'Bajar'],
             ['Espacio', 'Soltar'], ['C o Shift', 'Guardar'], ['P', 'Pausa'], ['M', 'Sonido'],
         ],
         touch: [['Cruceta', 'Mover'], ['Arriba', 'Soltar'], ['A o tocar', 'Girar'], ['B', 'Guardar']],
