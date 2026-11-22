@@ -540,35 +540,3 @@ body[data-pagina="minijuegos"] main { background: linear-gradient(180deg, #0a173
 /* El título del letrero muestra el nombre del juego */
 .console__title { min-width: 0; }
 .console__nombre-juego { margin: 0; }
-
-/* ---------- Stickers de programación (diseños originales, pegados en la consola) ---------- */
-.console { overflow: visible; }
-.console__stickers {
-  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 12px;
-  margin: 22px 6px 0; padding-top: 18px;
-  border-top: 2px dashed rgba(255, 255, 255, .16);
-}
-.sticker {
-  --giro: 0deg;
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 12px; border-radius: 10px;
-  font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .02em; white-space: nowrap;
-  transform: rotate(var(--giro));
-  /* borde blanco de vinilo + sombra de papel pegado */
-  box-shadow: 0 0 0 3px #f4f8ff, 0 4px 0 3px rgba(0, 0, 0, .28);
-  transition: transform .18s;
-  cursor: default;
-}
-.sticker:hover { transform: rotate(0deg) scale(1.08); }
-.sticker b { font-weight: 800; }
-.sticker--go { --giro: -4deg; background: #00add8; color: #04202a; }
-.sticker--py { --giro: 3deg; background: linear-gradient(90deg, #3776ab 50%, #ffd43b 50%); color: #fff; text-shadow: 0 1px 0 rgba(0, 0, 0, .35); }
-.sticker--py span { color: #1c2a3a; text-shadow: none; }
-.sticker--linux { --giro: -2deg; background: #0b0f14; color: #8cff98; border: 1px solid #2e3b49; }
-.sticker--linux::before { content: '$'; color: #ffd23f; }
-.sticker--git { --giro: 5deg; background: #f05133; color: #fff; }
-.sticker--web { --giro: -5deg; background: #f7df1e; color: #1b1b1b; }
-.sticker--bug { --giro: 2deg; background: #e5484d; color: #fff; }
-.sticker--cafe { --giro: -3deg; background: #f5e9d2; color: #4a2c14; }
-@media (max-width: 520px) { .console { padding: 16px 16px 22px; } .sticker { font-size: 11px; padding: 6px 10px; } }
-@media (prefers-reduced-motion: reduce) { .sticker { transition: none; } }
