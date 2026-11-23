@@ -1167,9 +1167,9 @@ a { color: var(--azul); }
 }
 
 /* En escritorios medianos (1141px a 1360px) ajustamos holgadamente los enlaces para que quepan con holgura */
-@media (min-width: 1141px) and (max-width: 1360px) {
+@media (min-width: 1141px) and (max-width: 1600px) {
   .barra .contenedor {
-    width: min(100% - 32px, 1360px);
+    width: min(100% - 32px, 1600px);
   }
   .barra__contenido {
     gap: 12px;
@@ -1201,6 +1201,18 @@ a { color: var(--azul); }
     font-size: 10.5px;
     letter-spacing: .05em;
   }
+}
+
+/* Con siete pestañas, de 1141px a 1300px la barra se aprieta un poco más (marca y enlaces) */
+@media (min-width: 1141px) and (max-width: 1300px) {
+  .barra__contenido { gap: 8px; }
+  .barra__marca { gap: 8px; }
+  .barra__escudo,
+  .barra__escudo-img { width: 34px; height: 34px; }
+  .barra__texto { font-size: 10.5px; letter-spacing: .03em; }
+  .barra__texto small { font-size: 10px; }
+  .nav { gap: 1px; padding: 3px 4px; }
+  .nav a, .nav__enlace { padding: 0 7px; gap: 4px; font-size: 9.5px; letter-spacing: .03em; }
 }
 
 /* De 1140px hacia abajo (tablets y pantallas compactas): Barra con menú colapsable */
