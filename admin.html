@@ -1,0 +1,165 @@
+<!doctype html>
+<!-- ==============================================================================
+   PORTAL WEB · INGENIERÍA DE SISTEMAS E INFORMÁTICA · UNAL SEDE MEDELLÍN
+   Política de Tratamiento de Datos Personales · versión 2026-11-09
+   Autoría: Santiago Escobar Arias · Representante Estudiantil de Sistemas e Informática
+   Contacto: saescobara@unal.edu.co
+   Todos los derechos reservados © 2026. Ver LICENSE.
+   ============================================================================== -->
+<html lang="es" data-author="Santiago Escobar Arias" data-developer="saescobara@unal.edu.co" data-auth-token="SEA-SIS-UNAL-2026-AUTH-F45123">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Santiago Escobar Arias">
+  <meta name="developer" content="Santiago Escobar Arias · Representante de Sistemas · saescobara@unal.edu.co">
+  <meta name="signature" content="SEA-SIS-UNAL-2026-AUTH-F45123">
+  <meta name="copyright" content="Santiago Escobar Arias · Facultad de Minas · UNAL Sede Medellín · Todos los derechos reservados">
+  <title>Panel de administración · Sistemas UNAL Medellín</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Panel privado de la representación estudiantil de Ingeniería de Sistemas e Informática.">
+  <link rel="icon" type="image/jpeg" href="img/logo-sistemas.jpg">
+  <meta name="theme-color" content="#122a46">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=Graduate&display=swap">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sistemas.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-pagina="admin">
+
+  <div id="barra"></div>
+
+  <main class="admin">
+    <div class="contenedor admin__contenedor">
+
+      <header class="admin__cabecera">
+        <p class="admin__ruta" aria-hidden="true"><span>~/sistemas/admin</span> <b>$</b> sudo<span class="cursor"></span></p>
+        <h1 class="admin__titulo">Panel de administración</h1>
+      </header>
+
+      <!-- 1. Comprobando la sesión -->
+      <section id="admin-cargando" class="admin__tarjeta admin__centro" role="status">
+        <p>Comprobando acceso…</p>
+      </section>
+
+      <!-- 2. Sin sesión: entrar con SmartKey (no se pide historia académica) -->
+      <section id="admin-entrar" class="admin__tarjeta admin__centro" hidden>
+        <h2>Acceso restringido</h2>
+        <p>Este panel es solo para la representación estudiantil. Entra con tu cuenta institucional.</p>
+        <button class="admin__boton admin__boton--grande" id="admin-smartkey" type="button">Entrar con SmartKey</button>
+        <p class="admin__error" id="admin-error-entrar" role="alert" hidden></p>
+      </section>
+
+      <!-- 3. Con sesión pero sin permiso -->
+      <section id="admin-denegado" class="admin__tarjeta admin__centro" hidden>
+        <h2>Sin acceso</h2>
+        <p>La cuenta <b id="admin-correo-denegado"></b> no tiene permisos de administración.</p>
+        <button class="admin__boton" id="admin-salir-denegado" type="button">Cerrar sesión</button>
+      </section>
+
+      <!-- 4. Panel -->
+      <div id="admin-panel" hidden>
+        <div class="admin__barra">
+          <p class="admin__quien"><span id="admin-correo"></span> <span class="admin__rol" id="admin-rol"></span></p>
+          <button class="admin__boton admin__boton--suave" id="admin-salir" type="button">Cerrar sesión</button>
+        </div>
+
+        <div class="admin__pestanas" role="tablist" aria-label="Secciones del panel">
+          <button role="tab" id="tab-strikes" aria-controls="seccion-strikes" aria-selected="true" type="button" hidden>Strikes del grupo</button>
+          <button role="tab" id="tab-admins" aria-controls="seccion-admins" aria-selected="false" tabindex="-1" type="button" hidden>Administradores</button>
+        </div>
+
+        <!-- Strikes -->
+        <section id="seccion-strikes" role="tabpanel" aria-labelledby="tab-strikes" hidden>
+          <div class="admin__resumen" id="strikes-resumen"></div>
+
+          <div class="admin__herramientas">
+            <label class="admin__campo admin__campo--buscar">
+              <span>Buscar miembro</span>
+              <input id="strikes-buscar" type="search" placeholder="Número o @usuario" autocomplete="off" inputmode="search">
+            </label>
+            <label class="admin__campo">
+              <span>Mostrar</span>
+              <select id="strikes-filtro">
+                <option value="todos">Todos</option>
+                <option value="strikes">Con strikes</option>
+                <option value="riesgo">En riesgo (2 strikes)</option>
+                <option value="ban">Baneados</option>
+                <option value="limpios">Sin sanciones</option>
+              </select>
+            </label>
+          </div>
+
+          <form class="admin__agregar" id="strikes-agregar" autocomplete="off" novalidate>
+            <label class="admin__campo">
+              <span>Agregar miembro</span>
+              <input id="strikes-nuevo" type="text" placeholder="+57 300 1234567 o @usuario" maxlength="40" inputmode="text" required>
+            </label>
+            <button class="admin__boton" type="submit">Agregar</button>
+          </form>
+          <p class="admin__error" id="strikes-error" role="alert" hidden></p>
+
+          <ol class="admin__lista" id="strikes-lista" aria-live="polite"></ol>
+
+          <details class="admin__reglas">
+            <summary>Reglas del grupo</summary>
+            <div class="admin__reglas-cuerpo" id="strikes-reglas"></div>
+          </details>
+        </section>
+
+        <!-- Administradores -->
+        <section id="seccion-admins" role="tabpanel" aria-labelledby="tab-admins" hidden>
+          <p class="admin__ayuda">Solo tú ves esta sección. Cada administrador entra con su correo <b>@unal.edu.co</b> y ve únicamente lo que le actives.</p>
+          <form class="admin__agregar" id="admins-agregar" autocomplete="off" novalidate>
+            <label class="admin__campo">
+              <span>Correo institucional</span>
+              <input id="admins-correo" type="email" placeholder="usuario@unal.edu.co" maxlength="80" required>
+            </label>
+            <button class="admin__boton" type="submit">Agregar administrador</button>
+          </form>
+          <p class="admin__error" id="admins-error" role="alert" hidden></p>
+          <ul class="admin__lista admin__lista--admins" id="admins-lista"></ul>
+        </section>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Sancionar -->
+  <dialog class="admin__dialogo" id="dlg-sancion" aria-labelledby="dlg-titulo">
+    <form method="dialog" id="form-sancion">
+      <h2 id="dlg-titulo">Sancionar</h2>
+      <p class="admin__ayuda" id="dlg-aviso" hidden></p>
+      <fieldset class="admin__tipos">
+        <legend>Tipo</legend>
+        <label><input type="radio" name="tipo" value="strike" checked> <span>Strike</span></label>
+        <label><input type="radio" name="tipo" value="ban"> <span>Ban (permaban)</span></label>
+      </fieldset>
+      <label class="admin__campo">
+        <span>Motivo</span>
+        <select id="dlg-motivo" required></select>
+      </label>
+      <label class="admin__campo">
+        <span>Detalle (opcional)</span>
+        <textarea id="dlg-detalle" rows="3" maxlength="500" placeholder="Fecha, contexto, enlace al mensaje…"></textarea>
+      </label>
+      <p class="admin__error" id="dlg-error" role="alert" hidden></p>
+      <div class="admin__acciones">
+        <button class="admin__boton admin__boton--suave" value="cancel" formnovalidate type="submit">Cancelar</button>
+        <button class="admin__boton admin__boton--peligro" id="dlg-confirmar" type="button">Aplicar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="admin__aviso" id="admin-aviso" role="status" aria-live="polite" hidden></div>
+
+  <div id="pie"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/comun.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

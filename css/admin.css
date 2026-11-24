@@ -1,0 +1,163 @@
+/* =========================================================
+   Panel de administración · estilo terminal (azul fosforescente), igual que Mi avance y la política
+   ========================================================= */
+body[data-pagina="admin"] {
+  --fondo: #050f1f;
+  --panel: #081a33;
+  --panel-2: #0b2142;
+  --borde: #1b4a86;
+  --luz: #d8ecff;
+  --suave: #8fb3d6;
+  --ok: #3ddc97;
+  --aviso: #f7b61a;
+  --peligro: #ff6b7a;
+  background: var(--fondo);
+}
+body[data-pagina="admin"] main {
+  min-height: calc(100vh - 120px);
+  background:
+    linear-gradient(rgba(47, 168, 255, .05) 1px, transparent 1px) 0 0 / 40px 40px,
+    linear-gradient(90deg, rgba(47, 168, 255, .05) 1px, transparent 1px) 0 0 / 40px 40px,
+    radial-gradient(ellipse at 50% 0%, rgba(47, 168, 255, .14), transparent 60%),
+    var(--fondo);
+  color: var(--luz);
+}
+.admin { padding: 36px 0 72px; }
+.admin__contenedor { max-width: 920px; display: grid; gap: 20px; }
+.admin__contenedor > *, .admin__contenedor > * > * { min-width: 0; }
+
+.admin__ruta { margin: 0 0 6px; font-family: var(--mono); font-size: 13px; color: var(--suave); }
+.admin__ruta span { color: var(--cian); }
+.admin__ruta b { color: var(--neon); }
+.admin__titulo { margin: 0; font-family: var(--letra-universidad); font-size: clamp(24px, 4.5vw, 36px); font-weight: 400; letter-spacing: .04em; color: #fff; }
+
+/* ---------- Tarjetas y estados ---------- */
+.admin__tarjeta, .admin__miembro, .admin__admin, .admin__reglas, .admin__agregar, .admin__dato {
+  border: 1px solid var(--borde); border-radius: 14px; background: rgba(8, 26, 51, .85);
+}
+.admin__tarjeta { padding: 28px 24px; }
+.admin__centro { display: grid; justify-items: center; gap: 14px; text-align: center; }
+.admin__centro h2 { margin: 0; font-family: var(--mono); font-size: 18px; color: #fff; }
+.admin__centro p { margin: 0; max-width: 46ch; line-height: 1.55; }
+
+.admin__error { margin: 0; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255, 107, 122, .5); background: rgba(255, 107, 122, .1); color: #ffc2c8; font-size: 14.5px; }
+.admin__ayuda { margin: 0; color: var(--suave); font-size: 14.5px; line-height: 1.5; }
+.admin__ayuda b { color: var(--cian); }
+
+/* ---------- Botones y campos ---------- */
+.admin__boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 0 18px; border-radius: 10px; border: 1.5px solid var(--neon);
+  background: rgba(47, 168, 255, .16); color: #fff; cursor: pointer;
+  font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  transition: background .15s, transform .1s, border-color .15s;
+}
+.admin__boton:hover { background: rgba(47, 168, 255, .3); }
+.admin__boton:active { transform: scale(.97); }
+.admin__boton:disabled { opacity: .5; cursor: not-allowed; }
+.admin__boton:focus-visible, .admin__pestanas button:focus-visible, .admin__miembro summary:focus-visible, .admin__reglas summary:focus-visible { outline: 3px solid var(--cian); outline-offset: 2px; }
+.admin__boton--grande { min-height: 52px; padding: 0 28px; font-size: 14px; }
+.admin__boton--suave { border-color: rgba(143, 179, 214, .4); background: transparent; color: var(--luz); }
+.admin__boton--peligro { border-color: var(--peligro); background: rgba(255, 107, 122, .14); }
+.admin__boton--peligro:hover { background: rgba(255, 107, 122, .28); }
+.admin__boton--chico { min-height: 36px; padding: 0 12px; font-size: 12px; }
+
+.admin__campo { display: grid; gap: 6px; min-width: 0; }
+.admin__campo > span, .admin__tipos legend { font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9fcfff; }
+.admin input[type="text"], .admin input[type="email"], .admin input[type="search"], .admin select, .admin__dialogo select, .admin__dialogo textarea {
+  width: 100%; min-height: 44px; padding: 10px 12px; border-radius: 10px;
+  border: 1.5px solid var(--borde); background: #030a15; color: #fff;
+  font: inherit; font-size: 16px;   /* 16px evita el zoom automático en iPhone */
+}
+.admin__dialogo textarea { min-height: 84px; resize: vertical; }
+.admin input:focus-visible, .admin select:focus-visible, .admin__dialogo select:focus-visible, .admin__dialogo textarea:focus-visible { outline: 3px solid var(--cian); outline-offset: 1px; border-color: var(--cian); }
+.admin input::placeholder, .admin__dialogo textarea::placeholder { color: #5d7fa3; }
+
+/* ---------- Barra de sesión y pestañas ---------- */
+.admin__barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.admin__quien { margin: 0; font-family: var(--mono); font-size: 13px; color: var(--suave); overflow-wrap: anywhere; }
+.admin__quien #admin-correo { color: var(--luz); }
+.admin__rol { margin-left: 6px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--neon); color: var(--cian); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+
+.admin__pestanas { display: flex; gap: 6px; margin-bottom: 18px; border-bottom: 1px solid var(--borde); overflow-x: auto; }
+.admin__pestanas button {
+  min-height: 46px; padding: 0 16px; border: 0; border-bottom: 3px solid transparent; background: transparent; color: var(--suave); cursor: pointer; white-space: nowrap;
+  font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .05em;
+}
+.admin__pestanas button[aria-selected="true"] { color: #fff; border-bottom-color: var(--neon); }
+
+/* ---------- Strikes ---------- */
+.admin__resumen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.admin__dato { padding: 12px; text-align: center; }
+.admin__dato b { display: block; font-family: var(--mono); font-size: 26px; color: #fff; }
+.admin__dato span { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+
+.admin__herramientas { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; margin-bottom: 12px; }
+.admin__agregar { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 14px; margin-bottom: 12px; }
+.admin__agregar .admin__campo { flex: 1 1 240px; }
+
+.admin__lista { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.admin__vacio { padding: 26px; text-align: center; color: var(--suave); border: 1px dashed var(--borde); border-radius: 12px; }
+.admin__miembro { padding: 14px 16px; }
+.admin__miembro.is-ban { border-color: rgba(255, 107, 122, .6); background: rgba(60, 12, 20, .45); }
+.admin__miembro-fila { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.admin__miembro-id { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; min-width: 0; }
+.admin__miembro-id strong { font-family: var(--mono); font-size: 16px; color: #fff; overflow-wrap: anywhere; }
+
+.admin__pips { display: inline-flex; gap: 5px; }
+.admin__pips i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--borde); }
+.admin__pips i.on { background: var(--aviso); border-color: var(--aviso); box-shadow: 0 0 8px rgba(247, 182, 26, .6); }
+
+.admin__chip { display: inline-block; padding: 3px 9px; border-radius: 999px; border: 1px solid rgba(143, 179, 214, .45); font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--luz); }
+.admin__chip--ok { border-color: rgba(61, 220, 151, .55); color: #9ff0c8; }
+.admin__chip--riesgo { border-color: rgba(247, 182, 26, .7); color: #ffd77a; }
+.admin__chip--ban { border-color: rgba(255, 107, 122, .7); color: #ffc2c8; background: rgba(255, 107, 122, .12); }
+
+.admin__historial { margin-top: 12px; border-top: 1px dashed rgba(143, 179, 214, .25); padding-top: 10px; }
+.admin__historial summary, .admin__reglas summary { cursor: pointer; min-height: 36px; display: flex; align-items: center; font-family: var(--mono); font-size: 12.5px; letter-spacing: .06em; color: var(--cian); }
+.admin__historial ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 10px; }
+.admin__historial li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: 10px; }
+.admin__historial li.is-anulada { opacity: .5; }
+.admin__historial li.is-anulada b { text-decoration: line-through; }
+.admin__historial p { margin: 4px 0 0; font-size: 14.5px; color: var(--luz); overflow-wrap: anywhere; }
+.admin__historial small, .admin__admin small { display: block; margin-top: 4px; color: var(--suave); font-size: 12.5px; overflow-wrap: anywhere; }
+
+.admin__reglas { margin-top: 18px; padding: 6px 16px 12px; }
+.admin__reglas-cuerpo h3 { margin: 12px 0 6px; font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: #9fcfff; }
+.admin__reglas-cuerpo ul { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14.5px; line-height: 1.5; }
+
+/* ---------- Administradores ---------- */
+.admin__lista--admins { margin-top: 6px; }
+.admin__admin { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px 16px; padding: 14px 16px; }
+.admin__admin > .admin__boton { grid-column: 2; grid-row: 1; }
+.admin__admin-id { display: grid; gap: 4px; min-width: 0; }
+.admin__admin-id strong { font-family: var(--mono); font-size: 14.5px; color: #fff; overflow-wrap: anywhere; }
+.admin__admin-id .admin__chip { justify-self: start; }
+.admin__permisos { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.admin__permisos label { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; cursor: pointer; font-size: 15px; }
+.admin__permisos input { width: 20px; height: 20px; accent-color: var(--neon); }
+
+/* ---------- Diálogo ---------- */
+.admin__dialogo { width: min(480px, calc(100% - 28px)); padding: 22px; border: 1px solid var(--borde); border-radius: 16px; background: var(--panel); color: var(--luz); box-shadow: 0 30px 80px rgba(0, 0, 0, .7); }
+.admin__dialogo::backdrop { background: rgba(2, 8, 18, .75); }
+.admin__dialogo form { display: grid; gap: 14px; }
+.admin__dialogo h2 { margin: 0; font-family: var(--mono); font-size: 17px; color: #fff; overflow-wrap: anywhere; }
+.admin__tipos { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; border: 0; }
+.admin__tipos legend { padding: 0; margin-bottom: 6px; }
+.admin__tipos label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; cursor: pointer; font-size: 16px; }
+.admin__tipos input { width: 20px; height: 20px; accent-color: var(--neon); }
+.admin__acciones { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+
+.admin__aviso { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 50; max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 12px; border: 1px solid var(--neon); background: #0b2142; color: #fff; font-size: 14.5px; box-shadow: 0 10px 40px rgba(0, 0, 0, .6); }
+
+@media (max-width: 640px) {
+  .admin { padding: 24px 0 64px; }
+  .admin__herramientas { grid-template-columns: 1fr; }
+  .admin__miembro-fila .admin__boton { width: 100%; }
+  .admin__admin { grid-template-columns: 1fr; }
+  .admin__admin > .admin__boton { grid-column: 1; grid-row: auto; justify-self: start; }
+  .admin__historial li { grid-template-columns: minmax(0, 1fr); }
+  .admin__historial li .admin__boton { justify-self: start; }
+  .admin__acciones .admin__boton { flex: 1 1 140px; }
+}
+@media (prefers-reduced-motion: reduce) { .admin__boton { transition: none; } }

@@ -534,6 +534,7 @@ function pintarPie() {
 
 function mostrarMensajeAutor() {
   if (sessionStorage.getItem('mensaje_autor_cerrado') === '1') return;
+  if (document.body?.dataset?.pagina === 'admin') return;   // el panel privado no lleva mensajes de bienvenida
 
   const toast = document.createElement('aside');
   toast.className = 'toast-autor';
@@ -622,7 +623,7 @@ mostrarMensajeAutor();
   if (typeof document === 'undefined') return;
   const ruta = (window.location.pathname || '').toLowerCase();
   const esDescanso = document.body?.dataset?.pagina === 'descanso' || ruta.endsWith('descanso.html');
-  if (esDescanso) return;
+  if (esDescanso || document.body?.dataset?.pagina === 'admin') return;   // el panel privado no lleva asistente
 
   if (!document.getElementById('css-sofia')) {
     const link = document.createElement('link');
