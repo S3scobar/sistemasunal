@@ -36,6 +36,7 @@ const MOTIVOS = {
   ],
 };
 const MAX_STRIKES = 3;
+const URL_PORTAL = 'sistemasunal.vercel.app';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -200,9 +201,11 @@ function tarjetaMiembro(m, i) {
     : s >= MAX_STRIKES ? '<span class="admin__chip admin__chip--ban">3 strikes: corresponde ban</span>'
     : s === MAX_STRIKES - 1 ? '<span class="admin__chip admin__chip--riesgo">En riesgo</span>'
     : s ? '<span class="admin__chip">Con strikes</span>' : '<span class="admin__chip admin__chip--ok">Limpio</span>';
-  return `<li class="admin__miembro ${ban ? 'is-ban' : ''}" data-id="${esc(m.id)}">
+  const nivel = ban || s >= MAX_STRIKES ? 'ban' : s === MAX_STRIKES - 1 ? 'riesgo' : s ? 'strikes' : 'limpio';
+  return `<li class="admin__miembro ${ban ? 'is-ban' : ''}" data-nivel="${nivel}" data-id="${esc(m.id)}">
     <div class="admin__miembro-fila">
       <div class="admin__miembro-id">
+        ${s || ban ? `<span class="admin__puesto" aria-label="Puesto ${i + 1}">#${i + 1}</span>` : ''}
         <strong>${esc(m.contacto)}</strong>
         <span class="admin__pips" role="img" aria-label="${s} de ${MAX_STRIKES} strikes activos">${pips}</span>
         ${estado}
@@ -214,7 +217,9 @@ function tarjetaMiembro(m, i) {
         <span class="admin__chip ${h.tipo === 'ban' ? 'admin__chip--ban' : ''}">${h.tipo === 'ban' ? 'Ban' : 'Strike'}</span>
         <div><b>${esc(h.motivo)}</b>${h.detalle ? `<p>${esc(h.detalle)}</p>` : ''}
           <small>${fecha(h.creado_en)} · ${esc(h.creado_por || '')}${h.anulada_en ? ` · anulada ${fecha(h.anulada_en)} por ${esc(h.anulada_por || '')}` : ''}</small></div>
-        ${h.anulada_en ? '' : `<button class="admin__boton admin__boton--suave admin__boton--chico" data-accion="anular" data-sancion="${esc(h.id)}" type="button">Anular</button>`}
+        ${h.anulada_en ? '' : `<div class="admin__historial-acciones">
+          <button class="admin__boton admin__boton--suave admin__boton--chico" data-accion="aviso" data-sancion="${esc(h.id)}" type="button">Aviso</button>
+          <button class="admin__boton admin__boton--suave admin__boton--chico" data-accion="anular" data-sancion="${esc(h.id)}" type="button">Anular</button></div>`}
       </li>`).join('')}</ul></details>` : ''}
   </li>`;
 }
@@ -258,7 +263,10 @@ $('#strikes-agregar').addEventListener('submit', async (e) => {
 $('#strikes-lista').addEventListener('click', async (e) => {
   const b = e.target.closest('button[data-accion]');
   if (!b) return;
-  if (b.dataset.accion === 'sancionar') {
+  if (b.dataset.accion === 'aviso') {
+    const s = sanciones.find((x) => x.id === b.dataset.sancion);
+    abrirAviso(miembros.find((m) => m.id === s.miembro_id), s);
+  } else if (b.dataset.accion === 'sancionar') {
     objetivo = miembros.find((m) => m.id === b.closest('[data-id]').dataset.id);
     abrirDialogo();
   } else if (b.dataset.accion === 'anular') {
@@ -318,7 +326,45 @@ $('#dlg-confirmar').addEventListener('click', async (e) => {
   dlg.close();
   pintarStrikes();
   avisar(`${data.tipo === 'ban' ? 'Ban' : 'Strike'} aplicado a ${objetivo.contacto}`);
+  abrirAviso(objetivo, data);
 });
+
+
+/* ---------- Aviso al grupo ----------
+   WhatsApp no permite enviar mensajes solo desde una página: se abre con el texto listo (wa.me) y la persona
+   que sancionó elige el grupo y toca Enviar, así sale desde SU número. */
+const grupo = $('#dlg-grupo');
+
+// «@» + número (sin +) o el usuario, que ya trae su @ (así no queda @@)
+const mencion = (m) => (m.clave.startsWith('@') ? m.contacto : '@' + m.clave);
+
+function mensajeAviso(m, s) {
+  const motivo = s.motivo.startsWith('Otro') ? (s.detalle || 'consulta con un admin') : s.motivo;
+  if (s.tipo === 'ban') {
+    return `🪪 ${mencion(m)} recibiste un permaban.\n📌 Motivo: ${motivo}\n🧭 Si crees que es un error, escríbele a un admin.`;
+  }
+  // Strikes activos hasta esta sanción: el aviso dice el número correcto aunque se reenvíe después
+  const n = sanciones.filter((x) => x.miembro_id === m.id && x.tipo === 'strike' && !x.anulada_en && x.creado_en <= s.creado_en).length;
+  const barras = '●'.repeat(Math.min(n, MAX_STRIKES)) + '○'.repeat(Math.max(MAX_STRIKES - n, 0));
+  return `🧾 ${mencion(m)} incumpliste la regla: ${motivo}.\n🔖 Llevas ${n}/${MAX_STRIKES} strikes ${barras}\n`
+    + (n >= MAX_STRIKES ? '🪪 Con 3 strikes corresponde permaban.' : '🧭 Al llegar a 3 strikes, el siguiente paso es el permaban.')
+    + `\n📎 Reglas y recursos: ${URL_PORTAL}`;
+}
+
+function abrirAviso(m, s) {
+  $('#grupo-texto').value = mensajeAviso(m, s);
+  grupo.showModal();
+}
+
+$('#grupo-abrir').addEventListener('click', () => {
+  window.open('https://wa.me/?text=' + encodeURIComponent($('#grupo-texto').value), '_blank', 'noopener');
+});
+$('#grupo-copiar').addEventListener('click', async () => {
+  const caja = $('#grupo-texto');
+  try { await navigator.clipboard.writeText(caja.value); } catch { caja.select(); document.execCommand('copy'); }
+  avisar('Mensaje copiado');
+});
+grupo.addEventListener('click', (e) => { if (e.target === grupo) grupo.close(); });
 
 // Reglas a la vista, para consultarlas sin salir del panel
 $('#strikes-reglas').innerHTML = `

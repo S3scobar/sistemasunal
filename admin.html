@@ -152,6 +152,25 @@
     </form>
   </dialog>
 
+  <!-- Aviso al grupo: WhatsApp no deja enviar solo, así que se abre con el mensaje listo -->
+  <dialog class="admin__dialogo admin__dialogo--aviso" id="dlg-grupo" aria-labelledby="grupo-titulo">
+    <form method="dialog">
+      <h2 id="grupo-titulo">Avisar al grupo</h2>
+      <p class="admin__ayuda">La sanción ya quedó guardada. Revisa el mensaje y envíalo desde tu WhatsApp: se abre con el texto listo y tú eliges el grupo y tocas Enviar.</p>
+      <label class="admin__campo">
+        <span>Mensaje</span>
+        <textarea id="grupo-texto" rows="7" maxlength="900"></textarea>
+      </label>
+      <p class="admin__ayuda admin__ayuda--nota">Para que el <b>@</b> sea una mención real, bórralo en WhatsApp y vuelve a escribirlo eligiendo a la persona de la lista.</p>
+      <div class="admin__acciones admin__acciones--aviso">
+        <button class="admin__boton admin__boton--wpp" id="grupo-abrir" type="button">Abrir WhatsApp con el mensaje</button>
+        <button class="admin__boton" id="grupo-copiar" type="button">Copiar</button>
+        <a class="admin__boton admin__boton--suave" id="grupo-enlace" href="https://chat.whatsapp.com/ELdGnmtwIfREs2OLgf5eVs?s=cl&amp;p=a&amp;iam=2" target="_blank" rel="noopener noreferrer">Abrir el grupo</a>
+        <button class="admin__boton admin__boton--suave" value="cancel" formnovalidate type="submit">Listo</button>
+      </div>
+    </form>
+  </dialog>
+
   <div class="admin__aviso" id="admin-aviso" role="status" aria-live="polite" hidden></div>
 
   <div id="pie"></div>

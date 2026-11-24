@@ -161,3 +161,25 @@ body[data-pagina="admin"] main {
   .admin__acciones .admin__boton { flex: 1 1 140px; }
 }
 @media (prefers-reduced-motion: reduce) { .admin__boton { transition: none; } }
+
+/* Tarjeta de miembro: barra de color según gravedad, puesto en el ranking */
+.admin__miembro { position: relative; padding-left: 20px; }
+.admin__miembro::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 4px; border-radius: 0 4px 4px 0; background: var(--borde); }
+.admin__miembro[data-nivel="limpio"]::before { background: var(--ok); opacity: .6; }
+.admin__miembro[data-nivel="strikes"]::before { background: var(--aviso); opacity: .7; }
+.admin__miembro[data-nivel="riesgo"]::before { background: var(--aviso); box-shadow: 0 0 12px rgba(247, 182, 26, .7); }
+.admin__miembro[data-nivel="ban"]::before { background: var(--peligro); box-shadow: 0 0 12px rgba(255, 107, 122, .7); }
+.admin__puesto { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; color: var(--cian); border: 1px solid var(--borde); border-radius: 6px; padding: 2px 7px; }
+.admin__miembro:hover { border-color: var(--cian); }
+.admin__historial-acciones { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+
+/* Aviso al grupo */
+.admin__dialogo--aviso { width: min(560px, calc(100% - 28px)); }
+.admin__dialogo--aviso textarea { min-height: 150px; font-family: var(--mono); font-size: 16px; line-height: 1.5; }
+.admin__ayuda--nota { padding: 10px 12px; border-left: 3px solid var(--cian); background: rgba(47, 168, 255, .08); border-radius: 0 8px 8px 0; }
+.admin__acciones--aviso { justify-content: stretch; }
+.admin__acciones--aviso .admin__boton { flex: 1 1 150px; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+.admin__acciones--aviso .admin__boton--wpp { flex-basis: 100%; }
+.admin__boton--wpp { background: #1fa855; border-color: #1fa855; color: #04210f; font-weight: 700; }
+.admin__boton--wpp:hover { background: #25c364; }
+@media (prefers-reduced-motion: no-preference) { .admin__miembro { transition: border-color .2s; } }
