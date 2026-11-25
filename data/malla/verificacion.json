@@ -7,6 +7,12 @@
       "nombre": "Fundamentos de sistemas de información e inteligencia de negocios",
       "creditos": null,
       "grupo": "disciplinar"
+    },
+    {
+      "codigo": "3007863",
+      "nombre": "Arquitectura de computadores",
+      "creditos": 3,
+      "grupo": "disciplinar"
     }
   ]
 }

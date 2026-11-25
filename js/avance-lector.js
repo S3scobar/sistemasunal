@@ -263,6 +263,9 @@ const GRUPO_DE_TIPOLOGIA = {
 };
 const TIPOLOGIAS_DEL_SIA = [...Object.keys(GRUPO_DE_TIPOLOGIA), 'LIBRE ELECCIÓN', 'NIVELACIÓN'];
 const PARECIDO_MINIMO_NOMBRE = 0.5;
+// Asignaturas que se dictaron en planes anteriores y hoy no están en la malla. No se pueden comprobar contra el catálogo,
+// así que se aceptan en poca cantidad, solo si lo demás cuadra y nunca como Trabajo de grado.
+const LEGADAS_MAXIMO = 6;
 
 const PALABRAS_VACIAS_NOMBRE = new Set(['de', 'la', 'el', 'los', 'las', 'y', 'e', 'o', 'u', 'en', 'a', 'del', 'al', 'un', 'una', 'para', 'con', 'por']);
 
@@ -343,31 +346,36 @@ function validarHistoriaSistemas(historia, catalogo, opciones) {
   }
 
   // 2. Que se haya leído todo: una fila que no se pueda leer no se puede verificar
-  if (!historia.materias.length) motivos.push('No se leyó ninguna asignatura.');
+  // Primíparo: el SIA todavía no lista asignaturas, solo el «Resumen de créditos» con 0 aprobados (se comprueba abajo)
+  const total = historia.resumen && historia.resumen.TOTAL;
+  const primiparo = !historia.materias.length && !historia.filasDetectadas && Boolean(total) && total.aprobados === 0;
+  if (!historia.materias.length && !primiparo) motivos.push('No se leyó ninguna asignatura.');
   if (historia.filasDetectadas > historia.materias.length) {
     motivos.push(`${historia.filasDetectadas - historia.materias.length} fila(s) de asignaturas no se pudieron leer. Copia la historia completa tal como la muestra el SIA.`);
   }
 
   // 3. Cada asignatura de Fundamentación / Disciplinar / Trabajo de grado tiene que ser de la malla de Sistemas
-  const desconocidas = []; const fuera = []; const creditosMal = []; const nombreMal = []; const grupoMal = [];
+  const desconocidas = []; let fuera = []; const legadas = []; const creditosMal = []; const nombreMal = []; const grupoMal = [];
   let disciplinares = 0;
   historia.materias.forEach((m) => {
     if (!TIPOLOGIAS_DEL_SIA.includes(m.tipologia)) { desconocidas.push(m); return; }
     const grupo = GRUPO_DE_TIPOLOGIA[m.tipologia];
     if (!grupo) return;                                     // libre elección y nivelación: cualquier asignatura
     const enMalla = catalogo.asignaturas.get(m.codigo);
-    if (!enMalla) { fuera.push(m); return; }
+    if (!enMalla) { (m.tipologia === 'TRABAJO DE GRADO' ? fuera : legadas).push(m); return; }
     if (enMalla.creditos !== null && enMalla.creditos !== m.creditos) creditosMal.push(m);
     if (parecidoDeNombres(enMalla.nombre, m.nombre) < PARECIDO_MINIMO_NOMBRE) nombreMal.push(m);
     if (enMalla.grupo !== grupo) grupoMal.push(m);
     if (grupo === 'disciplinar') disciplinares += 1;
   });
+  if (legadas.length > LEGADAS_MAXIMO) fuera = fuera.concat(legadas);
+  else if (legadas.length) avisos.push(`Asignaturas de planes anteriores que ya no están en la malla: ${lista(legadas)}.`);
   if (desconocidas.length) motivos.push(`Tipología no reconocida en: ${lista(desconocidas)}.`);
   if (fuera.length) motivos.push(`Estas asignaturas figuran como Fundamentación, Disciplinar o Trabajo de grado, pero no están en la malla de Sistemas: ${lista(fuera)}.`);
   if (nombreMal.length) motivos.push(`El nombre no corresponde al código en: ${lista(nombreMal)}.`);
   if (creditosMal.length) motivos.push(`Los créditos no corresponden a la malla en: ${lista(creditosMal)}.`);
   if (grupoMal.length) avisos.push(`Cambia de componente respecto a la malla: ${lista(grupoMal)}.`);
-  if (!fuera.length && !desconocidas.length && disciplinares === 0) {
+  if (!fuera.length && !desconocidas.length && disciplinares === 0 && !primiparo) {
     motivos.push('No hay ninguna asignatura disciplinar de Sistemas en la historia.');
   }
 

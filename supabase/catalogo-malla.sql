@@ -1,6 +1,6 @@
 -- ==============================================================================
 -- CATÁLOGO DE LA MALLA · GENERADO por tools/generar-sql-malla.js (npm run build:sql). No editar a mano.
--- Plan 3534 · 94 asignaturas · requiere haber ejecutado supabase/promocion.sql
+-- Plan 3534 · 95 asignaturas · requiere haber ejecutado supabase/promocion.sql
 -- Autor: Santiago Escobar Arias · SEA-SIS-UNAL-2026-AUTH-F45123
 -- ==============================================================================
 
@@ -101,7 +101,8 @@ insert into public.malla_catalogo (codigo, nombre, creditos, grupo) values
   ('3011175', 'Optimización Heurística', 3, 'disciplinar'),
   ('3011172', 'Desarrollo Web II', 3, 'disciplinar'),
   ('3011093', 'Computación Paralela', 3, 'disciplinar'),
-  ('3008883', 'Fundamentos de sistemas de información e inteligencia de negocios', null, 'disciplinar');
+  ('3008883', 'Fundamentos de sistemas de información e inteligencia de negocios', null, 'disciplinar'),
+  ('3007863', 'Arquitectura de computadores', 3, 'disciplinar');
 
 delete from public.malla_exigidos;
 insert into public.malla_exigidos (tipologia, exigidos) values

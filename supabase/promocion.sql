@@ -68,6 +68,8 @@ declare
   v_esperado    text;
   v_detectadas  int;
   v_leidas      int := 0;
+  v_legadas     int := 0;      -- asignaturas de planes anteriores que ya no están en la malla
+  v_vacia       boolean;       -- primíparo: el SIA todavía no lista asignaturas
   v_disciplinar int := 0;
   v_todas       jsonb := '{}'::jsonb;
   v_cerradas    jsonb := '{}'::jsonb;
@@ -102,6 +104,7 @@ begin
   -- 2. Que se hayan leído todas las filas de asignaturas
   select count(*) into v_detectadas
     from regexp_matches(t, '\(\d{6,7}(?:-[A-Z])?\)[[:space:]]+\d{1,2}[[:space:]]', 'g') as m;
+  v_vacia := v_detectadas = 0;
 
   -- 3. Cada asignatura de Fundamentación / Disciplinar / Trabajo de grado tiene que ser de la malla de Sistemas
   for v_fila in
@@ -118,7 +121,12 @@ begin
     if not (v_fila.tipo = any (v_sin_malla)) then
       select c.creditos, c.grupo into v_cat from public.malla_catalogo c where c.codigo = v_fila.codigo;
       if not found then
-        return 'La asignatura con código ' || v_fila.codigo || ' figura en el plan pero no está en la malla de Sistemas.';
+        -- Un plan anterior pudo tener asignaturas que hoy no están: se aceptan pocas, nunca como Trabajo de grado
+        if v_fila.tipo = 'TRABAJO DE GRADO' then
+          return 'La asignatura con código ' || v_fila.codigo || ' figura en el plan pero no está en la malla de Sistemas.';
+        end if;
+        v_legadas := v_legadas + 1;
+        continue;
       end if;
       if v_cat.creditos is not null and v_cat.creditos <> v_fila.creditos then
         return 'Los créditos de la asignatura ' || v_fila.codigo || ' no corresponden a la malla.';
@@ -132,7 +140,10 @@ begin
   if v_detectadas > v_leidas then
     return 'Hay filas de asignaturas que no se pudieron leer.';
   end if;
-  if v_disciplinar = 0 then
+  if v_legadas > 6 then
+    return 'Hay asignaturas que figuran en el plan pero no están en la malla de Sistemas.';
+  end if;
+  if v_disciplinar = 0 and not v_vacia then
     return 'No hay ninguna asignatura disciplinar de Sistemas en la historia.';
   end if;
 
@@ -150,7 +161,7 @@ begin
 
   -- 4. «Resumen de créditos»: tiene que ser el del plan y cuadrar con las asignaturas
   for v_fila in
-    select m[1] as tipo, m[2]::int as exigidos, m[6]::int as cursados
+    select m[1] as tipo, m[2]::int as exigidos, m[3]::int as aprobados, m[6]::int as cursados
       from regexp_matches(
              t,
              '(' || v_tipos || '|TOTAL)[[:space:]]+(\d+)[[:space:]]+(\d+)[[:space:]]+(\d+)[[:space:]]+(\d+)[[:space:]]+(\d+)([[:space:]]|$)',
@@ -158,12 +169,16 @@ begin
            ) as m
   loop
     if not (v_resumen ? v_fila.tipo) then   -- vale la primera aparición de cada fila
-      v_resumen := jsonb_set(v_resumen, array[v_fila.tipo], jsonb_build_object('exigidos', v_fila.exigidos, 'cursados', v_fila.cursados));
+      v_resumen := jsonb_set(v_resumen, array[v_fila.tipo], jsonb_build_object('exigidos', v_fila.exigidos, 'aprobados', v_fila.aprobados, 'cursados', v_fila.cursados));
     end if;
   end loop;
 
   if not (v_resumen ? 'TOTAL') then
     return 'No se encontró la tabla «Resumen de créditos».';
+  end if;
+  -- Sin asignaturas listadas solo es válido quien aún no ha aprobado nada (primíparo)
+  if v_vacia and coalesce((v_resumen -> 'TOTAL' ->> 'aprobados')::int, -1) <> 0 then
+    return 'No hay ninguna asignatura disciplinar de Sistemas en la historia.';
   end if;
   if (v_resumen -> 'TOTAL' ->> 'exigidos')::int <> (select coalesce(sum(e.exigidos), 0) from public.malla_exigidos e) then
     return 'El total de créditos exigidos no corresponde al plan.';
