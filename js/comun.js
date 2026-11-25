@@ -149,9 +149,38 @@ function cargarDatos(ruta) {
       if (!respuesta.ok) throw new Error(`No se pudo cargar data/${ruta}.json (${respuesta.status})`);
       return respuesta.json();
     });
-    memoriaDatos.set(ruta, peticion);
+    memoriaDatos.set(ruta, Promise.all([peticion, cambiosPublicados(ruta)])
+      .then(([datos, cambios]) => aplicarCambios(ruta, datos, cambios)));
   }
   return memoriaDatos.get(ruta);
+}
+
+// Cambios hechos desde el panel de administración (tabla «contenido» de Supabase).
+// Si Supabase no responde en 2,5 s o no está configurado, la página usa el archivo tal cual.
+const RUTAS_EDITABLES = /^(malla\/asignaturas|info|convenios\/[a-z0-9-]+)$/;
+function cambiosPublicados(ruta) {
+  const cfg = window.CONFIG_SUPABASE;
+  if (!cfg?.url || !cfg.anonKey || !RUTAS_EDITABLES.test(ruta)) return Promise.resolve([]);
+  return fetch(`${cfg.url}/rest/v1/contenido?select=seccion,datos&ruta=eq.${encodeURIComponent(ruta)}`, {
+    headers: { apikey: cfg.anonKey }, signal: AbortSignal.timeout?.(2500),
+  }).then((r) => (r.ok ? r.json() : [])).catch(() => []);
+}
+
+function aplicarCambios(ruta, datos, cambios) {
+  for (const { seccion, datos: c } of cambios) {
+    if (seccion === 'documento') datos = c;
+    else if (ruta === 'malla/asignaturas') {
+      datos.forEach((a) => {
+        if (!(a.codigo in c)) return;
+        if (seccion === 'prerrequisitos') a.prerrequisitos = c[a.codigo];
+        else if (seccion === 'whatsapp') { if (c[a.codigo]) a.whatsapp = c[a.codigo]; else delete a.whatsapp; }
+      });
+    } else if (ruta === 'info' && seccion === 'calendario') {
+      const guia = datos.guias?.find((g) => g.id === 'calendario-academico');
+      if (guia) guia.calendario = c;
+    }
+  }
+  return datos;
 }
 
 // Mensaje amable cuando los datos no cargan (por ejemplo, al abrir el HTML con doble clic)

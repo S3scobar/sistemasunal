@@ -67,6 +67,9 @@
 
         <div class="admin__pestanas" role="tablist" aria-label="Secciones del panel">
           <button role="tab" id="tab-strikes" aria-controls="seccion-strikes" aria-selected="true" type="button" hidden>Strikes del grupo</button>
+          <button role="tab" id="tab-malla" aria-controls="seccion-malla" aria-selected="false" tabindex="-1" type="button" hidden>Malla</button>
+          <button role="tab" id="tab-calendario" aria-controls="seccion-calendario" aria-selected="false" tabindex="-1" type="button" hidden>Calendario</button>
+          <button role="tab" id="tab-convenios" aria-controls="seccion-convenios" aria-selected="false" tabindex="-1" type="button" hidden>Convenios</button>
           <button role="tab" id="tab-admins" aria-controls="seccion-admins" aria-selected="false" tabindex="-1" type="button" hidden>Administradores</button>
         </div>
 
@@ -106,6 +109,46 @@
             <summary>Reglas del grupo</summary>
             <div class="admin__reglas-cuerpo" id="strikes-reglas"></div>
           </details>
+        </section>
+
+        <!-- Malla: prerrequisitos, materias que desbloquea y grupo de WhatsApp -->
+        <section id="seccion-malla" role="tabpanel" aria-labelledby="tab-malla" hidden>
+          <p class="admin__ayuda">Elige una materia. Los cambios se ven en la malla, en «Mi avance» y en la verificación apenas guardes.</p>
+          <div class="admin__herramientas">
+            <label class="admin__campo">
+              <span>Materia</span>
+              <input id="malla-buscar" type="search" placeholder="Nombre o código" autocomplete="off">
+            </label>
+            <label class="admin__campo">
+              <span>Mostrar</span>
+              <select id="malla-filtro">
+                <option value="todas">Todas</option>
+                <option value="sin-wpp">Sin grupo de WhatsApp</option>
+                <option value="editadas">Con cambios publicados</option>
+              </select>
+            </label>
+          </div>
+          <ul class="admin__chips-lista" id="malla-sugeridas" aria-label="Materias"></ul>
+          <div class="admin__tarjeta admin__editor" id="malla-editor" hidden></div>
+          <p class="admin__error" id="malla-error" role="alert" hidden></p>
+        </section>
+
+        <!-- Calendario académico -->
+        <section id="seccion-calendario" role="tabpanel" aria-labelledby="tab-calendario" hidden>
+          <p class="admin__ayuda">Fechas del calendario de <b>Información general</b>. Deja «inicio» vacío si la actividad solo tiene fecha límite.</p>
+          <div class="admin__tarjeta admin__editor" id="calendario-editor"></div>
+          <p class="admin__error" id="calendario-error" role="alert" hidden></p>
+        </section>
+
+        <!-- Convenios -->
+        <section id="seccion-convenios" role="tabpanel" aria-labelledby="tab-convenios" hidden>
+          <p class="admin__ayuda">Textos, listas y botones de cada convenio. Los enlaces deben empezar por <b>https://</b>.</p>
+          <label class="admin__campo admin__campo--solo">
+            <span>Qué editar</span>
+            <select id="convenios-elegir"></select>
+          </label>
+          <div class="admin__tarjeta admin__editor" id="convenios-editor"></div>
+          <p class="admin__error" id="convenios-error" role="alert" hidden></p>
         </section>
 
         <!-- Administradores -->

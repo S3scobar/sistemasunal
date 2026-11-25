@@ -9,6 +9,10 @@
 // Permisos que se pueden dar a un administrador. El creador tiene todos y no depende de esta lista.
 const PERMISOS = [
   { id: 'strikes', nombre: 'Strikes del grupo de WhatsApp' },
+  { id: 'malla', nombre: 'Malla: prerrequisitos y materias que desbloquea' },
+  { id: 'grupos', nombre: 'Grupos de WhatsApp de las materias' },
+  { id: 'calendario', nombre: 'Fechas del calendario académico' },
+  { id: 'convenios', nombre: 'Convenios: información y botones' },
 ];
 const CREADOR = 'saescobara@unal.edu.co';
 
@@ -120,6 +124,9 @@ function armarPanel() {
   $('#admin-correo').textContent = yo.correo;
   $('#admin-rol').textContent = yo.superadmin ? 'Creador' : 'Administrador';
   $('#tab-strikes').hidden = !puede('strikes');
+  $('#tab-malla').hidden = !(puede('malla') || puede('grupos'));
+  $('#tab-calendario').hidden = !puede('calendario');
+  $('#tab-convenios').hidden = !puede('convenios');
   $('#tab-admins').hidden = !yo.superadmin;
   mostrar('admin-panel');
   const primera = $$('[role="tab"]').find((t) => !t.hidden);
@@ -127,6 +134,9 @@ function armarPanel() {
   abrirPestana(primera);
   if (puede('strikes')) cargarStrikes();
   if (yo.superadmin) cargarAdmins();
+  if (puede('malla') || puede('grupos')) cargarMalla();
+  if (puede('calendario')) cargarCalendario();
+  if (puede('convenios')) cargarConvenios();
 }
 
 /* ---------- Pestañas (flechas para moverse, como pide el patrón ARIA) ---------- */
@@ -432,6 +442,340 @@ $('#admins-lista').addEventListener('click', async (e) => {
   admins = admins.filter((a) => a.correo !== correo);
   pintarAdmins();
   avisar(`${correo} ya no es administrador`);
+});
+
+
+/* =============================================================
+   CONTENIDO EDITABLE: malla, calendario y convenios
+   La web sigue leyendo data/*.json y les aplica encima la tabla «contenido»
+   (ver aplicarCambios en comun.js). Borrar una fila = volver al archivo original.
+   Cada versión reemplazada queda en contenido_historial.
+   ============================================================= */
+const archivo = (ruta) => fetch(`data/${ruta}.json`, { cache: 'no-cache' }).then((r) => {
+  if (!r.ok) throw new Error(`No se pudo leer data/${ruta}.json`);
+  return r.json();
+});
+async function publicado(ruta) {
+  const { data, error: e } = await db.from('contenido').select('*').eq('ruta', ruta);
+  if (e) throw e;
+  return Object.fromEntries(data.map((f) => [f.seccion, f]));
+}
+async function guardarContenido(ruta, seccion, datos) {
+  const { error: e } = datos === null
+    ? await db.from('contenido').delete().eq('ruta', ruta).eq('seccion', seccion)
+    : await db.from('contenido').upsert({ ruta, seccion, datos });
+  if (e) throw e;
+}
+const pieCambio = (fila) => (fila
+  ? `Publicado ${fecha(fila.editado_en)} por ${esc(fila.editado_por || '¿?')}`
+  : 'Sin cambios publicados: se muestra el archivo original.');
+const copia = (x) => JSON.parse(JSON.stringify(x));
+const igual = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const URL_OK = /^(https:\/\/|mailto:|tel:)\S+$/;
+const WPP_OK = /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]{10,}(\?\S*)?$/;
+
+/* ---------- Malla ---------- */
+const malla = { base: [], prer: {}, wpp: {}, filas: {}, codigo: null, sucio: false };
+const RUTA_MALLA = 'malla/asignaturas';
+
+async function cargarMalla() {
+  try {
+    const [base, pub] = await Promise.all([archivo(RUTA_MALLA), publicado(RUTA_MALLA)]);
+    malla.base = base;
+    malla.filas = pub;
+    const p = pub.prerrequisitos?.datos || {};
+    const w = pub.whatsapp?.datos || {};
+    base.forEach((a) => {
+      malla.prer[a.codigo] = [...(p[a.codigo] ?? a.prerrequisitos)];
+      malla.wpp[a.codigo] = a.codigo in w ? w[a.codigo] : (a.whatsapp || '');
+    });
+    pintarMaterias();
+  } catch (e) { error('malla-error', msg(e)); }
+}
+
+const materia = (c) => malla.base.find((a) => a.codigo === c);
+const nombreDe = (c) => materia(c)?.nombre || c;
+const desbloquea = (c) => Object.keys(malla.prer).filter((x) => malla.prer[x].includes(c));
+const distinta = (c) => !igual(malla.prer[c], materia(c).prerrequisitos) || malla.wpp[c] !== (materia(c).whatsapp || '');
+// ¿«a» necesita (directa o indirectamente) a «b»? Sirve para no crear ciclos imposibles de cursar.
+function requiere(a, b, visto = new Set()) {
+  if (visto.has(a)) return false;
+  visto.add(a);
+  return (malla.prer[a] || []).some((p) => p === b || requiere(p, b, visto));
+}
+
+function pintarMaterias() {
+  const q = sinAcentos($('#malla-buscar').value.trim());
+  const f = $('#malla-filtro').value;
+  const lista = malla.base.filter((a) => (!q || sinAcentos(a.nombre + ' ' + a.codigo).includes(q))
+    && (f !== 'sin-wpp' || !malla.wpp[a.codigo]) && (f !== 'editadas' || distinta(a.codigo)));
+  $('#malla-sugeridas').innerHTML = lista.length ? lista.map((a) => `<li><button class="admin__materia ${a.codigo === malla.codigo ? 'is-activa' : ''}" data-codigo="${esc(a.codigo)}" type="button" aria-pressed="${a.codigo === malla.codigo}">
+      ${malla.wpp[a.codigo] ? '<i class="admin__punto admin__punto--wpp" title="Tiene grupo de WhatsApp"></i>' : '<i class="admin__punto" title="Sin grupo de WhatsApp"></i>'}
+      <span>${esc(a.nombre)}</span><small>${esc(a.codigo)}</small></button></li>`).join('')
+    : '<li class="admin__vacio">Ninguna materia coincide.</li>';
+}
+
+function fichas(codigos, tipo) {
+  return codigos.length ? `<ul class="admin__fichas">${codigos.map((c) => `<li><span>${esc(nombreDe(c))} <small>${esc(c)}</small></span>
+      <button type="button" data-quitar-${tipo}="${esc(c)}" aria-label="Quitar ${esc(nombreDe(c))}">×</button></li>`).join('')}</ul>`
+    : `<p class="admin__ayuda">${tipo === 'pre' ? 'No tiene prerrequisitos.' : 'No es prerrequisito de ninguna materia.'}</p>`;
+}
+const opciones = (excluir) => `<option value="">Elegir materia…</option>` + malla.base
+  .filter((a) => !excluir.includes(a.codigo)).map((a) => `<option value="${esc(a.codigo)}">${esc(a.nombre)} · ${esc(a.codigo)}</option>`).join('');
+
+function pintarEditorMalla() {
+  const c = malla.codigo;
+  const caja = $('#malla-editor');
+  if (!c) { caja.hidden = true; return; }
+  const pre = malla.prer[c];
+  const des = desbloquea(c);
+  const fila = [malla.filas.prerrequisitos, malla.filas.whatsapp].filter(Boolean).sort((a, b) => (a.editado_en < b.editado_en ? 1 : -1))[0];
+  caja.hidden = false;
+  caja.innerHTML = `<div class="admin__editor-cabeza"><h2>${esc(nombreDe(c))}</h2><span class="admin__chip">${esc(c)}</span>${malla.sucio ? '<span class="admin__chip admin__chip--riesgo">Sin guardar</span>' : ''}</div>
+    ${puede('malla') ? `
+    <div class="admin__bloque"><h3>Prerrequisitos <small>lo que hay que aprobar antes</small></h3>${fichas(pre, 'pre')}
+      <div class="admin__sumar"><select id="malla-sumar-pre" aria-label="Agregar prerrequisito">${opciones([c, ...pre])}</select>
+      <button class="admin__boton admin__boton--suave" data-accion="sumar-pre" type="button">Agregar</button></div></div>
+    <div class="admin__bloque"><h3>Desbloquea <small>materias que la piden como prerrequisito</small></h3>${fichas(des, 'des')}
+      <div class="admin__sumar"><select id="malla-sumar-des" aria-label="Agregar materia que desbloquea">${opciones([c, ...des])}</select>
+      <button class="admin__boton admin__boton--suave" data-accion="sumar-des" type="button">Agregar</button></div></div>` : ''}
+    ${puede('grupos') ? `
+    <div class="admin__bloque"><h3>Grupo de WhatsApp</h3>
+      <label class="admin__campo"><span>Enlace de invitación</span>
+        <input id="malla-wpp" type="url" inputmode="url" placeholder="https://chat.whatsapp.com/…" value="${esc(malla.wpp[c])}"></label>
+      <p class="admin__ayuda">Déjalo vacío para quitar el grupo. En WhatsApp: info del grupo → Invitar con enlace → Copiar.</p></div>` : ''}
+    <div class="admin__acciones admin__acciones--editor">
+      <small class="admin__pie">${pieCambio(fila)}</small>
+      ${distinta(c) ? '<button class="admin__boton admin__boton--suave" data-accion="restaurar" type="button">Volver al original</button>' : ''}
+      <button class="admin__boton" data-accion="guardar" type="button">Guardar y publicar</button>
+    </div>`;
+}
+
+$('#malla-buscar').addEventListener('input', pintarMaterias);
+$('#malla-filtro').addEventListener('change', pintarMaterias);
+$('#malla-sugeridas').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-codigo]');
+  if (!b) return;
+  if (malla.sucio && !confirm('Tienes cambios sin guardar en esta materia. ¿Descartarlos?')) return;
+  if (malla.sucio) { malla.sucio = false; cargarMalla().then(() => abrirMateria(b.dataset.codigo)); return; }
+  abrirMateria(b.dataset.codigo);
+});
+function abrirMateria(c) {
+  malla.codigo = c;
+  error('malla-error', '');
+  pintarMaterias();
+  pintarEditorMalla();
+  $('#malla-editor').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function cambiar(fn) { fn(); malla.sucio = true; pintarEditorMalla(); }
+$('#malla-editor').addEventListener('input', (e) => {
+  if (e.target.id === 'malla-wpp') malla.sucio = true;
+});
+$('#malla-editor').addEventListener('click', async (e) => {
+  const c = malla.codigo;
+  const b = e.target.closest('button');
+  if (!b) return;
+  error('malla-error', '');
+  if (b.dataset.quitarPre) cambiar(() => { malla.prer[c] = malla.prer[c].filter((x) => x !== b.dataset.quitarPre); });
+  else if (b.dataset.quitarDes) cambiar(() => { const d = b.dataset.quitarDes; malla.prer[d] = malla.prer[d].filter((x) => x !== c); });
+  else if (b.dataset.accion === 'sumar-pre') {
+    const p = $('#malla-sumar-pre').value;
+    if (!p) return;
+    if (requiere(p, c)) { error('malla-error', `«${nombreDe(p)}» ya depende de «${nombreDe(c)}»: se formaría un ciclo imposible de cursar.`); return; }
+    cambiar(() => malla.prer[c].push(p));
+  } else if (b.dataset.accion === 'sumar-des') {
+    const d = $('#malla-sumar-des').value;
+    if (!d) return;
+    if (requiere(c, d)) { error('malla-error', `«${nombreDe(c)}» ya depende de «${nombreDe(d)}»: se formaría un ciclo imposible de cursar.`); return; }
+    cambiar(() => malla.prer[d].push(c));
+  } else if (b.dataset.accion === 'restaurar') {
+    if (!confirm('¿Volver esta materia a como está en el archivo original?')) return;
+    cambiar(() => {
+      if (puede('malla')) malla.prer[c] = [...materia(c).prerrequisitos];
+      if (puede('grupos')) malla.wpp[c] = materia(c).whatsapp || '';
+    });
+  } else if (b.dataset.accion === 'guardar') guardarMalla(b);
+});
+
+async function guardarMalla(boton) {
+  const c = malla.codigo;
+  const caja = $('#malla-wpp');
+  if (caja) {
+    const v = caja.value.trim();
+    if (v && !WPP_OK.test(v)) { error('malla-error', 'El enlace debe ser una invitación de grupo: https://chat.whatsapp.com/…'); caja.focus(); return; }
+    malla.wpp[c] = v;
+  }
+  // Se publica solo lo que difiere del archivo; si nada difiere se borra la fila (vuelve al original)
+  const difPre = {};
+  const difWpp = {};
+  malla.base.forEach((a) => {
+    if (!igual(malla.prer[a.codigo], a.prerrequisitos)) difPre[a.codigo] = malla.prer[a.codigo];
+    if (malla.wpp[a.codigo] !== (a.whatsapp || '')) difWpp[a.codigo] = malla.wpp[a.codigo];
+  });
+  const o = (x) => (Object.keys(x).length ? x : null);
+  boton.disabled = true;
+  try {
+    if (puede('malla')) await guardarContenido(RUTA_MALLA, 'prerrequisitos', o(difPre));
+    if (puede('grupos')) await guardarContenido(RUTA_MALLA, 'whatsapp', o(difWpp));
+    malla.sucio = false;
+    malla.filas = await publicado(RUTA_MALLA);
+    pintarMaterias();
+    pintarEditorMalla();
+    avisar(`Publicado: ${nombreDe(c)}`);
+  } catch (e) { error('malla-error', msg(e)); boton.disabled = false; }
+}
+
+/* ---------- Editor de documentos (calendario y convenios) ----------
+   Dibuja un formulario a partir del JSON: textos, enlaces, fechas, listas con «Agregar» y «Quitar». */
+const ETIQUETAS = {
+  queEs: 'Qué es', quienes: 'Quién puede usarlo', incluye: 'Qué incluye', requisitos: 'Qué necesitas', pasos: 'Pasos',
+  enlaces: 'Botones y enlaces', soporte: 'Soporte', consejos: 'Consejos', porConfirmar: 'Por confirmar', fuentes: 'Fuentes',
+  texto: 'Texto', url: 'Enlace', principal: 'Botón principal', titulo: 'Título', nombre: 'Nombre', descripcion: 'Descripción',
+  resumen: 'Resumen', actividad: 'Actividad', aplica: 'Aplica a', inicio: 'Inicio', fin: 'Fin (fecha límite)', nota: 'Nota',
+  periodo: 'Periodo', grupos: 'Grupos de fechas', filas: 'Fechas', fuente: 'Fuente oficial', color: 'Color', categoria: 'Categoría',
+  tipo: 'Tipo', icono: 'Icono', cinta: 'Cinta', lema: 'Lema', cursos: 'Cursos', materias: 'Materias', area: 'Área', datos: 'Datos',
+  convenios: 'Convenios', tipos: 'Tipos', destacado: 'Aliado destacado', correo: 'Correo', telefono: 'Teléfono',
+};
+const etiqueta = (k) => (typeof k === 'number' ? `#${k + 1}` : ETIQUETAS[k] || String(k).replace(/([a-z])([A-Z])/g, '$1 $2').replace(/^./, (x) => x.toUpperCase()));
+const esFecha = (k, v) => ['inicio', 'fin'].includes(k) || /^\d{4}-\d{2}-\d{2}$/.test(v ?? '');
+const esUrl = (k) => /^(url|enlace|href|link|web)$/i.test(k);
+const oculto = (k) => typeof k === 'string' && (k.startsWith('_') || k === 'id');
+const vacio = (v) => (Array.isArray(v) ? [] : v && typeof v === 'object'
+  ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, oculto(k) ? x : vacio(x)]))
+  : typeof v === 'boolean' ? false : typeof v === 'number' ? 0 : v === null || /^\d{4}-\d{2}-\d{2}$/.test(v) ? null : '');
+
+function campoJSON(v, ruta, k) {
+  const r = esc(JSON.stringify(ruta));
+  const lab = esc(etiqueta(k));
+  if (typeof v === 'boolean') return `<label class="admin__check"><input type="checkbox" data-ruta="${r}" ${v ? 'checked' : ''}> <span>${lab}</span></label>`;
+  let input;
+  if (esFecha(k, v)) input = `<input type="date" data-ruta="${r}" data-nulo value="${esc(v || '')}">`;
+  else if (typeof v === 'number') input = `<input type="number" data-ruta="${r}" data-numero value="${v}">`;
+  else if (esUrl(k)) input = `<input type="url" inputmode="url" data-ruta="${r}" data-url placeholder="https://…" value="${esc(v ?? '')}">`;
+  else if (String(v ?? '').length > 70) input = `<textarea rows="3" data-ruta="${r}">${esc(v ?? '')}</textarea>`;
+  else input = `<input type="text" data-ruta="${r}" ${v === null ? 'data-nulo' : ''} value="${esc(v ?? '')}">`;
+  const ancho = !esFecha(k, v) && typeof v !== 'number' && (String(v ?? '').length > 30 || ['actividad', 'texto', 'titulo', 'descripcion', 'resumen', 'nota'].includes(k));
+  return `<label class="admin__campo ${ancho ? 'admin__campo--ancho' : ''}"><span>${lab}</span>${input}</label>`;
+}
+function bloqueJSON(v, ruta, k) {
+  if (Array.isArray(v)) {
+    return `<fieldset class="admin__grupo"><legend>${esc(etiqueta(k))}</legend>
+      ${v.map((x, i) => `<div class="admin__item">${bloqueJSON(x, [...ruta, i], i)}
+        <button type="button" class="admin__boton admin__boton--suave admin__boton--chico" data-quitar="${esc(JSON.stringify([...ruta, i]))}" aria-label="Quitar ${esc(etiqueta(k))} ${i + 1}">Quitar</button></div>`).join('')}
+      ${v[0] && typeof v[0] === 'object' && 'id' in v[0] ? '' // elementos con id (convenios, grupos) necesitan su propio archivo: no se crean desde aquí
+        : `<button type="button" class="admin__boton admin__boton--suave admin__boton--chico admin__agregar-item" data-agregar="${esc(JSON.stringify(ruta))}">+ Agregar</button>`}</fieldset>`;
+  }
+  if (v && typeof v === 'object') {
+    const hijos = Object.entries(v).filter(([kk]) => !oculto(kk)).map(([kk, x]) => bloqueJSON(x, [...ruta, kk], kk)).join('');
+    if (!ruta.length) return hijos;
+    return typeof k === 'number' ? `<div class="admin__objeto">${hijos}</div>` : `<fieldset class="admin__grupo"><legend>${esc(etiqueta(k))}</legend>${hijos}</fieldset>`;
+  }
+  return campoJSON(v, ruta, k);
+}
+const leerRuta = (doc, ruta) => ruta.reduce((o, k) => o[k], doc);
+
+// Monta el editor en «caja». cfg = { ruta, seccion, errorId, original, fila }
+function montarEditor(caja, cfg) {
+  caja._ed = { ...cfg, doc: copia(cfg.fila ? cfg.fila.datos : cfg.original), sucio: false };
+  pintarEditor(caja);
+  if (caja._escucha) return;
+  caja._escucha = true;
+  caja.addEventListener('input', (e) => {
+    const el = e.target.closest('[data-ruta]');
+    if (!el) return;
+    const ed = caja._ed;
+    const ruta = JSON.parse(el.dataset.ruta);
+    const padre = leerRuta(ed.doc, ruta.slice(0, -1));
+    const val = el.type === 'checkbox' ? el.checked : 'numero' in el.dataset ? Number(el.value) : el.value;
+    padre[ruta.at(-1)] = 'nulo' in el.dataset && val === '' ? null : val;
+    ed.sucio = true;
+  });
+  caja.addEventListener('click', async (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    const ed = caja._ed;
+    error(ed.errorId, '');
+    if (b.dataset.quitar) {
+      const ruta = JSON.parse(b.dataset.quitar);
+      leerRuta(ed.doc, ruta.slice(0, -1)).splice(ruta.at(-1), 1);
+      ed.sucio = true;
+      pintarEditor(caja);
+    } else if (b.dataset.agregar) {
+      const ruta = JSON.parse(b.dataset.agregar);
+      const lista = leerRuta(ed.doc, ruta);
+      lista.push(lista.length ? vacio(lista.at(-1)) : '');
+      ed.sucio = true;
+      pintarEditor(caja);
+      caja.querySelector(`[data-ruta^="${esc(JSON.stringify([...ruta, lista.length - 1]).slice(0, -1))}"]`)?.focus();
+    } else if (b.dataset.accion === 'restaurar') {
+      if (!confirm('¿Volver al archivo original? Lo publicado se guarda en el historial.')) return;
+      b.disabled = true;
+      try {
+        await guardarContenido(ed.ruta, ed.seccion, null);
+        montarEditor(caja, { ...ed, fila: null });
+        avisar('Se restauró el original');
+      } catch (er) { error(ed.errorId, msg(er)); b.disabled = false; }
+    } else if (b.dataset.accion === 'guardar') {
+      const malo = [...caja.querySelectorAll('[data-url]')].find((i) => i.value.trim() && !URL_OK.test(i.value.trim()));
+      if (malo) { error(ed.errorId, 'Hay un enlace que no empieza por https:// (también se aceptan mailto: y tel:).'); malo.focus(); return; }
+      b.disabled = true;
+      try {
+        const datos = igual(ed.doc, ed.original) ? null : ed.doc;
+        await guardarContenido(ed.ruta, ed.seccion, datos);
+        const fila = (await publicado(ed.ruta))[ed.seccion] || null;
+        montarEditor(caja, { ...ed, fila });
+        avisar(datos ? 'Cambios publicados' : 'Quedó igual al original');
+      } catch (er) { error(ed.errorId, msg(er)); b.disabled = false; }
+    }
+  });
+}
+function pintarEditor(caja) {
+  const ed = caja._ed;
+  caja.innerHTML = `<div class="admin__form-json">${bloqueJSON(ed.doc, [], '')}</div>
+    <div class="admin__acciones admin__acciones--editor">
+      <small class="admin__pie">${pieCambio(ed.fila)}</small>
+      ${ed.fila ? '<button class="admin__boton admin__boton--suave" data-accion="restaurar" type="button">Volver al original</button>' : ''}
+      <button class="admin__boton" data-accion="guardar" type="button">Guardar y publicar</button>
+    </div>`;
+}
+
+/* ---------- Calendario ---------- */
+async function cargarCalendario() {
+  try {
+    const [info, pub] = await Promise.all([archivo('info'), publicado('info')]);
+    const original = info.guias.find((g) => g.id === 'calendario-academico')?.calendario;
+    if (!original) throw new Error('No se encontró el calendario en data/info.json');
+    montarEditor($('#calendario-editor'), { ruta: 'info', seccion: 'calendario', errorId: 'calendario-error', original, fila: pub.calendario || null });
+  } catch (e) { error('calendario-error', msg(e)); }
+}
+
+/* ---------- Convenios ---------- */
+async function cargarConvenios() {
+  try {
+    const indice = await archivo('convenios/indice');
+    $('#convenios-elegir').innerHTML = `<option value="indice">Lista de convenios y aliado destacado</option>`
+      + indice.convenios.map((c) => `<option value="${esc(c.id)}">${esc(c.nombre)}</option>`).join('');
+    await abrirConvenio('indice');
+  } catch (e) { error('convenios-error', msg(e)); }
+}
+async function abrirConvenio(id) {
+  const ruta = `convenios/${id}`;
+  error('convenios-error', '');
+  try {
+    const [original, pub] = await Promise.all([archivo(ruta), publicado(ruta)]);
+    montarEditor($('#convenios-editor'), { ruta, seccion: 'documento', errorId: 'convenios-error', original, fila: pub.documento || null });
+  } catch (e) { error('convenios-error', msg(e)); }
+}
+let convenioActual = 'indice';
+$('#convenios-elegir').addEventListener('change', (e) => {
+  if ($('#convenios-editor')._ed?.sucio && !confirm('Tienes cambios sin guardar. ¿Descartarlos?')) { e.target.value = convenioActual; return; }
+  convenioActual = e.target.value;
+  abrirConvenio(convenioActual);
+});
+
+window.addEventListener('beforeunload', (e) => {
+  if (malla.sucio || $$('.admin__editor').some((c) => c._ed?.sucio)) e.preventDefault();
 });
 
 iniciar();
