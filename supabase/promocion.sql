@@ -95,7 +95,7 @@ begin
   -- 1b. La historia es de quien tiene la sesión: el usuario del SIA es el principio del correo UNAL
   v_esperado := upper(split_part(coalesce(p_correo, ''), '@', 1));
   select m[1] into v_usuario
-    from regexp_matches(t, 'PORTAL DE SERVICIOS ACADEMICOS[[:space:]]+([A-Z0-9._-]+)[[:space:]]') as m
+    from regexp_matches(t, '(?:PORTAL DE SERVICIOS ACADEMICOS|LOGO UNIVERSIDAD)[[:space:]]+([A-Z0-9._-]+)[[:space:]]') as m
     limit 1;
   if v_usuario is null or v_esperado = '' or v_usuario <> v_esperado then
     return 'La historia académica no pertenece al usuario del SIA de tu correo institucional.';

@@ -130,8 +130,8 @@ function leerHistoria(textoOriginal) {
   const resumen = leerResumen(texto);
   const encabezado = leerEncabezado(texto);
 
-  // Usuario del SIA: la línea que sigue a «Portal de Servicios Académicos» (coincide con el correo institucional)
-  let usuarioSia = (/(?:Portal de Servicios Acad[ée]micos\s*\n\s*)([a-z0-9._-]+)/i.exec(texto) || [])[1] || '';
+  // Usuario del SIA: la línea que sigue a «Portal de Servicios Académicos» o, en otra vista del SIA, a «Logo Universidad» (coincide con el correo institucional)
+  let usuarioSia = (/(?:Portal de Servicios Acad[ée]micos|Logo Universidad)\s*\n\s*([a-z0-9._-]+)/i.exec(texto) || [])[1] || '';
   if (/^(Datos|Informaci|Mi|Proceso|Buscador)/i.test(usuarioSia)) usuarioSia = '';
 
   let nombre = (/(?:^|\n)\s*(?:Nombre|Estudiante)\s*:?\s*([A-ZÁÉÍÓÚÑa-záéíóúñ ]{6,60})\s*(?:\n|$)/.exec(texto) || [])[1];
