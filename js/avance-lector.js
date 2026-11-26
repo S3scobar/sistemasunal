@@ -109,13 +109,14 @@ function leerCifraSuelta(texto, patron) {
 
 function leerEncabezado(texto) {
   const t = quitarTildes(texto).toUpperCase();
-  const plan = /(?:^|\n)[ \t]*(\d{4})[ \t]+INGENIERIA DE SISTEMAS E INFORMATICA[ \t]*(?:\r?\n|$)/.exec(t);
-  const facultad = /FACULTAD:[ \t]*(FACULTAD DE [A-Z ]+?)[ \t]*(?:\r?\n|$)/.exec(t);
+  // El código del plan («3534») no siempre se copia con Ctrl + A, así que es opcional: se pide el nombre del programa en su línea
+  const plan = /(?:^|\n)[ \t]*(?:(\d{4})[ \t]+)?INGENIERIA DE SISTEMAS E INFORMATICA[ \t]*(?:\r?\n|$)/.exec(t);
+  // «Facultad: FACULTAD DE MINAS» a veces queda pegado a «Hist. Acad.» sin salto de línea
+  const minas = /FACULTAD:[ \t]*FACULTAD DE MINAS(?:HIST|[ \t]*(?:\r?\n|$))/.test(t);
   return {
-    plan: plan ? plan[1] : null,
+    plan: plan ? plan[1] || null : null,
     programaSistemas: Boolean(plan),
-    facultad: facultad ? facultad[1] : null,
-    facultadMinas: Boolean(facultad && /\bMINAS\b/.test(facultad[1])),
+    facultadMinas: minas,
   };
 }
 
@@ -332,8 +333,8 @@ function validarHistoriaSistemas(historia, catalogo, opciones) {
 
   // 1. Encabezado del SIA
   const enc = historia.encabezado || {};
-  if (!enc.programaSistemas || enc.plan !== catalogo.plan) {
-    motivos.push(`En el encabezado no aparece el plan ${catalogo.plan} de Ingeniería de Sistemas e Informática.`);
+  if (!enc.programaSistemas) {
+    motivos.push('En el encabezado no aparece Ingeniería de Sistemas e Informática.');
   }
   if (!enc.facultadMinas) motivos.push('En el encabezado no aparece la Facultad de Minas.');
 

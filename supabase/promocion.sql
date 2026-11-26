@@ -58,7 +58,6 @@ stable
 set search_path = public
 as $$
 declare
-  v_plan        constant text := '3534';
   v_tipos       constant text := 'DISCIPLINAR OBLIGATORIA|DISCIPLINAR OPTATIVA|FUND\. OBLIGATORIA|FUND\. OPTATIVA|TRABAJO DE GRADO|LIBRE ELECCION|NIVELACION';
   v_sin_malla   constant text[] := array['LIBRE ELECCION', 'NIVELACION'];
   t             text;
@@ -84,11 +83,12 @@ begin
   -- Mayúsculas y sin tildes, igual que hace el navegador
   t := upper(translate(normalize(p_texto, nfc), 'ÁÉÍÓÚÜÑáéíóúüñ', 'AEIOUUNaeiouun'));
 
-  -- 1. Encabezado del SIA: plan 3534 de Sistemas en la Facultad de Minas
-  if t !~ ('(^|\n)[[:blank:]]*' || v_plan || '[[:blank:]]+INGENIERIA DE SISTEMAS E INFORMATICA[[:blank:]]*(\r?\n|$)') then
-    return 'En el encabezado no aparece el plan ' || v_plan || ' de Ingeniería de Sistemas e Informática.';
+  -- 1. Encabezado del SIA: Ingeniería de Sistemas e Informática en la Facultad de Minas
+  -- El código del plan no siempre se copia con Ctrl + A, así que no se exige
+  if t !~ '(^|\n)[[:blank:]]*([0-9]{4}[[:blank:]]+)?INGENIERIA DE SISTEMAS E INFORMATICA[[:blank:]]*(\r?\n|$)' then
+    return 'En el encabezado no aparece Ingeniería de Sistemas e Informática.';
   end if;
-  if t !~ 'FACULTAD:[[:blank:]]*FACULTAD DE MINAS[[:blank:]]*(\r?\n|$)' then
+  if t !~ 'FACULTAD:[[:blank:]]*FACULTAD DE MINAS(HIST|[[:blank:]]*(\r?\n|$))' then
     return 'En el encabezado no aparece la Facultad de Minas.';
   end if;
 
