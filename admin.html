@@ -128,8 +128,15 @@
               </select>
             </label>
           </div>
+          <div class="admin__acciones admin__acciones--izq" id="malla-gestion" hidden>
+            <button class="admin__boton admin__boton--suave" id="malla-agregar" type="button">+ Agregar materia</button>
+          </div>
           <ul class="admin__chips-lista" id="malla-sugeridas" aria-label="Materias"></ul>
           <div class="admin__tarjeta admin__editor" id="malla-editor" hidden></div>
+          <details class="admin__eliminadas" id="malla-eliminadas" hidden>
+            <summary>Materias eliminadas <span id="malla-eliminadas-n"></span></summary>
+            <ul id="malla-eliminadas-lista"></ul>
+          </details>
           <p class="admin__error" id="malla-error" role="alert" hidden></p>
         </section>
 
@@ -191,6 +198,35 @@
       <div class="admin__acciones">
         <button class="admin__boton admin__boton--suave" value="cancel" formnovalidate type="submit">Cancelar</button>
         <button class="admin__boton admin__boton--peligro" id="dlg-confirmar" type="button">Aplicar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Agregar o eliminar una materia: siempre pide escribir CONFIRMO -->
+  <dialog class="admin__dialogo" id="dlg-materia" aria-labelledby="mat-titulo">
+    <form id="mat-form" method="dialog" novalidate>
+      <h2 id="mat-titulo"></h2>
+      <p class="admin__ayuda" id="mat-texto"></p>
+      <div id="mat-campos" class="admin__form-json" hidden>
+        <label class="admin__campo"><span>Código</span><input id="mat-codigo" type="text" maxlength="12" autocomplete="off" placeholder="3010999 o 1000999-M"></label>
+        <label class="admin__campo"><span>Nombre</span><input id="mat-nombre" type="text" maxlength="120" autocomplete="off"></label>
+        <div class="admin__objeto">
+          <label class="admin__campo"><span>Créditos</span><input id="mat-creditos" type="number" inputmode="numeric" min="1" max="12" value="3"></label>
+          <label class="admin__campo"><span>Tipo</span>
+            <select id="mat-tipo"><option value="optativa">Optativa</option><option value="obligatoria">Obligatoria</option></select></label>
+          <label class="admin__campo" id="mat-semestre-caja" hidden><span>Semestre</span><input id="mat-semestre" type="number" inputmode="numeric" min="1" max="10" value="1"></label>
+        </div>
+        <label class="admin__campo"><span>Agrupación</span><select id="mat-agrupacion"></select></label>
+        <p class="admin__ayuda">Después de crearla puedes ponerle prerrequisitos y grupo de WhatsApp desde su ficha.</p>
+      </div>
+      <label class="admin__campo">
+        <span>Para continuar, escribe <b>CONFIRMO</b></span>
+        <input id="mat-confirmo" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </label>
+      <p class="admin__error" id="mat-error" role="alert" hidden></p>
+      <div class="admin__acciones">
+        <button class="admin__boton admin__boton--suave" value="cancel" formnovalidate type="submit">Cancelar</button>
+        <button class="admin__boton" id="mat-ok" type="button" disabled>Confirmar</button>
       </div>
     </form>
   </dialog>

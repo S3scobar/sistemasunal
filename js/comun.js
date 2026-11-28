@@ -149,7 +149,8 @@ function cargarDatos(ruta) {
       if (!respuesta.ok) throw new Error(`No se pudo cargar data/${ruta}.json (${respuesta.status})`);
       return respuesta.json();
     });
-    memoriaDatos.set(ruta, Promise.all([peticion, cambiosPublicados(ruta)])
+    // El plan por semestres también depende de las materias agregadas o eliminadas en «malla/asignaturas»
+    memoriaDatos.set(ruta, Promise.all([peticion, cambiosPublicados(ruta === 'malla/plan' ? 'malla/asignaturas' : ruta)])
       .then(([datos, cambios]) => aplicarCambios(ruta, datos, cambios)));
   }
   return memoriaDatos.get(ruta);
@@ -158,6 +159,18 @@ function cargarDatos(ruta) {
 // Cambios hechos desde el panel de administración (tabla «contenido» de Supabase).
 // Si Supabase no responde en 2,5 s o no está configurado, la página usa el archivo tal cual.
 const RUTAS_EDITABLES = /^(malla\/asignaturas|info|convenios\/[a-z0-9-]+)$/;
+// Archivo tal cual está en el repositorio, sin los cambios del panel (la verificación de la historia usa el catálogo oficial)
+const memoriaOriginales = new Map();
+function cargarDatosOriginales(ruta) {
+  if (!memoriaOriginales.has(ruta)) {
+    memoriaOriginales.set(ruta, fetch(`data/${ruta}.json`).then((r) => {
+      if (!r.ok) throw new Error(`No se pudo cargar data/${ruta}.json (${r.status})`);
+      return r.json();
+    }));
+  }
+  return memoriaOriginales.get(ruta);
+}
+
 function cambiosPublicados(ruta) {
   const cfg = window.CONFIG_SUPABASE;
   if (!cfg?.url || !cfg.anonKey || !RUTAS_EDITABLES.test(ruta)) return Promise.resolve([]);
@@ -167,9 +180,26 @@ function cambiosPublicados(ruta) {
 }
 
 function aplicarCambios(ruta, datos, cambios) {
+  // «materias» (agregadas y eliminadas) va primero: las demás secciones se aplican sobre la lista resultante
+  cambios = [...cambios].sort((x, y) => (y.seccion === 'materias') - (x.seccion === 'materias'));
+  const quitadas = new Set((cambios.find((x) => x.seccion === 'materias')?.datos.eliminadas || []).map((e) => e.codigo));
   for (const { seccion, datos: c } of cambios) {
     if (seccion === 'documento') datos = c;
-    else if (ruta === 'malla/asignaturas') {
+    else if (ruta === 'malla/asignaturas' && seccion === 'materias') {
+      const nuevas = (c.agregadas || []).filter((n) => !datos.some((a) => a.codigo === n.codigo));
+      datos = datos.filter((a) => !quitadas.has(a.codigo)).concat(nuevas.map((n) => ({ ...n, prerrequisitos: [...(n.prerrequisitos || [])] })));
+    } else if (ruta === 'malla/plan' && seccion === 'materias') {
+      datos.forEach((s) => {
+        for (const i of s.items.filter((x) => x.tipo === 'asignatura' && quitadas.has(x.codigo))) {
+          s.creditos -= (c.eliminadas.find((e) => e.codigo === i.codigo)?.creditos) || 0;
+        }
+        s.items = s.items.filter((x) => !(x.tipo === 'asignatura' && quitadas.has(x.codigo)));
+      });
+      for (const n of c.agregadas || []) {
+        const s = n.obligatoria && datos.find((x) => x.semestre === n.semestre);
+        if (s && !s.items.some((x) => x.codigo === n.codigo)) { s.items.push({ tipo: 'asignatura', codigo: n.codigo }); s.creditos += n.creditos; }
+      }
+    } else if (ruta === 'malla/asignaturas') {
       datos.forEach((a) => {
         if (!(a.codigo in c)) return;
         if (seccion === 'prerrequisitos') a.prerrequisitos = c[a.codigo];
@@ -180,6 +210,8 @@ function aplicarCambios(ruta, datos, cambios) {
       if (guia) guia.calendario = c;
     }
   }
+  // Una materia eliminada deja de ser prerrequisito de las demás
+  if (ruta === 'malla/asignaturas' && quitadas.size) datos.forEach((a) => { a.prerrequisitos = a.prerrequisitos.filter((p) => !quitadas.has(p)); });
   return datos;
 }
 

@@ -40,7 +40,7 @@ let promesaCatalogo = null;
 function cargarCatalogo() {
   if (!promesaCatalogo) {
     promesaCatalogo = Promise.all([
-      cargarDatos('malla/asignaturas'),
+      cargarDatosOriginales('malla/asignaturas'), // sin cambios del panel: la verificación usa la malla oficial
       cargarDatos('malla/componentes'),
       cargarDatos('malla/verificacion').catch(() => ({})),
     ]).then(([asignaturas, componentes, extras]) => construirCatalogo(asignaturas, componentes, extras))

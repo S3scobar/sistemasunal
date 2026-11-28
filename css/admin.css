@@ -64,7 +64,7 @@ body[data-pagina="admin"] main {
 
 .admin__campo { display: grid; gap: 6px; min-width: 0; }
 .admin__campo > span, .admin__tipos legend { font-family: var(--mono); font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #9fcfff; }
-.admin input[type="text"], .admin input[type="email"], .admin input[type="search"], .admin input[type="url"], .admin input[type="date"], .admin input[type="number"], .admin textarea, .admin select, .admin__dialogo select, .admin__dialogo textarea {
+.admin__dialogo input[type="text"], .admin__dialogo input[type="number"], .admin input[type="text"], .admin input[type="email"], .admin input[type="search"], .admin input[type="url"], .admin input[type="date"], .admin input[type="number"], .admin textarea, .admin select, .admin__dialogo select, .admin__dialogo textarea {
   width: 100%; min-height: 44px; padding: 10px 12px; border-radius: 10px;
   border: 1.5px solid var(--borde); background: #030a15; color: #fff;
   font: inherit; font-size: 16px;   /* 16px evita el zoom automático en iPhone */
@@ -232,3 +232,14 @@ body[data-pagina="admin"] main {
   .admin__sumar { grid-template-columns: minmax(0, 1fr); }
   .admin__pie { flex-basis: 100%; }
 }
+
+/* Agregar / eliminar materias */
+.admin__acciones--izq { justify-content: flex-start; margin-bottom: 14px; }
+.admin__eliminadas { margin-top: 18px; border: 1px dashed rgba(143, 179, 214, .35); border-radius: 12px; padding: 4px 14px; }
+.admin__eliminadas summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--suave); font-family: var(--mono); font-size: 13px; }
+.admin__eliminadas ul { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
+.admin__eliminadas li { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.admin__eliminadas small { font-family: var(--mono); color: var(--suave); }
+#mat-form .admin__form-json { margin-bottom: 14px; }
+#mat-form .admin__objeto { align-items: end; }
+#mat-form .admin__campo input, #mat-form .admin__campo select { min-height: 44px; }

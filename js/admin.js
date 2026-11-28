@@ -11,6 +11,7 @@ const PERMISOS = [
   { id: 'strikes', nombre: 'Strikes del grupo de WhatsApp' },
   { id: 'malla', nombre: 'Malla: prerrequisitos y materias que desbloquea' },
   { id: 'grupos', nombre: 'Grupos de WhatsApp de las materias' },
+  { id: 'materias', nombre: 'Agregar y eliminar materias' },
   { id: 'calendario', nombre: 'Fechas del calendario académico' },
   { id: 'convenios', nombre: 'Convenios: información y botones' },
 ];
@@ -124,7 +125,7 @@ function armarPanel() {
   $('#admin-correo').textContent = yo.correo;
   $('#admin-rol').textContent = yo.superadmin ? 'Creador' : 'Administrador';
   $('#tab-strikes').hidden = !puede('strikes');
-  $('#tab-malla').hidden = !(puede('malla') || puede('grupos'));
+  $('#tab-malla').hidden = !(puede('malla') || puede('grupos') || puede('materias'));
   $('#tab-calendario').hidden = !puede('calendario');
   $('#tab-convenios').hidden = !puede('convenios');
   $('#tab-admins').hidden = !yo.superadmin;
@@ -134,7 +135,7 @@ function armarPanel() {
   abrirPestana(primera);
   if (puede('strikes')) cargarStrikes();
   if (yo.superadmin) cargarAdmins();
-  if (puede('malla') || puede('grupos')) cargarMalla();
+  if (puede('malla') || puede('grupos') || puede('materias')) cargarMalla();
   if (puede('calendario')) cargarCalendario();
   if (puede('convenios')) cargarConvenios();
 }
@@ -475,21 +476,33 @@ const URL_OK = /^(https:\/\/|mailto:|tel:)\S+$/;
 const WPP_OK = /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]{10,}(\?\S*)?$/;
 
 /* ---------- Malla ---------- */
-const malla = { base: [], prer: {}, wpp: {}, filas: {}, codigo: null, sucio: false };
+const malla = { base: [], prer: {}, wpp: {}, filas: {}, codigo: null, sucio: false, mat: { agregadas: [], eliminadas: [] }, componentes: [] };
 const RUTA_MALLA = 'malla/asignaturas';
 
 async function cargarMalla() {
   try {
-    const [base, pub] = await Promise.all([archivo(RUTA_MALLA), publicado(RUTA_MALLA)]);
-    malla.base = base;
+    const [crudo, pub, comp] = await Promise.all([archivo(RUTA_MALLA), publicado(RUTA_MALLA), archivo('malla/componentes')]);
     malla.filas = pub;
+    malla.componentes = comp.agrupaciones || [];
+    malla.mat = { agregadas: [], eliminadas: [], ...(pub.materias?.datos || {}) };
+    // Misma lista que ve la web: el archivo sin las eliminadas y con las agregadas; sin prerrequisitos hacia materias eliminadas
+    const quitadas = new Set(malla.mat.eliminadas.map((e) => e.codigo));
+    const base = crudo.filter((a) => !quitadas.has(a.codigo)).concat(malla.mat.agregadas)
+      .map((a) => ({ ...a, prerrequisitos: (a.prerrequisitos || []).filter((p) => !quitadas.has(p)) }));
+    malla.base = base;
+    malla.prer = {};
+    malla.wpp = {};
     const p = pub.prerrequisitos?.datos || {};
     const w = pub.whatsapp?.datos || {};
     base.forEach((a) => {
-      malla.prer[a.codigo] = [...(p[a.codigo] ?? a.prerrequisitos)];
+      malla.prer[a.codigo] = (p[a.codigo] ?? a.prerrequisitos).filter((x) => !quitadas.has(x));
       malla.wpp[a.codigo] = a.codigo in w ? w[a.codigo] : (a.whatsapp || '');
     });
+    $('#malla-gestion').hidden = !puede('materias');
+    pintarEliminadas();
     pintarMaterias();
+    if (malla.codigo && !materia(malla.codigo)) malla.codigo = null;
+    pintarEditorMalla();
   } catch (e) { error('malla-error', msg(e)); }
 }
 
@@ -544,6 +557,8 @@ function pintarEditorMalla() {
       <label class="admin__campo"><span>Enlace de invitación</span>
         <input id="malla-wpp" type="url" inputmode="url" placeholder="https://chat.whatsapp.com/…" value="${esc(malla.wpp[c])}"></label>
       <p class="admin__ayuda">Déjalo vacío para quitar el grupo. En WhatsApp: info del grupo → Invitar con enlace → Copiar.</p></div>` : ''}
+    ${puede('materias') ? `<div class="admin__bloque"><h3>Zona delicada</h3>
+      <div><button class="admin__boton admin__boton--peligro admin__boton--chico" data-accion="eliminar-materia" type="button">Eliminar esta materia</button></div></div>` : ''}
     <div class="admin__acciones admin__acciones--editor">
       <small class="admin__pie">${pieCambio(fila)}</small>
       ${distinta(c) ? '<button class="admin__boton admin__boton--suave" data-accion="restaurar" type="button">Volver al original</button>' : ''}
@@ -595,7 +610,8 @@ $('#malla-editor').addEventListener('click', async (e) => {
       if (puede('malla')) malla.prer[c] = [...materia(c).prerrequisitos];
       if (puede('grupos')) malla.wpp[c] = materia(c).whatsapp || '';
     });
-  } else if (b.dataset.accion === 'guardar') guardarMalla(b);
+  } else if (b.dataset.accion === 'eliminar-materia') pedirEliminar(c);
+  else if (b.dataset.accion === 'guardar') guardarMalla(b);
 });
 
 async function guardarMalla(boton) {
@@ -625,6 +641,109 @@ async function guardarMalla(boton) {
     avisar(`Publicado: ${nombreDe(c)}`);
   } catch (e) { error('malla-error', msg(e)); boton.disabled = false; }
 }
+
+
+/* ---------- Agregar y eliminar materias ----------
+   Se guarda en la sección «materias»: { agregadas: [materia completa], eliminadas: [{codigo, nombre, creditos}] }.
+   Nada se borra del archivo: «Restaurar» devuelve la materia. Siempre hay que escribir CONFIRMO. */
+const dlgMat = $('#dlg-materia');
+let accionMat = null;
+const CODIGO_OK = /^\d{6,7}(-[A-Z])?$/;
+
+function abrirDialogoMateria({ titulo, texto, campos = false, ok }) {
+  $('#mat-titulo').textContent = titulo;
+  $('#mat-texto').innerHTML = texto;
+  $('#mat-campos').hidden = !campos;
+  $('#mat-confirmo').value = '';
+  $('#mat-ok').disabled = true;
+  error('mat-error', '');
+  accionMat = ok;
+  dlgMat.showModal();
+  (campos ? $('#mat-codigo') : $('#mat-confirmo')).focus();
+}
+$('#mat-confirmo').addEventListener('input', (e) => { $('#mat-ok').disabled = e.target.value.trim().toUpperCase() !== 'CONFIRMO'; });
+$('#mat-tipo').addEventListener('change', (e) => { $('#mat-semestre-caja').hidden = e.target.value !== 'obligatoria'; });
+$('#mat-form').addEventListener('submit', (e) => { if (e.submitter?.value !== 'cancel') e.preventDefault(); });
+$('#mat-confirmo').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (!$('#mat-ok').disabled) $('#mat-ok').click(); } });
+$('#mat-ok').addEventListener('click', async () => {
+  if ($('#mat-confirmo').value.trim().toUpperCase() !== 'CONFIRMO') return;
+  $('#mat-ok').disabled = true;
+  try {
+    await accionMat();
+    dlgMat.close();
+  } catch (e) { error('mat-error', msg(e)); $('#mat-ok').disabled = false; }
+});
+
+async function guardarMaterias(mat) {
+  const vacia = !mat.agregadas.length && !mat.eliminadas.length;
+  await guardarContenido(RUTA_MALLA, 'materias', vacia ? null : mat);
+  malla.sucio = false;
+  await cargarMalla();
+}
+
+$('#malla-agregar').addEventListener('click', () => {
+  $('#mat-agrupacion').innerHTML = malla.componentes.map((g) => `<option value="${esc(g.id)}">${esc(g.nombre)}</option>`).join('');
+  ['#mat-codigo', '#mat-nombre'].forEach((i) => { $(i).value = ''; });
+  $('#mat-creditos').value = 3; $('#mat-tipo').value = 'optativa'; $('#mat-semestre-caja').hidden = true; $('#mat-semestre').value = 1;
+  abrirDialogoMateria({
+    titulo: 'Agregar materia',
+    texto: 'Aparecerá en la malla y en el catálogo apenas la guardes.',
+    campos: true,
+    ok: async () => {
+      const codigo = $('#mat-codigo').value.trim().toUpperCase();
+      const nombre = $('#mat-nombre').value.trim().replace(/\s+/g, ' ');
+      const creditos = Number($('#mat-creditos').value);
+      const obligatoria = $('#mat-tipo').value === 'obligatoria';
+      const semestre = Number($('#mat-semestre').value);
+      if (!CODIGO_OK.test(codigo)) throw new Error('El código son 6 o 7 números, y opcionalmente «-M» al final (por ejemplo 3010999 o 1000999-M).');
+      if (materia(codigo)) throw new Error(`Ya existe una materia con el código ${codigo}: «${nombreDe(codigo)}».`);
+      if (nombre.length < 3) throw new Error('Escribe el nombre de la materia.');
+      if (!Number.isInteger(creditos) || creditos < 1 || creditos > 12) throw new Error('Los créditos deben ser un número entero entre 1 y 12.');
+      if (obligatoria && (!Number.isInteger(semestre) || semestre < 1 || semestre > 10)) throw new Error('El semestre debe estar entre 1 y 10.');
+      const nueva = { codigo, nombre, creditos, obligatoria, agrupacion: $('#mat-agrupacion').value, semestre: obligatoria ? semestre : null, prerrequisitos: [] };
+      // Si estaba en «eliminadas» (mismo código), se quita de ahí: queda la versión nueva
+      await guardarMaterias({ agregadas: [...malla.mat.agregadas, nueva], eliminadas: malla.mat.eliminadas.filter((e) => e.codigo !== codigo) });
+      avisar(`Materia agregada: ${nombre}`);
+      abrirMateria(codigo);
+    },
+  });
+});
+
+function pedirEliminar(c) {
+  const m = materia(c);
+  const dep = desbloquea(c);
+  abrirDialogoMateria({
+    titulo: 'Eliminar materia',
+    texto: `Vas a eliminar <b>${esc(m.nombre)}</b> (${esc(c)}) de la malla y del catálogo.`
+      + (dep.length ? ` Es prerrequisito de ${dep.map((d) => `<b>${esc(nombreDe(d))}</b>`).join(', ')}: dejará de serlo.` : '')
+      + ' Las historias académicas ya verificadas no se afectan, y puedes restaurarla después.',
+    ok: async () => {
+      const eraNueva = malla.mat.agregadas.some((a) => a.codigo === c);
+      await guardarMaterias({
+        agregadas: malla.mat.agregadas.filter((a) => a.codigo !== c),
+        eliminadas: eraNueva ? malla.mat.eliminadas : [...malla.mat.eliminadas, { codigo: c, nombre: m.nombre, creditos: m.creditos }],
+      });
+      avisar(`Materia eliminada: ${m.nombre}`);
+    },
+  });
+}
+
+function pintarEliminadas() {
+  const l = malla.mat.eliminadas;
+  $('#malla-eliminadas').hidden = !puede('materias') || !l.length;
+  $('#malla-eliminadas-n').textContent = `(${l.length})`;
+  $('#malla-eliminadas-lista').innerHTML = l.map((e) => `<li><span>${esc(e.nombre)} <small>${esc(e.codigo)}</small></span>
+    <button class="admin__boton admin__boton--suave admin__boton--chico" data-restaurar="${esc(e.codigo)}" type="button">Restaurar</button></li>`).join('');
+}
+$('#malla-eliminadas-lista').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-restaurar]');
+  if (!b) return;
+  b.disabled = true;
+  try {
+    await guardarMaterias({ ...malla.mat, eliminadas: malla.mat.eliminadas.filter((x) => x.codigo !== b.dataset.restaurar) });
+    avisar('Materia restaurada');
+  } catch (er) { error('malla-error', msg(er)); b.disabled = false; }
+});
 
 /* ---------- Editor de documentos (calendario y convenios) ----------
    Dibuja un formulario a partir del JSON: textos, enlaces, fechas, listas con «Agregar» y «Quitar». */
